@@ -1,4 +1,4 @@
-# 🎯 VISÃO DO PRODUTO — Estudo com IA
+# 🎯 VISÃO DO PRODUTO — Meu Ecoo Prisma
 
 > **O que é**: Documento de visão do produto — problema, público, proposta de valor e escopo.
 >
@@ -82,5 +82,5 @@ Usuários finais: **alunos**, **professores** e **diretores/coordenação** — 
 ---
 
 > **Assinatura de Origem**
-> Documento do projeto **Estudo com IA**, seguindo o padrão do **Felixo System Design**.
+> Documento do projeto **Meu Ecoo Prisma**, seguindo o padrão do **Felixo System Design**.
 > Data desta versão: 2026-07-16

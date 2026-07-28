@@ -1,4 +1,4 @@
-# 🤖 IA.md — Contexto Operacional do Projeto Estudo com IA
+# 🤖 IA.md — Contexto Operacional do Projeto Meu Ecoo Prisma
 
 > Arquivo de memória técnica do projeto, criado a partir do `TEMPLATE-CONTEXTO-IA.md` do Felixo System Design.
 > **Regra de preservação histórica**: não apague nem reescreva registros antigos; adicione entradas novas datadas com contexto, motivo e validação.
@@ -58,3 +58,4 @@ _Nenhum ainda — sem código de aplicação._
 ## 📓 REGISTRO DE SESSÕES
 
 - [2026-07-16] Sessão inicial: criada toda a documentação de concepção seguindo o padrão Felixo System Design — `README.md` reescrito no padrão `DESIGN_SYSTEM_README.md`; criados `docs/VISAO-DO-PRODUTO.md`, `docs/ARQUITETURA-DO-SISTEMA.md`, `docs/PERFIS-E-PERMISSOES.md`, `docs/CREDITOS-E-ASSINATURAS.md`, `docs/MEMORIA-PERSISTENTE.md`, `docs/ROADMAP.md` e este `IA.md`. Próximo passo: Fase 0 do roadmap.
+- [2026-07-28] Projeto renomeado de "Estudo com IA" para "Meu Ecoo Prisma": repositório GitHub renomeado (`flaviavs-commits/Meu-Ecoo-Prisma`), remote local atualizado e todas as referências ao nome antigo substituídas em `README.md`, `IA.md`, `docs/*.md` e `mockup/*.html`. Corrigido também um link quebrado no README que apontava para a pasta local `Padrão de qualidade - Felixo System Design/` (ignorada pelo git, portanto inválida para quem clona o repositório).

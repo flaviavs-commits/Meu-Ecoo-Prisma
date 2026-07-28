@@ -1,4 +1,4 @@
-# 🧠 MEMÓRIA PERSISTENTE — Estudo com IA
+# 🧠 MEMÓRIA PERSISTENTE — Meu Ecoo Prisma
 
 > **O que é**: Especificação da memória de estudo por aluno — o que a IA lembra entre sessões, como isso é armazenado, usado e protegido.
 >
@@ -82,5 +82,5 @@ MemoriaAluno (1 por aluno)
 ---
 
 > **Assinatura de Origem**
-> Documento do projeto **Estudo com IA**, seguindo o padrão do **Felixo System Design**.
+> Documento do projeto **Meu Ecoo Prisma**, seguindo o padrão do **Felixo System Design**.
 > Data desta versão: 2026-07-16

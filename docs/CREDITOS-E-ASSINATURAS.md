@@ -1,4 +1,4 @@
-# 💳 CRÉDITOS E ASSINATURAS — Estudo com IA
+# 💳 CRÉDITOS E ASSINATURAS — Meu Ecoo Prisma
 
 > **O que é**: O modelo econômico da plataforma — assinatura por instituição, pool de créditos de IA, cotas por perfil e contabilidade de consumo.
 >
@@ -103,5 +103,5 @@ Toda movimentação é um lançamento imutável:
 ---
 
 > **Assinatura de Origem**
-> Documento do projeto **Estudo com IA**, seguindo o padrão do **Felixo System Design**.
+> Documento do projeto **Meu Ecoo Prisma**, seguindo o padrão do **Felixo System Design**.
 > Data desta versão: 2026-07-16

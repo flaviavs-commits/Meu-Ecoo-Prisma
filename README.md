@@ -1,4 +1,4 @@
-# 🎓 Estudo com IA
+# 🎓 Meu Ecoo Prisma
 
 <div align="center">
 
@@ -32,7 +32,7 @@
 
 ## 📋 Sobre o Projeto
 
-O **Estudo com IA** é uma plataforma SaaS para **instituições de ensino em geral** (escolas, cursos, universidades) que usa o **OpenRouter como motor de IA**. A instituição assina a plataforma e recebe **créditos de IA** — assim como funciona em Claude, Codex e similares — que são distribuídos entre professores e alunos:
+O **Meu Ecoo Prisma** é uma plataforma SaaS para **instituições de ensino em geral** (escolas, cursos, universidades) que usa o **OpenRouter como motor de IA**. A instituição assina a plataforma e recebe **créditos de IA** — assim como funciona em Claude, Codex e similares — que são distribuídos entre professores e alunos:
 
 - **🧑‍🏫 Professores** geram e corrigem provas, criam material de estudo e acompanham turmas.
 - **🧑‍🎓 Alunos** estudam com um tutor de IA com **memória persistente**, que lembra o histórico, as dificuldades e o progresso de cada um.
@@ -69,7 +69,7 @@ Todo o conteúdo gerado (provas, textos, resumos, correções) fica **armazenado
 ## 📁 Estrutura do Repositório
 
 ```
-Estudo-com-IA/
+Meu-Ecoo-Prisma/
 │
 ├── docs/                                      # Documentação do projeto (uma responsabilidade por arquivo)
 │   ├── VISAO-DO-PRODUTO.md                    # O que é, para quem, proposta de valor e escopo
@@ -118,7 +118,7 @@ Detalhes completos em [docs/PERFIS-E-PERMISSOES.md](docs/PERFIS-E-PERMISSOES.md)
 
 ## 🛠️ Stack Planejada
 
-Alinhada à stack padrão do [Felixo System Design](Padrão%20de%20qualidade%20-%20Felixo%20System%20Design/README.md):
+Alinhada à stack padrão do **Felixo System Design** (guia de qualidade usado como referência local, não versionado neste repositório):
 
 | Camada | Tecnologia | Papel |
 |--------|-----------|-------|

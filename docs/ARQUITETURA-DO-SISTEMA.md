@@ -1,4 +1,4 @@
-# 🏗️ ARQUITETURA DO SISTEMA — Estudo com IA
+# 🏗️ ARQUITETURA DO SISTEMA — Meu Ecoo Prisma
 
 > **O que é**: Arquitetura de referência da plataforma — camadas, módulos, fluxo de dados e integração com o OpenRouter.
 >
@@ -118,5 +118,5 @@ Instituicao 1──1 PoolDeCreditos 1──N LancamentoLedger
 ---
 
 > **Assinatura de Origem**
-> Documento do projeto **Estudo com IA**, seguindo o padrão do **Felixo System Design**.
+> Documento do projeto **Meu Ecoo Prisma**, seguindo o padrão do **Felixo System Design**.
 > Data desta versão: 2026-07-16

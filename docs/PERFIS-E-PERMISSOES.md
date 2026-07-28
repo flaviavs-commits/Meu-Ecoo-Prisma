@@ -1,4 +1,4 @@
-# 👥 PERFIS E PERMISSÕES — Estudo com IA
+# 👥 PERFIS E PERMISSÕES — Meu Ecoo Prisma
 
 > **O que é**: Definição dos três perfis de acesso (aluno, professor, diretor), suas ferramentas e o mapa de permissões.
 >
@@ -91,5 +91,5 @@
 ---
 
 > **Assinatura de Origem**
-> Documento do projeto **Estudo com IA**, seguindo o padrão do **Felixo System Design**.
+> Documento do projeto **Meu Ecoo Prisma**, seguindo o padrão do **Felixo System Design**.
 > Data desta versão: 2026-07-16

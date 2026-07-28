@@ -1,4 +1,4 @@
-# 🗺️ ROADMAP — Estudo com IA
+# 🗺️ ROADMAP — Meu Ecoo Prisma
 
 > **O que é**: Plano de implementação em fases, com entregáveis e critérios de pronto.
 >
@@ -97,5 +97,5 @@ Melhorias que o projeto poderia expandir — contribuições bem-vindas:
 ---
 
 > **Assinatura de Origem**
-> Documento do projeto **Estudo com IA**, seguindo o padrão do **Felixo System Design**.
+> Documento do projeto **Meu Ecoo Prisma**, seguindo o padrão do **Felixo System Design**.
 > Data desta versão: 2026-07-16
