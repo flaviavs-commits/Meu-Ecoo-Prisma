@@ -5,6 +5,9 @@
 # Regerar com: python scripts/sincronizar-app.py
 /frontend/public/app/
 
+# Material de apresentacao (privado)
+/prints/
+
 # Ambiente e segredos
 .env
 .env.*
