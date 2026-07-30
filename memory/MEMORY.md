@@ -1,4 +1,0 @@
-- [Plataforma de estudos com OpenRouter](projeto-plataforma-estudos-openrouter.md) — mockup/apresentação de plataforma educacional com IA, estética Google Classroom, 3 perfis (aluno/professor/diretor), créditos por assinatura
-- [Feedback: direção visual do mockup](feedback-direcao-visual-mockup.md) — referência é o ChatGPT (clean, sidebar, fonte Geist embutida, SVG); 1ª versão "giz/serifa" foi rejeitada por parecer genérica
-- [Workflow: somente localhost:8080](feedback-workflow-somente-localhost.md) — tudo centralizado no servidor local com live-reload; não publicar artifacts sem pedido explícito
-- [Refatoração: centro de estudos pessoal](refatoracao-centro-estudos-pessoal.md) — removido contexto escolar; opções: aluno solo (IA monta tudo) ou tutor cria workspace compartilhável

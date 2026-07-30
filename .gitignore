@@ -1,5 +1,29 @@
+# Padroes de qualidade sincronizados (copia local, vive no repo Doktor System-Design)
+/doktor SystemDesign/
 
-/Padrão de qualidade - Felixo System Design
+# Telas da aplicacao (copia derivada; vivem no repo Estudo-com-IA).
+# Regerar com: python scripts/sincronizar-app.py
+/frontend/public/app/
 
-# Prints e capturas de tela para apresentação (não versionar)
-/prints/
+# Ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.sqlite3
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Editor e SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

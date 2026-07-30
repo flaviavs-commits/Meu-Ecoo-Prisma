@@ -1,149 +1,181 @@
-# 🎓 Meu Ecoo Prisma
+# PrismaTest
 
-<div align="center">
+Implementacao web da plataforma de estudos com IA para instituicoes de ensino: OpenRouter como motor de IA, creditos por assinatura e memoria persistente por aluno.
 
-![OpenRouter](https://img.shields.io/badge/OpenRouter-Motor_de_IA-6467F2?style=for-the-badge)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white)
-![Django](https://img.shields.io/badge/Django-API_REST-0C4B33?style=for-the-badge&logo=django&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+> **Status: Fase 0 - fundacao.** A landing page publica esta implementada, com a identidade visual do documento UX/UI aplicada. O backend ainda nao existe. A concepcao do produto (visao, arquitetura, perfis, creditos, memoria, roadmap) e os mockups das telas por perfil vivem no repositorio [`Estudo-com-IA`](https://github.com/flaviavs-commits/Estudo-com-IA).
 
-**Plataforma de estudos para instituições de ensino com IA via OpenRouter, créditos por assinatura e memória persistente por aluno.**
+**Divisao de trabalho:** Andre no frontend, Felipe no backend.
 
-[📖 Visão do Produto](docs/VISAO-DO-PRODUTO.md) • [🏗️ Arquitetura](docs/ARQUITETURA-DO-SISTEMA.md) • [👥 Perfis](docs/PERFIS-E-PERMISSOES.md) • [💳 Créditos](docs/CREDITOS-E-ASSINATURAS.md) • [🧠 Memória](docs/MEMORIA-PERSISTENTE.md)
+## Sobre
 
-</div>
-
----
-
-## 📋 Índice
-
-- [📋 Sobre o Projeto](#-sobre-o-projeto)
-- [💡 **Como Funciona**](#-como-funciona) ⭐ **DESTAQUE**
-- [📁 Estrutura do Repositório](#-estrutura-do-repositório)
-- [📚 Documentação Completa](#-documentação-completa)
-- [👥 Perfis de Acesso](#-perfis-de-acesso)
-- [🛠️ Stack Planejada](#️-stack-planejada)
-- [🚧 Status do Projeto](#-status-do-projeto)
-- [📄 Licença](#-licença)
-- [👤 Autor](#-autor)
-
----
-
-## 📋 Sobre o Projeto
-
-O **Meu Ecoo Prisma** é uma plataforma SaaS para **instituições de ensino em geral** (escolas, cursos, universidades) que usa o **OpenRouter como motor de IA**. A instituição assina a plataforma e recebe **créditos de IA** — assim como funciona em Claude, Codex e similares — que são distribuídos entre professores e alunos:
-
-- **🧑‍🏫 Professores** geram e corrigem provas, criam material de estudo e acompanham turmas.
-- **🧑‍🎓 Alunos** estudam com um tutor de IA com **memória persistente**, que lembra o histórico, as dificuldades e o progresso de cada um.
-- **🏛️ Diretores** administram a instituição: distribuem créditos, monitoram notas, faltas, desempenho e uso da plataforma.
-
-Todo o conteúdo gerado (provas, textos, resumos, correções) fica **armazenado na plataforma**, formando o acervo pedagógico da instituição.
-
----
-
-## 💡 Como Funciona ⭐
-
-> **🚀 Um motor de IA, três perfis, créditos por assinatura**
->
-> **Instituição assina → recebe créditos → distribui para professores e alunos → todos usam IA com memória persistente**
-
-### 💡 Por que usar?
-
-- **🎯 IA sob medida por perfil**: cada login (aluno, professor, diretor) abre um conjunto próprio de ferramentas
-- **🧠 Memória persistente**: a IA lembra o histórico de estudo de cada aluno entre sessões — o tutor evolui com o aluno
-- **💳 Custo previsível**: créditos por assinatura, com cotas por perfil e monitoramento de consumo pelo diretor
-- **🔀 Multi-modelo via OpenRouter**: um único contrato de API dá acesso a dezenas de modelos, com roteamento por custo/tarefa
-- **📦 Acervo institucional**: provas, textos e materiais gerados ficam armazenados e reutilizáveis
-
-### Ferramentas por perfil
-
-1. **Aluno** — tutor de estudo com memória, gerador de textos de estudo e apoio a trabalhos, simulados, acompanhamento das próprias notas e faltas
-2. **Professor** — geração e correção de provas com IA, banco de conteúdo, gerador de material didático, lançamento de notas e faltas
-3. **Diretor** — dashboards de desempenho, notas e faltas da instituição, gestão de usuários, distribuição e monitoramento de créditos
-
-**Tecnologias do motor:** OpenRouter (API unificada multi-modelo) + camada própria de memória persistente e contabilidade de créditos.
-
----
-
-## 📁 Estrutura do Repositório
-
-```
-Meu-Ecoo-Prisma/
-│
-├── docs/                                      # Documentação do projeto (uma responsabilidade por arquivo)
-│   ├── VISAO-DO-PRODUTO.md                    # O que é, para quem, proposta de valor e escopo
-│   ├── ARQUITETURA-DO-SISTEMA.md              # Camadas, módulos, fluxo de dados e integração OpenRouter
-│   ├── PERFIS-E-PERMISSOES.md                 # Os 3 logins (aluno, professor, diretor) e suas funções
-│   ├── CREDITOS-E-ASSINATURAS.md              # Modelo de assinatura, distribuição e contabilidade de créditos
-│   ├── MEMORIA-PERSISTENTE.md                 # Como a memória de estudo por aluno é armazenada e usada
-│   └── ROADMAP.md                             # Fases de implementação e critérios de pronto
-│
-├── Documentação/                              # Material de referência do ecossistema (docx/pdf)
-│
-├── Padrão de qualidade - Felixo System Design/  # Padrões obrigatórios de qualidade (core/ e guias/)
-│
-├── IA.md                                      # Memória operacional do projeto para sessões de IA
-├── README.md
-└── LICENSE
-```
-
----
-
-## 📚 Documentação Completa
-
-| Documento | Responsabilidade | O que você encontra |
-|-----------|------------------|---------------------|
-| **[docs/VISAO-DO-PRODUTO.md](docs/VISAO-DO-PRODUTO.md)** | **Produto** | Problema, público, proposta de valor, escopo do MVP e o que fica de fora |
-| **[docs/ARQUITETURA-DO-SISTEMA.md](docs/ARQUITETURA-DO-SISTEMA.md)** | **Arquitetura** | Camadas do sistema, módulos, fluxo de uma requisição de IA e integração com o OpenRouter |
-| **[docs/PERFIS-E-PERMISSOES.md](docs/PERFIS-E-PERMISSOES.md)** | **Perfis** | Funções e permissões de aluno, professor e diretor, tela a tela |
-| **[docs/CREDITOS-E-ASSINATURAS.md](docs/CREDITOS-E-ASSINATURAS.md)** | **Créditos** | Planos de assinatura, cotas por perfil, contabilidade de tokens e políticas de limite |
-| **[docs/MEMORIA-PERSISTENTE.md](docs/MEMORIA-PERSISTENTE.md)** | **Memória** | Modelo de memória por aluno, o que é lembrado, privacidade e ciclo de vida dos dados |
-| **[docs/ROADMAP.md](docs/ROADMAP.md)** | **Planejamento** | Fases de implementação, entregáveis e critérios de pronto de cada fase |
-| **[IA.md](IA.md)** | **Contexto para IA** | Decisões técnicas, linha do tempo e estado atual para retomada por qualquer sessão de IA |
-
----
-
-## 👥 Perfis de Acesso
+A instituicao assina a plataforma e recebe creditos de IA, distribuidos pelo diretor entre professores e alunos:
 
 | Perfil | Foco | Principais ferramentas |
 |--------|------|------------------------|
-| 🧑‍🎓 **Aluno** | Estudar | Tutor de IA com memória, gerador de textos de estudo, simulados, minhas notas e faltas |
-| 🧑‍🏫 **Professor** | Ensinar | Geração e correção de provas, banco de conteúdo, material didático, lançamento de notas/faltas |
-| 🏛️ **Diretor** | Administrar | Dashboards de desempenho, gestão de usuários e turmas, distribuição e monitoramento de créditos |
+| Aluno | Estudar | Tutor de IA com memoria, gerador de textos de estudo, simulados, notas e faltas |
+| Professor | Ensinar | Geracao e correcao de provas, banco de conteudo, material didatico, lancamento de notas |
+| Diretor | Administrar | Dashboards de desempenho, gestao de usuarios e turmas, distribuicao de creditos |
 
-Detalhes completos em [docs/PERFIS-E-PERMISSOES.md](docs/PERFIS-E-PERMISSOES.md).
-
----
-
-## 🛠️ Stack Planejada
-
-Alinhada à stack padrão do **Felixo System Design** (guia de qualidade usado como referência local, não versionado neste repositório):
+## Stack
 
 | Camada | Tecnologia | Papel |
 |--------|-----------|-------|
-| Frontend | React + TypeScript + Tailwind (Vite) | SPA com áreas separadas por perfil |
-| Backend | Django + Django REST Framework | API, regras de negócio, contabilidade de créditos |
-| IA | OpenRouter API | Acesso multi-modelo (geração, correção, tutoria) |
-| Banco | PostgreSQL | Usuários, conteúdo, notas, faltas, créditos, memória |
+| Frontend | React + TypeScript + Vite + Tailwind | SPA com areas separadas por perfil |
+| Backend | Django + Django REST Framework | API, regras de negocio, contabilidade de creditos |
+| IA | OpenRouter | Acesso multi-modelo (geracao, correcao, tutoria) |
+| Banco | PostgreSQL | Usuarios, conteudo, notas, faltas, creditos, memoria |
 | Deploy | Railway | Hospedagem do backend |
 
----
+Toda chamada de IA passa pelo gateway do backend. O frontend nunca fala com o OpenRouter diretamente.
 
-## 🚧 Status do Projeto
+## Estrutura
 
-**Fase atual: concepção e documentação.** Ainda não há código de aplicação — este repositório contém a documentação de produto/arquitetura e os padrões de qualidade que guiarão a implementação. Veja o plano em [docs/ROADMAP.md](docs/ROADMAP.md).
+```
+PrismaTest/
+├── AGENTS.md               # Roteiro para agentes de IA neste projeto
+├── IA.md                   # Memoria operacional: decisoes, estado e validacoes
+├── README.md
+├── start_app.py            # Gatilho: abre o HUD
+├── scripts/
+│   ├── sincronizar-app.py  # Traz as telas do Estudo-com-IA
+│   └── hud/                # O HUD, um modulo por responsabilidade
+│       ├── tokens.py       # Paleta, tipografia e medidas
+│       ├── layout.py       # Monta a janela
+│       ├── status.py       # Mede o ambiente e pinta o card
+│       ├── console.py      # Terminal embutido
+│       ├── acoes.py        # O que cada card faz
+│       └── widgets/        # Um arquivo por widget desenhado
+├── frontend/               # React + TypeScript + Vite + Tailwind
+│   ├── public/app/         # Telas da aplicacao (copia derivada, ignorada)
+│   └── src/
+│       ├── components/
+│       │   ├── ui/         # Base (Button, Card, Secao) e animacao
+│       │   │               # (Animar, Titulo3D, Atmosfera, Card3D)
+│       │   ├── layout/     # Header, Rodape
+│       │   └── feature/    # Secoes da landing
+│       ├── content/        # Copy e destino da aplicacao
+│       └── index.css       # Tokens de design e regra de cor (@theme)
+└── doktor SystemDesign/    # Padroes de qualidade (copia sincronizada, nao versionada)
+```
 
----
+## Como rodar
 
-## 📄 Licença
+Requisitos: Node.js 20+ e Python 3.10+.
 
-Este projeto está sob a licença MIT — veja o arquivo [`LICENSE`](LICENSE).
+```bash
+python start_app.py
+```
 
-## 👤 Autor
+Isso abre uma **janela** (o HUD) com o estado do ambiente ao vivo -
+servidor, dependencias, telas, npm - e as acoes em botoes: **Rodar o
+site**, **Abrir no navegador**, **Instalar dependencias**, **Sincronizar
+aplicacao**, **Gerar build**, **Validar**, **Configurar porta** e **Parar
+servidor**. A saida dos comandos aparece no painel de baixo.
 
-**Projeto ecoVS / Vitis Souls**
+O painel de baixo e um **console funcional**: digite qualquer comando de
+terminal e tecle Enter. Comeca em `frontend/`, entao `npm run dev` e
+`npm install` funcionam direto. Aceita `cd`, `pwd`, `clear`, `exit`,
+historico com as setas e Ctrl+C para interromper.
 
----
+> O HUD precisa de interface grafica. Em ambiente sem display (SSH,
+> container, CI) ele nao abre - use os comandos npm abaixo. O motivo
+> desse desvio em relacao ao guia do Doktor esta em [IA.md](IA.md).
 
-⭐ Se este projeto te interessou, deixe uma estrela no GitHub!
+Para rodar direto, sem o HUD:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+O site fica em `http://localhost:5173`.
+
+## Como validar
+
+Pelo botao **Validar** do HUD, ou direto:
+
+```bash
+cd frontend
+npm run lint     # oxlint
+npm run build    # tsc + vite build
+```
+
+Ainda nao ha teste automatizado: a landing e UI visual sem regra de negocio, caso em que o guia minimo de qualidade aceita verificacao manual registrada. As verificacoes executadas estao em [IA.md](IA.md), secao "Testes importantes". Testes automatizados entram junto com a logica de negocio (autenticacao, creditos, gateway de IA).
+
+## Landing e aplicacao
+
+Sao duas coisas, em repositorios diferentes:
+
+| | Onde vive | O que e |
+|---|---|---|
+| **Landing** | este repositorio, `frontend/src/` | vitrine publica, em React |
+| **Aplicacao** | `Estudo-com-IA`, pasta `mockup/` | telas de aluno, professor e diretor |
+
+Ao clicar em "Entrar", a landing abre a tela inicial da aplicacao,
+que faz a escolha de perfil.
+
+### Sincronizar a aplicacao
+
+As telas sao mantidas no `Estudo-com-IA`. Para trazer a versao atual:
+
+```bash
+python scripts/sincronizar-app.py
+```
+
+Isso copia as telas para `frontend/public/app/`, que o Vite serve em
+`/app/`. **Rode de novo sempre que as telas mudarem la** - a pasta e
+uma copia derivada, ignorada pelo git.
+
+O script tambem ajusta o link interno `landing.html`, que nao existe
+mais aqui, para a raiz do site.
+
+> **Nao ha autenticacao.** Qualquer pessoa acessa qualquer area: o
+> "Entrar" e navegacao, nao controle de acesso. O login real entra
+> com o backend. Quando existir, basta trocar `ENTRADA_APP` em
+> `frontend/src/content/destinos.ts` - todos os botoes leem de la.
+
+## Mexer no HUD
+
+O `start_app.py` e so o gatilho. O HUD vive em `scripts/hud/`, com um
+modulo por responsabilidade - abra so o que a mudanca exige:
+
+| Para mudar... | Abra |
+|---------------|------|
+| Cor, fonte ou espacamento | `scripts/hud/tokens.py` |
+| Posicao das secoes na janela | `scripts/hud/layout.py` |
+| O que um botao faz | `scripts/hud/acoes.py` |
+| Comportamento do console | `scripts/hud/console.py` |
+| Aparencia de um card, modal ou barra | `scripts/hud/widgets/<nome>.py` |
+| O que o card de status mede | `scripts/hud/ambiente.py` |
+
+O mapa completo esta em `scripts/hud/__init__.py`. A regra que mantem
+assim: [docs/CONSTITUICAO-MODULARIDADE.md](docs/CONSTITUICAO-MODULARIDADE.md).
+
+## Personalizar a landing
+
+O texto fica em `frontend/src/content/landing.ts`, separado dos componentes. As cores e a tipografia ficam em `frontend/src/index.css`, no bloco `@theme`.
+
+Os depoimentos sao **placeholders propositais**, com borda tracejada. Substitua por relatos reais antes de publicar.
+
+## Padroes de qualidade
+
+Este projeto segue o [Doktor System-Design](https://github.com/AndreGustavoms/Doktor-SystemDesign). Os padroes ficam em `doktor SystemDesign/`, uma copia sincronizada e **nao versionada** (esta no `.gitignore`).
+
+Para trazer ou atualizar essa pasta:
+
+```powershell
+doktor
+```
+
+Se o comando nao existir, instale-o uma vez:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<caminho-do-Doktor>\scripts\powershell\install-doktor-powershell.ps1"
+```
+
+Mudancas nos padroes vao no repositorio Doktor System-Design, nunca nesta copia local.
+
+## Licenca
+
+A definir.

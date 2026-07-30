@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+/*
+  Tokens de design do Prisma.
+  Exigidos por doktor SystemDesign/core/DESIGN_SYSTEM_FRONTEND.md, secao 4.
+  Altere cor aqui, nunca hardcoded no componente.
+
+  Direcao visual: paleta quente e terrosa sobre fundo creme, tipografia
+  com Josefin Sans nos titulos e Inter no corpo.
+
+  ---------------------------------------------------------------
+  REGRA DE COR - leia antes de aplicar qualquer acento
+
+  1. Acento CHEIO significa PERFIL DE USUARIO. Sempre.
+       lavanda = aluno | terracota = professor | oliva = diretor
+     Um tom cheio (--color-aluno, --color-professor, --color-diretor)
+     nunca aparece como decoracao: se esta ali, esta identificando
+     alguem.
+
+  2. Acento CLARO (os -tint) e superficie, nao significado.
+     Serve para dar cor a secoes inteiras sem competir com a regra 1.
+     Quando a secao fala de um perfil, use o tint correspondente -
+     assim a cor de fundo reforca o conteudo em vez de contrariar.
+
+  3. Estado (sucesso/alerta/erro) tem tom proprio, fora da paleta
+     de perfil. Nao reutilize oliva para "sucesso" nem lavanda para
+     "info": isso faz um badge de status parecer um card de diretor.
+
+  4. A acao primaria e grafite, nao terracota - terracota ja
+     significa "professor". O acento da marca aparece no logo, no
+     hover de link e nos elementos de perfil.
+
+  5. ACENTO NUNCA VAI EM TEXTO PEQUENO. Medido sobre os fundos
+     reais desta pagina (creme, branco e os tres tints):
+
+       terracota  3.21 - 4.15 : 1
+       oliva      3.15 - 4.06 : 1
+       lavanda    2.98 - 3.85 : 1
+
+     Nenhum atinge os 4.5:1 que a WCAG AA exige para texto pequeno,
+     e lavanda sobre tint terracota (2.98) reprova ate para texto
+     grande. Use acento em marcador, faixa, filete, icone decorativo
+     e borda; texto colorido so em titulo grande, e mesmo assim
+     conferindo o par de cores. Para ler: grafite ou texto-secundario.
+  ---------------------------------------------------------------
+*/
+@theme {
+  /*
+    Paleta oficial, conforme o documento de identidade UX/UI.
+    Estes cinco hex sao normativos - nao ajuste sem atualizar o doc.
+      creme     fundo principal, reduz fadiga em leitura longa
+      grafite   titulos, texto de alto contraste, bordas e icones
+      terracota acao primaria (CTA) e area do professor
+      oliva     sucesso, progresso e modulo concluido
+      lavanda   tutor de IA e interatividade do aluno
+  */
+  --color-cream: #f7f5ee;
+  --color-graphite: #1a1a1a;
+  --color-terracotta: #c85a3c;
+  --color-olive: #6a8550;
+  --color-lavender: #7b78c8;
+
+  /* Tons medios: para faixas, icones e realce sobre tint */
+  --color-terracotta-medio: #dba58f;
+  --color-olive-medio: #a8b795;
+  --color-lavender-medio: #a8a6d4;
+
+  /* Tons claros: superficies amplas */
+  --color-terracotta-tint: #f0ddd4;
+  --color-olive-tint: #e3e8da;
+  --color-lavender-tint: #e5e4f2;
+
+  /* Estrutura: neutros quentes, nunca cinza puro */
+  --color-fundo: var(--color-cream);
+  --color-superficie: #fffdf8;
+  --color-superficie-alt: #f0ece1;
+  --color-texto: var(--color-graphite);
+  --color-texto-secundario: #5c5a55;
+  --color-borda: #d5cfc0;
+
+
+  /*
+    Contorno de card e painel. O documento de identidade pede #1A1A1A
+    puro, mas em tela cheia isso pesa demais: usamos o mesmo grafite
+    suavizado, preservando a borda nitida (sem sombra difusa) que
+    define o estilo. Ajuste aqui, nao no componente.
+  */
+  --color-contorno: rgb(26 26 26 / 0.28);
+  --color-contorno-forte: rgb(26 26 26 / 0.45);
+
+  /* Acao primaria: grafite (ver regra 4) */
+  --color-primaria: var(--color-graphite);
+  --color-primaria-forte: #000000;
+  --color-marca: var(--color-terracotta);
+
+  /* Estado: tons proprios, fora da paleta de perfil (ver regra 3) */
+  --color-sucesso: #3d7d4f;
+  --color-alerta: #c8913c;
+  --color-erro: #b83c2e;
+
+  /* Perfil de usuario: o unico uso de acento colorido (ver regra 1) */
+  --color-aluno: var(--color-lavender);
+  --color-professor: var(--color-terracotta);
+  --color-diretor: var(--color-olive);
+
+  /* Tipografia */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-display: "Josefin Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Raio: cantos discretos, nao arredondados */
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.625rem;
+
+  /* Movimento */
+  --ease-suave: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-fundo);
+    color: var(--color-texto);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /*
+    Titulos conforme o documento de identidade: Josefin Sans em caixa
+    alta, peso 600/700, letter-spacing 0.08em. O tracking largo e o
+    que da o carater geometrico - sem ele a fonte fica apenas grossa.
+  */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.15;
+    letter-spacing: 0.08em;
+  }
+
+  h1 {
+    line-height: 1.1;
+  }
+
+  /* Foco perceptivel em todo controle interativo (secao 3: acessibilidade) */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-primaria);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer utilities {
+  .fonte-display {
+    font-family: var(--font-display);
+  }
+
+  .animacao-entrada {
+    animation: entrada 0.6s var(--ease-suave) both;
+  }
+
+  @keyframes entrada {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Secao 9: respeitar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
