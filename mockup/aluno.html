@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aluno · Prisma</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/ui.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.2c.62 4.1 2.7 6.18 6.8 6.8-4.1.62-6.18 2.7-6.8 6.8-.62-4.1-2.7-6.18-6.8-6.8 4.1-.62 6.18-2.7 6.8-6.8Z"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.2 12 4.4l8 6.8"/><path d="M6.4 10.2v9.3h11.2v-9.3"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.3a2.6 2.6 0 0 1-2.6 2.6H9.6L5 19.7V6.8a2.6 2.6 0 0 1 2.6-2.6h9.8A2.6 2.6 0 0 1 20 6.8Z"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.8A1.8 1.8 0 0 1 6.8 3H19v16.4H7a2 2 0 0 0-2 2Z"/><path d="M5 19.4V4.8"/><path d="M19 15.4H7a2 2 0 0 0-2 2"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="m8.6 12.4 2.3 2.3 4.5-4.9"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3.8 19.4h16.4"/><path d="M6.6 19.4v-6.2"/><path d="M12 19.4V8.6"/><path d="M17.4 19.4V4.8"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="4.4" y="5.4" width="15.2" height="14.2" rx="2.2"/><path d="M8.2 3.4v3.2M15.8 3.4v3.2M4.4 10.2h15.2"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18.5V6"/><path d="m6.8 11 5.2-5.2L17.2 11"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 10 4 4 4-4"/></symbol>
+<symbol id="i-chev-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 14 4-4 4 4"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5V15"/><path d="m7 10.5 5 5 5-5"/><path d="M4.5 19.5h15"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3.2 2"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.8a6 6 0 0 1 12 0c0 4 1.6 5.4 1.6 5.4H4.4S6 13.8 6 9.8Z"/><path d="M10.2 18.6a2 2 0 0 0 3.6 0"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.8" y="5.6" width="16.4" height="12.8" rx="2"/><path d="m4.6 7 7.4 5.6L19.4 7"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8.4" r="3.4"/><path d="M5.6 19.6c.6-3.5 3-5.4 6.4-5.4s5.8 1.9 6.4 5.4"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.6H6.4A1.8 1.8 0 0 0 4.6 6.4v11.2a1.8 1.8 0 0 0 1.8 1.8H9"/><path d="M15.4 15.8 19.2 12l-3.8-3.8"/><path d="M9.6 12h9.6"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="6.4"/><path d="m16 16 4.4 4.4"/></symbol>
+<symbol id="i-cards" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.4" y="8" width="13" height="10.4" rx="1.6"/><path d="M4.6 15.4V6.8a1.4 1.4 0 0 1 1.4-1.4h9.6"/></symbol>
+<symbol id="i-audio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 17v-4.2a7.2 7.2 0 0 1 14.4 0V17"/><rect x="4" y="14.4" width="3.6" height="5.2" rx="1.6"/><rect x="16.4" y="14.4" width="3.6" height="5.2" rx="1.6"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.6h7l4.4 4.4v11a1.4 1.4 0 0 1-1.4 1.4H7A1.4 1.4 0 0 1 5.6 19V5A1.4 1.4 0 0 1 7 3.6Z"/><path d="M14 3.6V8h4.4"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.6 21 19.4H3Z"/><path d="M12 10.2v4"/><path d="M12 16.8v.1"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5.4 7.2h12.8a2 2 0 0 1 2 2v8.2a2 2 0 0 1-2 2H5.8a2 2 0 0 1-2-2V6.8A2.2 2.2 0 0 1 6 4.6h10.6"/><path d="M16.2 12.2h4v3.2h-4a1.6 1.6 0 0 1 0-3.2Z"/></symbol>
+<symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 3.4v2.3M12 18.3v2.3M20.6 12h-2.3M5.7 12H3.4M18.1 5.9l-1.6 1.6M7.5 16.5l-1.6 1.6M18.1 18.1l-1.6-1.6M7.5 7.5 5.9 5.9"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3.2v2M12 18.8v2M3.2 12h2M18.8 12h2M5.7 5.7l1.4 1.4M16.9 16.9l1.4 1.4M18.3 5.7l-1.4 1.4M7.1 16.9l-1.4 1.4"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.2A8 8 0 1 1 10.8 4 6.4 6.4 0 0 0 20 13.2Z"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8M12 3.6c2.4 2.3 3.6 5.2 3.6 8.4s-1.2 6.1-3.6 8.4c-2.4-2.3-3.6-5.2-3.6-8.4S9.6 5.9 12 3.6Z"/></symbol>
+<!-- Logo oficial do Prisma: mesmo path de frontend/src/components/ui/Logo.tsx
+     e de mockup/index.html (viewBox recortado nos limites reais do desenho). -->
+<symbol id="i-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M16 6.38 6.35 21.56 16 25.37l9.65-3.81Z"/>
+  <path d="M16 6.38V25.37"/>
+  <path d="M6.35 21.56 16 17.51l9.65 4.05"/>
+</symbol>
+</defs></svg>
+
+<div class="shell">
+<aside class="side">
+  <a class="brand" href="./"><span class="mark"><svg><use href="#i-logo"/></svg></span>Prisma<span> · Aluno</span></a>
+
+  <p class="nlabel" data-i18n="nav.principal">Principal</p>
+  <nav class="nav">
+    <a class="on" data-s="inicio"><svg class="ic"><use href="#i-home"/></svg><span data-i18n="nav.inicio">Início</span></a>
+    <a data-s="tutor"><svg class="ic"><use href="#i-chat"/></svg><span data-i18n="nav.tutor">Tutor de IA</span></a>
+  </nav>
+  <p class="nlabel" data-i18n="nav.estudo">Estudo</p>
+  <nav class="nav">
+    <a data-s="materiais"><svg class="ic"><use href="#i-book"/></svg><span data-i18n="nav.materiais">Materiais</span></a>
+    <a data-s="simulados"><svg class="ic"><use href="#i-check"/></svg><span data-i18n="nav.simulados">Simulados</span><span class="badge">1</span></a>
+    <a data-s="agenda"><svg class="ic"><use href="#i-cal"/></svg><span data-i18n="nav.agenda">Agenda de estudos</span></a>
+  </nav>
+  <div class="spacer"></div>
+  <div class="ddwrap sideuser-wrap">
+    <button class="sideuser" style="cursor:default">
+      <span class="av">MS</span>
+      <div><b>Marina Souza</b><span data-i18n="perfil.estudante">Estudante</span></div>
+      <svg class="ic out-ic"><use href="#i-chev-up"/></svg>
+    </button>
+    <div class="dd dd-up" id="dd-sideuser">
+      <p class="ddh">Marina Souza</p>
+      <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+      <div class="ddsep"></div>
+      <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
+    </div>
+  </div>
+</aside>
+<div class="dd-backdrop" id="dd-backdrop"></div>
+
+<main class="main">
+  <div class="topbar">
+    <span class="topsp"></span>
+    <span class="ddwrap">
+      <button class="iconbtn" data-dd="dd-lang" aria-label="Idioma" aria-haspopup="true"><svg class="ic"><use href="#i-globe"/></svg></button>
+      <div class="dd" id="dd-lang" style="width:200px">
+        <p class="ddh" data-i18n="topbar.idioma">Idioma</p>
+        <button type="button" class="ddi lang-opt" data-lang="pt-BR"><span><b>Português</b><span>Brasil</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="en"><span><b>English</b><span>United States</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="es"><span><b>Español</b><span>España</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="fr"><span><b>Français</b><span>France</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="de"><span><b>Deutsch</b><span>Deutschland</span></span></button>
+      </div>
+    </span>
+    <button class="iconbtn" id="themebtn" type="button" aria-label="Alternar tema" data-i18n-attr="aria-label:topbar.alternarTema"><svg class="ic" id="theme-ic"><use href="#i-moon"/></svg></button>
+    <span class="ddwrap">
+      <button class="iconbtn" data-dd="dd-notif" aria-label="Notificações" data-i18n-attr="aria-label:topbar.notificacoes"><svg class="ic"><use href="#i-bell"/></svg><span class="ndot"></span></button>
+      <div class="dd" id="dd-notif">
+        <p class="ddh" data-i18n="topbar.notificacoes">Notificações</p>
+        <a class="ddi" data-s="simulados"><span class="dot" style="--c:var(--bad)"></span><span><b data-i18n="notif.simuladoTitulo">Simulado de Português sexta-feira</b><span data-i18n="notif.simuladoDesc">Revise orações com o tutor</span></span></a>
+        <a class="ddi" data-s="tutor"><span class="dot" style="--c:var(--good)"></span><span><b data-i18n="notif.tutorTitulo">Tutor sugeriu revisão</b><span data-i18n="notif.tutorDesc">Matemática — funções do 2º grau</span></span></a>
+      </div>
+    </span>
+    <span class="ddwrap">
+      <button class="avbtn" data-dd="dd-user" aria-label="Conta" data-i18n-attr="aria-label:topbar.conta">MS</button>
+      <div class="dd" id="dd-user" style="width:230px">
+        <p class="ddh">Marina Souza</p>
+        <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+        <div class="ddsep"></div>
+        <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
+      </div>
+    </span>
+  </div>
+
+  <div class="content">
+
+  <!-- ══ INÍCIO ══ -->
+  <section class="screen on" id="s-inicio">
+    <div class="phead">
+      <div class="tx">
+        <p class="eyebrow" data-i18n="nav.inicio">Início</p>
+        <h1 data-i18n="inicio.titulo">Continuar estudos</h1>
+        <p class="sub">O tutor preparou 3 novas questões</p>
+      </div>
+      <div class="actions"><button class="btn btn-pri" data-s="tutor"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="inicio.continuarEstudo">Continuar estudo</span></button></div>
+    </div>
+    <div class="tiles">
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-chat"/></svg></span><div class="lbl" data-i18n="inicio.sessoesEstudo">Sessões de estudo</div><div class="num">14</div><div class="sub up">▲ 3 esta semana</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-spark"/></svg></span><div class="lbl" data-i18n="inicio.sequencia">Sequência</div><div class="num">6 dias</div><div class="sub">recorde: 11</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-check"/></svg></span><div class="lbl" data-i18n="inicio.simuladosFeitos">Simulados feitos</div><div class="num">8</div><div class="sub up">▲ 2 esta semana</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-book"/></svg></span><div class="lbl" data-i18n="inicio.materiaisSalvos">Materiais salvos</div><div class="num">23</div><div class="sub">último: ontem</div></div>
+    </div>
+    <div class="cols">
+      <div class="card hero">
+        <h2><svg class="ic"><use href="#i-chat"/></svg><span data-i18n="nav.tutor">Tutor de IA</span></h2>
+        <p class="desc">Português · retomando a sessão de terça-feira</p>
+        <div class="memo"><svg class="ic"><use href="#i-spark"/></svg><span><b>Dificuldade em orações subordinadas</b> · música · simulado 18/07</span></div>
+        <div class="chat">
+          <div class="m-ai"><span class="av"><svg><use href="#i-spark"/></svg></span><div class="tx">Na terça você confundiu oração <b>adjetiva</b> com <b>adverbial</b>. Que tal testarmos com um verso do Chico Buarque?</div></div>
+          <div class="m-me">Adverbial! Concessão, né?</div>
+          <div class="m-ai"><span class="av"><svg><use href="#i-spark"/></svg></span><div class="tx">A <b>adjetiva</b> qualifica um substantivo, quase sempre com "que". A <b>adverbial</b> indica circunstância. Aplica: <i>"Apesar de você, amanhã há de ser outro dia"</i> — que tipo é?</div></div>
+        </div>
+        <div class="composer"><input placeholder="Responder ao tutor…" aria-label="Mensagem" data-i18n-attr="placeholder:tutor.responder;aria-label:tutor.mensagem"><button class="send" aria-label="Enviar" data-i18n-attr="aria-label:acao.enviar"><svg><use href="#i-send"/></svg></button></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="inicio.gerarMaterial">Gerar material</span></h2>
+          <p class="desc" data-i18n="inicio.gerarMaterialDesc">Para o que foi importado ou pedido à IA</p>
+          <div class="qgrid">
+            <button class="qa" data-s="materiais"><span class="qic"><svg class="ic"><use href="#i-doc"/></svg></span><span><b data-i18n="material.resumo">Resumo</b><span data-i18n="material.resumoDesc">de qualquer conteúdo</span></span></button>
+            <button class="qa" data-s="simulados"><span class="qic"><svg class="ic"><use href="#i-check"/></svg></span><span><b data-i18n="material.simulado">Simulado</b><span data-i18n="material.simuladoDesc">com correção</span></span></button>
+            <button class="qa" data-s="materiais"><span class="qic"><svg class="ic"><use href="#i-cards"/></svg></span><span><b data-i18n="material.flashcards">Flashcards</b><span data-i18n="material.flashcardsDesc">revisão espaçada</span></span></button>
+            <button class="qa" data-s="materiais"><span class="qic"><svg class="ic"><use href="#i-audio"/></svg></span><span><b data-i18n="material.audio">Áudio-revisão</b><span data-i18n="material.audioDesc">para o caminho</span></span></button>
+          </div>
+        </div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-cal"/></svg><span data-i18n="inicio.proximos">Próximos</span></h2>
+          <ul class="list" style="margin-top:12px">
+            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Simulado de Português</b><span>45 questões · ENEM</span></div><span class="pill p-bad">sexta 18/07</span></li>
+            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Revisão de História</b><span>Era Vargas · resumo pendente</span></div><span class="pill p-warn">22/07</span></li>
+            <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b>Lista de Matemática</b><span>Funções do 2º grau</span></div><span class="pill p-ok" data-i18n="status.concluida">concluída</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card fullcard">
+      <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="progresso.porMateria">Progresso por matéria</span></h2>
+      <p class="desc" data-i18n="progresso.ultimosSimulados">Últimos simulados</p>
+      <div class="hrow"><span class="hlbl">História</span><span class="hbar"><i style="--w:92%"></i></span><span class="hval">92%</span></div>
+      <div class="hrow"><span class="hlbl">Português</span><span class="hbar"><i style="--w:84%"></i></span><span class="hval">84%</span></div>
+      <div class="hrow"><span class="hlbl">Química</span><span class="hbar"><i style="--w:71%"></i></span><span class="hval">71%</span></div>
+      <div class="hrow"><span class="hlbl">Matemática</span><span class="hbar gold"><i style="--w:58%"></i></span><span class="hval">58%</span></div>
+      <div class="memo" style="margin:14px 0 0"><svg class="ic"><use href="#i-spark"/></svg><span><b data-i18n="progresso.sugestaoIA">Sugestão da IA</b> — 3 sessões de reforço em funções cobrem 70% dos seus erros recentes em Matemática.</span></div>
+    </div>
+  </section>
+
+  <!-- ══ TUTOR ══ -->
+  <section class="screen" id="s-tutor">
+    <div class="tut">
+
+      <header class="tut-bar">
+        <button class="tut-exit" data-s="inicio" aria-label="Sair do tutor" data-i18n-attr="aria-label:tutor.sair"><svg class="ic"><use href="#i-chev"/></svg></button>
+        <span class="tut-brand">
+          <span class="tut-orb"><svg><use href="#i-spark"/></svg></span>
+          <span class="tut-brand-tx"><b data-i18n="nav.tutor">Tutor de IA</b><i><span class="tut-pulse"></span><span data-i18n="tutor.sessaoAtiva">Sessão ativa</span></i></span>
+        </span>
+        <nav class="tut-subs">
+          <button class="tut-sub on" data-i18n="materia.portugues">Português</button>
+          <button class="tut-sub" data-i18n="materia.matematica">Matemática</button>
+          <button class="tut-sub" data-i18n="materia.historia">História</button>
+          <button class="tut-sub" data-i18n="materia.quimica">Química</button>
+          <button class="tut-sub" data-i18n="materia.redacao">Redação</button>
+        </nav>
+        <button class="tut-hist"><svg class="ic"><use href="#i-clock"/></svg><span data-i18n="tutor.sessoes">Sessões</span></button>
+        <div class="tut-tabs" id="tut-tabs">
+          <button class="tut-tab" data-panel="ctx" aria-expanded="false"><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="tutor.contexto">Contexto</span><span class="tut-ctx-count">3</span></button>
+          <button class="tut-tab" data-panel="cfg" aria-expanded="false"><svg class="ic"><use href="#i-cog"/></svg><span data-i18n="tutor.configuracoes">Configurações</span></button>
+        </div>
+      </header>
+
+      <div class="tut-body" id="tut-body">
+
+        <div class="tut-chat">
+          <div class="tut-scroll">
+            <div class="tut-flow">
+
+              <div class="tut-memory">
+                <svg class="ic"><use href="#i-spark"/></svg>
+                <span>Retomando de terça-feira — dificuldade ativa em <b>orações reduzidas</b>, você aprende melhor com música.</span>
+              </div>
+
+              <div class="tut-day" data-i18n="tempo.hoje">Hoje</div>
+
+              <div class="tmsg ai">
+                <span class="tmsg-av"><svg><use href="#i-spark"/></svg></span>
+                <div class="tmsg-bubble">Adjetiva ou adverbial? <i>"Apesar de você…"</i> — que tipo é?</div>
+              </div>
+              <div class="tmsg me"><div class="tmsg-bubble">Adverbial! Indica concessão, né?</div></div>
+              <div class="tmsg ai">
+                <span class="tmsg-av"><svg><use href="#i-spark"/></svg></span>
+                <div class="tmsg-bubble">Certo. Vamos para o ENEM ou revisamos <b>orações reduzidas</b>?</div>
+              </div>
+              <div class="tmsg me"><div class="tmsg-bubble">Vai de ENEM. Se eu errar, a gente volta pra teoria.</div></div>
+
+              <div class="tmsg ai">
+                <span class="tmsg-av"><svg><use href="#i-spark"/></svg></span>
+                <div class="tmsg-bubble tmsg-quiz">
+                  <span class="tmsg-tag">ENEM 2023 · adaptada</span>
+                  <p>Em <i>"Caminhando contra o vento, sem lenço e sem documento"</i>, a oração destacada é reduzida de gerúndio com valor de…</p>
+                  <div class="tut-opts">
+                    <button class="tut-opt"><b>a</b>causa</button>
+                    <button class="tut-opt"><b>b</b>modo</button>
+                    <button class="tut-opt"><b>c</b>condição</button>
+                    <button class="tut-opt"><b>d</b>tempo</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="tut-dock">
+            <div class="tut-flow">
+              <div class="tut-quick">
+                <button><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="tutor.soExplicar">Só explicar</span></button>
+                <button><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="tutor.darDica">Dar uma dica</span></button>
+                <button><svg class="ic"><use href="#i-cards"/></svg><span data-i18n="tutor.parecidas">3 parecidas</span></button>
+              </div>
+              <div class="tut-input">
+                <input placeholder="Responder ao tutor…" aria-label="Resposta" data-i18n-attr="placeholder:tutor.responder;aria-label:tutor.resposta">
+                <button class="tut-send" aria-label="Enviar" data-i18n-attr="aria-label:acao.enviar"><svg><use href="#i-send"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="tut-ctx" data-panel="ctx">
+          <div class="tut-ctx-head">
+            <div>
+              <b data-i18n="tutor.contextoSessao">Contexto da sessão</b>
+              <span data-i18n="tutor.contextoDesc">O que a IA usa para te ajudar</span>
+            </div>
+            <button class="tut-ctx-close" aria-label="Esconder painel" data-i18n-attr="aria-label:acao.esconderPainel"><svg class="ic"><use href="#i-chev"/></svg></button>
+          </div>
+
+          <div class="tut-acc">
+
+            <details class="tut-sec" open>
+              <summary>
+                <svg class="tut-sec-ic ic"><use href="#i-doc"/></svg>
+                <span class="tut-sec-tx"><b data-i18n="tutor.conteudos">Conteúdos</b><small data-i18n="tutor.conteudosDesc">arquivos e materiais</small></span>
+                <span class="tut-sec-count">3</span>
+                <svg class="tut-sec-chev ic"><use href="#i-chev"/></svg>
+              </summary>
+              <div class="tut-sec-body">
+                <label class="tut-drop" id="tut-drop">
+                  <input type="file" multiple hidden>
+                  <span class="tut-drop-ic"><svg><use href="#i-download"/></svg></span>
+                  <b data-i18n="tutor.arrasteArquivos">Arraste arquivos aqui</b>
+                  <span data-i18n-html="tutor.ouClique">ou <u>clique para escolher</u></span>
+                  <small data-i18n-html="tutor.tiposArquivo">PDF, DOCX, imagens ou slides · até 20&nbsp;MB</small>
+                </label>
+
+                <div class="tut-files">
+                  <div class="tut-file">
+                    <span class="tut-file-ic"><svg><use href="#i-doc"/></svg></span>
+                    <div class="tut-file-tx"><b>Prova_Portugues_2023.pdf</b><span>1,4 MB · <span data-i18n="tutor.lidoPelaIA">lido pela IA</span></span></div>
+                    <button class="tut-file-x" aria-label="Remover" data-i18n-attr="aria-label:acao.remover">✕</button>
+                  </div>
+                  <div class="tut-file">
+                    <span class="tut-file-ic"><svg><use href="#i-book"/></svg></span>
+                    <div class="tut-file-tx"><b>Aula_oracoes_reduzidas.docx</b><span>320 KB · <span data-i18n="tutor.lidoPelaIA">lido pela IA</span></span></div>
+                    <button class="tut-file-x" aria-label="Remover" data-i18n-attr="aria-label:acao.remover">✕</button>
+                  </div>
+                  <div class="tut-file loading">
+                    <span class="tut-file-ic"><svg><use href="#i-doc"/></svg></span>
+                    <div class="tut-file-tx"><b>Resumo_sintaxe.pdf</b><span data-i18n="tutor.analisando">analisando…</span></div>
+                    <span class="tut-file-spin"></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="tut-sec">
+              <summary>
+                <svg class="tut-sec-ic ic"><use href="#i-audio"/></svg>
+                <span class="tut-sec-tx"><b data-i18n="material.audio">Áudio-revisão</b><small data-i18n="tutor.gereEpisodios">gere episódios do conteúdo</small></span>
+                <span class="tut-sec-count">2</span>
+                <svg class="tut-sec-chev ic"><use href="#i-chev"/></svg>
+              </summary>
+              <div class="tut-sec-body">
+                <div class="tut-ep">
+                  <div class="tut-cfg-field">
+                    <label data-i18n="tutor.conteudoEpisodio">Conteúdo do episódio</label>
+                    <div class="tut-pick">
+                      <label class="tut-pick-item"><input type="checkbox" checked><span><b>Orações reduzidas</b><small>sessão de hoje · Português</small></span></label>
+                      <label class="tut-pick-item"><input type="checkbox"><span><b>Subordinadas adjetivas</b><small>revisado 15/07</small></span></label>
+                      <label class="tut-pick-item"><input type="checkbox" checked><span><b>Prova_Portugues_2023.pdf</b><small data-i18n="tutor.arquivoContexto">arquivo de contexto</small></span></label>
+                      <label class="tut-pick-item"><input type="checkbox"><span><b>Era Vargas</b><small>História · flashcards</small></span></label>
+                    </div>
+                    <small class="tut-pick-count"><b>2</b> <span data-i18n="tutor.selecionados">selecionados</span></small>
+                  </div>
+
+                  <div class="tut-cfg-field">
+                    <label data-i18n="tutor.formato">Formato</label>
+                    <div class="tut-seg">
+                      <button class="on" data-i18n="tutor.dialogo">Diálogo</button>
+                      <button data-i18n="tutor.aula">Aula</button>
+                      <button data-i18n="material.resumo">Resumo</button>
+                    </div>
+                  </div>
+
+                  <div class="tut-ep-row">
+                    <div class="tut-cfg-field">
+                      <label data-i18n="tutor.voz">Voz</label>
+                      <div class="tut-select">Clara <svg class="ic"><use href="#i-chev"/></svg></div>
+                    </div>
+                    <div class="tut-cfg-field">
+                      <label data-i18n="tutor.duracao">Duração</label>
+                      <div class="tut-select">~8 min <svg class="ic"><use href="#i-chev"/></svg></div>
+                    </div>
+                  </div>
+
+                  <button class="tut-ep-gen" id="tut-ep-gen"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="tutor.gerarEpisodio">Gerar episódio · 6 créditos</span></button>
+
+                  <div class="tut-cfg-field">
+                    <label data-i18n="tutor.geradosMateria">Gerados nesta matéria</label>
+                    <div class="tut-ep-list">
+                      <div class="tut-ep-item">
+                        <button class="tut-ep-play" aria-label="Reproduzir" data-i18n-attr="aria-label:acao.reproduzir"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></button>
+                        <div class="tut-ep-tx"><b>Orações reduzidas — diálogo</b><span>hoje · 8:12</span></div>
+                        <span class="tut-ep-dur">8:12</span>
+                      </div>
+                      <div class="tut-ep-item">
+                        <button class="tut-ep-play" aria-label="Reproduzir"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></button>
+                        <div class="tut-ep-tx"><b>Análise sintática — resumo</b><span>15/07 · 5:40</span></div>
+                        <span class="tut-ep-dur">5:40</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+          </div>
+
+          <p class="tut-ctx-note"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="tutor.notaContexto">O tutor cruza esses materiais com o seu histórico ao responder.</span></p>
+        </aside>
+
+        <aside class="tut-ctx" data-panel="cfg">
+          <div class="tut-ctx-head">
+            <div>
+              <b data-i18n="tutor.configuracoesTutor">Configurações do tutor</b>
+              <span data-i18n="tutor.comoConduz">Como a IA conduz esta sessão</span>
+            </div>
+            <button class="tut-ctx-close" aria-label="Esconder painel" data-i18n-attr="aria-label:acao.esconderPainel"><svg class="ic"><use href="#i-chev"/></svg></button>
+          </div>
+
+          <div class="tut-cfg">
+            <div class="tut-cfg-field">
+              <label data-i18n="tutor.estilo">Estilo do tutor</label>
+              <div class="tut-seg">
+                <button class="on" data-i18n="tutor.socratico">Socrático</button>
+                <button data-i18n="tutor.direto">Direto</button>
+              </div>
+              <small data-i18n="tutor.estiloDesc">Socrático conduz por perguntas; direto explica de imediato.</small>
+            </div>
+
+            <div class="tut-cfg-field">
+              <label data-i18n="tutor.nivelDificuldade">Nível de dificuldade</label>
+              <div class="tut-seg">
+                <button data-i18n="tutor.basico">Básico</button>
+                <button class="on" data-i18n="tutor.medio">Médio</button>
+                <button data-i18n="tutor.dificil">Difícil</button>
+              </div>
+            </div>
+
+            <div class="tut-cfg-field">
+              <label data-i18n="tutor.focoExame">Foco do exame</label>
+              <div class="tut-select">ENEM <svg class="ic"><use href="#i-chev"/></svg></div>
+            </div>
+
+            <div class="tut-cfg-field">
+              <label data-i18n="tutor.tamanhoRespostas">Tamanho das respostas</label>
+              <div class="tut-seg">
+                <button class="on" data-i18n="tutor.curtas">Curtas</button>
+                <button data-i18n="tutor.detalhadas">Detalhadas</button>
+              </div>
+            </div>
+
+            <div class="tut-cfg-toggles">
+              <div class="tut-toggle">
+                <div><b data-i18n="tutor.correcaoComentada">Correção comentada</b><span data-i18n="tutor.explicaErro">explica cada erro</span></div>
+                <button class="tut-sw on" role="switch" aria-checked="true"></button>
+              </div>
+              <div class="tut-toggle">
+                <div><b data-i18n="tutor.focoDificuldades">Foco nas minhas dificuldades</b><span data-i18n="tutor.priorizaFracos">prioriza tópicos fracos</span></div>
+                <button class="tut-sw on" role="switch" aria-checked="true"></button>
+              </div>
+              <div class="tut-toggle">
+                <div><b data-i18n="tutor.respostaAudio">Resposta em áudio</b><span data-i18n="tutor.leExplicacoes">lê as explicações em voz</span></div>
+                <button class="tut-sw" role="switch" aria-checked="false"></button>
+              </div>
+              <div class="tut-toggle">
+                <div><b data-i18n="tutor.usarArquivos">Usar arquivos de contexto</b><span>3 arquivos anexados</span></div>
+                <button class="tut-sw on" role="switch" aria-checked="true"></button>
+              </div>
+            </div>
+
+            <p class="tut-ctx-note"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="tutor.notaConfig">As mudanças valem já na próxima resposta do tutor.</span></p>
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ MATERIAIS ══ -->
+  <section class="screen" id="s-materiais">
+    <div class="phead">
+      <div class="tx"><p class="eyebrow" data-i18n="nav.materiais">Materiais</p><h1 data-i18n="materiais.biblioteca">Biblioteca</h1></div>
+      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="materiais.gerarNovo">Gerar novo material</span></button></div>
+    </div>
+
+    <div class="libai">
+      <div class="libai-head">
+        <span class="libai-ic"><svg><use href="#i-spark"/></svg></span>
+        <div><b data-i18n="materiais.assistente">Assistente da biblioteca</b><div class="libai-sub" data-i18n="materiais.assistenteDesc">Peça para organizar, importar ou encontrar qualquer material</div></div>
+      </div>
+      <div class="libai-composer">
+        <input type="text" placeholder="Ex.: organize meus materiais de Matemática por assunto…" data-i18n-attr="placeholder:materiais.exemploComando" autocomplete="off">
+        <button aria-label="Enviar" data-i18n-attr="aria-label:acao.enviar"><svg><use href="#i-send"/></svg></button>
+      </div>
+      <div class="libai-chips">
+        <button><svg><use href="#i-doc"/></svg><span data-i18n="materiais.importarLink">Importar de um link</span></button>
+        <button><svg><use href="#i-book"/></svg><span data-i18n="materiais.organizarMateria">Organizar por matéria</span></button>
+        <button><svg><use href="#i-search"/></svg><span data-i18n="materiais.acharParecido">Achar material parecido</span></button>
+        <button><svg><use href="#i-spark"/></svg><span data-i18n="materiais.oQueEstudar">O que estudar agora?</span></button>
+      </div>
+    </div>
+
+    <div class="libsearch" id="lib-search-wrap">
+      <svg class="ic"><use href="#i-search"/></svg>
+      <input type="text" id="lib-search" placeholder="Buscar por título, matéria ou tipo…" data-i18n-attr="placeholder:materiais.buscarPor" autocomplete="off">
+      <button class="clear" id="lib-clear" aria-label="Limpar busca" data-i18n-attr="aria-label:acao.limparBusca">✕</button>
+    </div>
+
+    <div class="filter">
+      <button class="chip on" data-f="todos" data-i18n="materiais.todos">Todos</button>
+      <button class="chip" data-f="gerado" data-i18n="materiais.geradosIA">Gerados pela IA</button>
+      <button class="chip" data-f="importado" data-i18n="materiais.importados">Importados</button>
+    </div>
+
+    <div class="libbar">
+      <span class="libcount"><span id="lib-count">6</span> <span id="lib-count-label" data-i18n="materiais.contagemPlural">materiais</span></span>
+      <span class="sortwrap">
+        <button class="sortbtn" id="lib-sortbtn"><svg class="ic" style="width:14px;height:14px"><use href="#i-chev"/></svg><span id="lib-sortlabel" data-i18n="materiais.maisRecentes">Mais recentes</span></button>
+        <div class="sortmenu" id="lib-sortmenu">
+          <button data-sort="recent" class="on" data-i18n="materiais.maisRecentes">Mais recentes</button>
+          <button data-sort="old" data-i18n="materiais.maisAntigos">Mais antigos</button>
+          <button data-sort="az" data-i18n="materiais.nomeAZ">Nome A–Z</button>
+        </div>
+      </span>
+    </div>
+
+    <div class="mgrid" id="lib-grid">
+      <div class="mat" data-kind="gerado" data-name="resumo orações subordinadas português" data-date="2026-07-16">
+        <span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><b>Resumo — Orações subordinadas</b><span>Português</span><span class="pill p-ia">gerado por IA</span><span class="mdate">gerado ontem</span>
+      </div>
+      <div class="mat" data-kind="importado" data-name="apostila análise sintática" data-date="2026-07-10">
+        <span class="mic"><svg class="ic"><use href="#i-book"/></svg></span><b>Apostila — Análise sintática</b><span>Material externo</span><span class="pill p-ok">importado</span><span class="mdate">10/07</span>
+      </div>
+      <div class="mat" data-kind="gerado" data-name="flashcards era vargas história" data-date="2026-07-09">
+        <span class="mic"><svg class="ic"><use href="#i-cards"/></svg></span><b>Flashcards — Era Vargas</b><span>História · 32 cartões</span><span class="pill p-ia">gerado por IA</span><span class="mdate">09/07</span>
+      </div>
+      <div class="mat" data-kind="gerado" data-name="áudio funções do 2º grau matemática" data-date="2026-07-08">
+        <span class="mic"><svg class="ic"><use href="#i-audio"/></svg></span><b>Áudio — Funções do 2º grau</b><span>Matemática · 8 min</span><span class="pill p-ia">gerado por IA</span><span class="mdate">08/07</span>
+      </div>
+      <div class="mat" data-kind="importado" data-name="slides química orgânica" data-date="2026-07-08">
+        <span class="mic"><svg class="ic"><use href="#i-book"/></svg></span><b>Slides — Química orgânica</b><span>Material externo</span><span class="pill p-ok">importado</span><span class="mdate">08/07</span>
+      </div>
+      <div class="mat" data-kind="importado" data-name="guia de redação enem português" data-date="2026-07-02">
+        <span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><b>Guia de redação ENEM</b><span>modelo nota 1000</span><span class="pill p-ok">importado</span><span class="mdate">02/07</span>
+      </div>
+    </div>
+
+    <div class="libempty" id="lib-empty">
+      <svg class="ic"><use href="#i-search"/></svg>
+      <b data-i18n="materiais.nadaEncontrado">Nada encontrado</b>
+      <span data-i18n="materiais.tenteOutro">Tente buscar por outro termo ou limpe os filtros.</span>
+    </div>
+  </section>
+
+  <!-- ══ SIMULADOS ══ -->
+  <section class="screen" id="s-simulados">
+    <div class="phead"><div class="tx"><p class="eyebrow" data-i18n="nav.simulados">Simulados</p><h1 data-i18n="simulados.treineRitmo">Treine no seu ritmo</h1></div></div>
+    <div class="cols">
+      <div class="stack">
+        <div class="card hero">
+          <h2><svg class="ic"><use href="#i-alert"/></svg><span data-i18n="simulados.continuarMeta">Continuar meta pessoal</span></h2>
+          <p class="desc">Você definiu: revisar Português até sexta</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+            <div>
+              <div style="font-size:18px;font-weight:660;letter-spacing:-.018em">Simulado de Português — estilo ENEM</div>
+              <div style="font-size:12.5px;color:var(--ink-3);margin-top:3px">45 questões · 2h30 · gerado por você</div>
+            </div>
+            <span class="pill p-bad" style="font-size:12px;padding:6px 12px">meta: sexta</span>
+          </div>
+          <div class="tfoot"><button class="btn btn-pri" data-s="tutor"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="simulados.revisarTutor">Revisar com o tutor</span></button><button class="btn btn-gho" data-i18n="simulados.editarMeta">Editar meta</button></div>
+        </div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="simulados.historico">Histórico</span></h2>
+          <div style="margin-top:12px">
+            <div class="hrow"><span class="hlbl">Português · 15/07</span><span class="hbar"><i style="--w:80%"></i></span><span class="hval">8,0</span></div>
+            <div class="hrow"><span class="hlbl">Matemática · 14/07</span><span class="hbar"><i style="--w:55%"></i></span><span class="hval">5,5</span></div>
+            <div class="hrow"><span class="hlbl">História · 12/07</span><span class="hbar"><i style="--w:90%"></i></span><span class="hval">9,0</span></div>
+            <div class="hrow"><span class="hlbl">Português · 09/07</span><span class="hbar"><i style="--w:70%"></i></span><span class="hval">7,0</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="simulados.gerarComIA">Gerar simulado com IA</span></h2>
+        <p class="desc" data-i18n="simulados.personalizado">Personalizado com base nas suas dificuldades</p>
+        <div class="field"><label data-i18n="simulados.materia">Matéria</label><div class="selectbox">Português<svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="field"><label data-i18n="simulados.estilo">Estilo</label><div class="selectbox">ENEM — múltipla escolha<svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="field"><label data-i18n="simulados.questoes">Questões</label><div class="selectbox">15 questões · ~40 min<svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="togglerow"><span data-i18n="simulados.focarDificuldades">Focar nas minhas dificuldades</span><button type="button" class="tg" role="switch" aria-checked="true" aria-label="Focar nas minhas dificuldades" data-i18n-attr="aria-label:simulados.focarDificuldades"></button></div>
+        <div class="togglerow"><span data-i18n="tutor.correcaoComentada">Correção comentada</span><button type="button" class="tg" role="switch" aria-checked="true" aria-label="Correção comentada" data-i18n-attr="aria-label:tutor.correcaoComentada"></button></div>
+        <div class="tfoot" style="margin-top:10px"><button class="btn btn-pri" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="simulados.gerarCreditos">Gerar · 4 créditos</span></button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROGRESSO ══ -->
+  <section class="screen" id="s-notas">
+    <div class="phead">
+      <div class="tx"><p class="eyebrow" data-i18n="progresso.eyebrow">Progresso</p><h1 data-i18n="progresso.titulo">Seu desempenho nos estudos</h1></div>
+    </div>
+    <div class="cols">
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="progresso.acertosPorMateria">Acertos por matéria</span></h2>
+        <p class="desc" data-i18n="progresso.ultimosSimuladosMin">últimos simulados</p>
+        <div class="hrow"><span class="hlbl">História</span><span class="hbar"><i style="--w:92%"></i></span><span class="hval">92%</span></div>
+        <div class="hrow"><span class="hlbl">Português</span><span class="hbar"><i style="--w:84%"></i></span><span class="hval">84%</span></div>
+        <div class="hrow"><span class="hlbl">Biologia</span><span class="hbar"><i style="--w:78%"></i></span><span class="hval">78%</span></div>
+        <div class="hrow"><span class="hlbl">Química</span><span class="hbar"><i style="--w:71%"></i></span><span class="hval">71%</span></div>
+        <div class="hrow"><span class="hlbl">Matemática</span><span class="hbar gold"><i style="--w:58%"></i></span><span class="hval">58%</span></div>
+        <div class="memo" style="margin:14px 0 0"><svg class="ic"><use href="#i-spark"/></svg><span><b data-i18n="progresso.sugestaoIA">Sugestão da IA</b> — 3 sessões de reforço em funções cobrem 70% dos seus erros recentes.</span></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="progresso.evolucao">Evolução nos simulados</span></h2>
+          <div class="chart" style="height:110px">
+            <div class="b"><b>69%</b><i style="--h:55%"></i></div>
+            <div class="b"><b>71%</b><i style="--h:61%"></i></div>
+            <div class="b"><b>74%</b><i style="--h:68%"></i></div>
+            <div class="b hl"><b>78%</b><i style="--h:78%"></i></div>
+          </div>
+          <div class="xlabels"><span data-i18n="mes.abr">abr</span><span data-i18n="mes.mai">mai</span><span data-i18n="mes.jun">jun</span><span data-i18n="mes.jul">jul</span></div>
+        </div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="progresso.ultimosSimulados">Últimos simulados</span></h2>
+          <ul class="list" style="margin-top:12px">
+            <li><div class="tx"><b>História — Era Vargas</b><span>15 questões · 11/07</span></div><span class="pill p-ok">92%</span></li>
+            <li><div class="tx"><b>Matemática — Funções</b><span>10 questões · 08/07</span></div><span class="pill p-warn">58%</span></li>
+            <li><div class="tx"><b>Português — Redação</b><span>tema: meio ambiente</span></div><span class="pill p-ok">80%</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ AGENDA ══ -->
+  <section class="screen" id="s-agenda">
+    <div class="phead">
+      <div class="tx"><p class="eyebrow" data-i18n="nav.agendaEyebrow">Agenda</p><h1>Semana de 14 a 18 de julho</h1></div>
+      <div class="actions"><button class="btn btn-gho" data-i18n="acao.anterior">Anterior</button><button class="btn btn-gho" data-i18n="acao.proxima">Próxima</button></div>
+    </div>
+    <div class="card">
+      <div class="week">
+        <div class="day"><h4>Seg 14</h4><div class="evs"><div class="ev" style="--c:var(--green)"><b>Sessão com tutor</b><span>Matemática · 17h30</span></div></div></div>
+        <div class="day"><h4>Ter 15</h4><div class="evs"><div class="ev" style="--c:var(--green)"><b>Sessão com tutor</b><span>Português · 18h</span></div><div class="ev" style="--c:var(--warn)"><b>Lista de Química</b><span>entrega 23h59</span></div></div></div>
+        <div class="day today"><h4>Qui 17 · hoje</h4><div class="evs"><div class="ev" style="--c:var(--green)"><b>Revisão sugerida</b><span>IA · véspera do simulado</span></div></div></div>
+        <div class="day"><h4>Sex 18</h4><div class="evs"><div class="ev" style="--c:var(--bad)"><b>Simulado Português</b><span>45 questões · estilo ENEM</span></div></div></div>
+        <div class="day"><h4>Ter 22</h4><div class="evs"><div class="ev" style="--c:var(--warn)"><b>Trab. História</b><span>entrega em dupla</span></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  </div>
+</main>
+</div>
+
+<div class="modal-backdrop" id="modal-backdrop"></div>
+<div class="modal" id="modal-conta">
+  <div class="modal-head">
+    <h3 data-i18n="conta.minhaConta">Minha conta</h3>
+    <button class="modal-x" data-modal-close aria-label="Fechar" data-i18n-attr="aria-label:acao.fechar">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="acgrid">
+      <div class="stack">
+        <div class="card acprofile">
+          <span class="bigav">MS</span>
+          <h3>Marina Souza</h3>
+          <p><span data-i18n="perfil.estudante">Estudante</span> · 86 <span data-i18n="conta.creditosDisponiveis">créditos disponíveis</span></p>
+          <button class="btn btn-gho btn-sm" data-i18n="conta.alterarFoto">Alterar foto</button>
+          <div class="acmeta" style="margin-top:18px">
+            <span><b>14</b><span data-i18n="conta.sessoes">sessões</span></span>
+            <span><b>78%</b><span data-i18n="conta.aproveitamento">aproveitamento</span></span>
+            <span><b>86</b><span data-i18n="conta.creditos">créditos</span></span>
+          </div>
+        </div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sessao">Sessão</span></h2>
+          <p class="desc">Conectada neste dispositivo desde 14/07.</p>
+          <a class="btn btn-danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sairDaConta">Sair da conta</span></a>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-user"/></svg><span data-i18n="conta.dadosPessoais">Dados pessoais</span></h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
+            <div class="field" style="margin:0"><label data-i18n="conta.nomeCompleto">Nome completo</label><input class="input" value="Marina Souza"></div>
+            <div class="field" style="margin:0"><label data-i18n="conta.email">E-mail</label><input class="input" value="marina@estudo.com"></div>
+            <div class="field" style="margin:0"><label data-i18n="conta.telefone">Telefone</label><input class="input" value="(11) 9 8877-2210"></div>
+          </div>
+          <div class="tfoot"><button class="btn btn-pri" data-i18n="conta.salvarAlteracoes">Salvar alterações</button><button class="btn btn-gho" data-i18n="conta.trocarSenha">Trocar senha</button></div>
+        </div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-bell"/></svg><span data-i18n="conta.preferencias">Preferências</span></h2>
+          <div style="margin-top:8px">
+            <div class="togglerow"><span><span data-i18n="conta.lembretesEstudo">Lembretes de estudo</span><small data-i18n="conta.sugestoesDiarias">sugestões diárias do tutor</small></span><button type="button" class="tg" role="switch" aria-checked="true" aria-label="Lembretes de estudo" data-i18n-attr="aria-label:conta.lembretesEstudo"></button></div>
+            <div class="togglerow"><span><span data-i18n="conta.resumoSemanal">Resumo semanal por e-mail</span><small data-i18n="conta.desempenhoSimulados">desempenho nos simulados</small></span><button type="button" class="tg" role="switch" aria-checked="false" aria-label="Resumo semanal por e-mail" data-i18n-attr="aria-label:conta.resumoSemanal"></button></div>
+            <div class="togglerow"><span><span data-i18n="conta.modoEscuro">Modo escuro</span><small data-i18n="conta.paraEstudarNoite">para estudar à noite</small></span><button type="button" class="tg" id="tg-tema" role="switch" aria-checked="false" aria-label="Modo escuro" data-i18n-attr="aria-label:conta.modoEscuro"></button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/i18n.js"></script>
+<script src="assets/app.js"></script>
+<script>
+(function(){var lm=null;setInterval(function(){fetch(location.href,{method:'HEAD',cache:'no-store'}).then(function(r){var v=r.headers.get('Last-Modified');if(lm&&v&&v!==lm){location.reload();}if(!lm){lm=v;}}).catch(function(){});},2000);})();
+</script>
+</body>
+</html>

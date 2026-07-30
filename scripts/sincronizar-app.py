@@ -57,8 +57,13 @@ SUBSTITUICOES = (('href="landing.html"', 'href="/"'),)
 
 
 def origem_padrao() -> Path:
-    """Procura o repositório de concepção ao lado deste."""
-    return RAIZ.parent / "Estudo-com-IA"
+    """Onde procurar o `mockup/`.
+
+    A landing e as telas viviam em repositórios separados; hoje moram
+    no mesmo, então a origem padrão é a raiz daqui. O `--origem`
+    continua valendo para apontar outro checkout.
+    """
+    return RAIZ
 
 
 def validar(origem: Path) -> Path | None:
