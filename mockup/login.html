@@ -110,6 +110,20 @@ form{display:flex;flex-direction:column;gap:16px}
 .campo input:focus{outline:none;border-color:var(--acento)}
 .campo input::placeholder{color:#A39D8F}
 
+/* Campo de senha com botao de mostrar/ocultar embutido - o input ganha
+   padding-right extra pra o texto nao passar por baixo do botao. */
+.campo-senha{position:relative}
+.campo-senha input{padding-right:44px}
+.campo-senha .toggle-senha{
+  position:absolute;top:50%;right:6px;transform:translateY(-50%);
+  display:flex;align-items:center;justify-content:center;
+  width:32px;height:32px;padding:0;border:0;border-radius:calc(var(--radius) - 2px);
+  background:transparent;color:var(--texto-secundario);cursor:pointer;
+  transition:color .15s var(--ease),background .15s var(--ease);
+}
+.campo-senha .toggle-senha:hover{color:var(--texto);background:var(--superficie-alt)}
+.campo-senha .toggle-senha svg{width:18px;height:18px}
+
 .linha-aux{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-top:-4px}
 .linha-aux a{color:var(--texto-secundario);text-decoration:none}
 .linha-aux a:hover{color:var(--texto);text-decoration:underline}
@@ -162,6 +176,8 @@ form{display:flex;flex-direction:column;gap:16px}
 <symbol id="e-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.3a2.6 2.6 0 0 1-2.6 2.6H9.6L5 19.7V6.8a2.6 2.6 0 0 1 2.6-2.6h9.8A2.6 2.6 0 0 1 20 6.8Z"/></symbol>
 <symbol id="e-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 5.5 4 4L8 20l-4.6.6L4 16Z"/><path d="m12.8 7.2 4 4"/></symbol>
 <symbol id="e-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20.5V6.2a1 1 0 0 1 .55-.9l5.5-2.75a1 1 0 0 1 .9 0l5.5 2.75a1 1 0 0 1 .55.9V20.5"/><path d="M3 20.5h18"/><path d="M9.5 9.5h1M13.5 9.5h1M9.5 13.2h1M13.5 13.2h1M9.5 16.9h1M13.5 16.9h1"/></symbol>
+<symbol id="e-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="e-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.8 9.8 0 0 1 12 4c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.16 3.19m-3.1 2.6A9.4 9.4 0 0 1 12 18c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.22-5.02"/><path d="M9.5 9.5a3 3 0 0 0 4.24 4.24"/><path d="M2 2l20 20"/></symbol>
 </defs></svg>
 
 <div class="split">
@@ -187,9 +203,12 @@ form{display:flex;flex-direction:column;gap:16px}
           <label for="email">E-mail</label>
           <input id="email" type="email" placeholder="voce@escola.com.br" autocomplete="email">
         </div>
-        <div class="campo">
+        <div class="campo campo-senha">
           <label for="senha">Senha</label>
           <input id="senha" type="password" placeholder="••••••••" autocomplete="current-password">
+          <button type="button" class="toggle-senha" id="toggle-senha" aria-label="Mostrar senha" aria-pressed="false">
+            <svg><use href="#e-eye"/></svg>
+          </button>
         </div>
         <div class="linha-aux">
           <a href="#">Esqueci minha senha</a>
@@ -238,6 +257,19 @@ form{display:flex;flex-direction:column;gap:16px}
 
   document.querySelector('button[type="submit"]').addEventListener('click', function () {
     location.href = destino;
+  });
+
+  // Mostrar/ocultar senha: alterna o type do input e o icone/aria do
+  // botao. Sem libs aqui (HTML puro) - equivalente ao Eye/EyeOff do
+  // lucide-react usado no login do Contas-flow.
+  var campoSenha = document.getElementById('senha');
+  var botaoSenha = document.getElementById('toggle-senha');
+  botaoSenha.addEventListener('click', function () {
+    var visivel = campoSenha.type === 'text';
+    campoSenha.type = visivel ? 'password' : 'text';
+    botaoSenha.setAttribute('aria-pressed', String(!visivel));
+    botaoSenha.setAttribute('aria-label', visivel ? 'Mostrar senha' : 'Ocultar senha');
+    botaoSenha.innerHTML = '<svg><use href="#' + (visivel ? 'e-eye' : 'e-eye-off') + '"/></svg>';
   });
 })();
 </script>
