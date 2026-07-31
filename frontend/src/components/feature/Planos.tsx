@@ -22,17 +22,34 @@ export function Planos() {
           <ItemAnimado key={plano.id}>
             <Card
               interativo
-              brilho={plano.destaque ? 'rgb(123 120 200 / 0.35)' : undefined}
+              brilho={
+                plano.destaque === 'premium'
+                  ? 'rgb(123 120 200 / 0.55)'
+                  : plano.destaque === 'recomendado'
+                    ? 'rgb(123 120 200 / 0.35)'
+                    : undefined
+              }
               className={[
-                'flex h-full flex-col p-9 sm:p-10',
+                'relative flex h-full flex-col p-9 sm:p-10',
                 /*
-                  O plano do meio ganha borda cheia e leve elevação: é o
-                  "recomendado", sem precisar de um selo escrito para
-                  isso ficar claro.
+                  Progressão de contorno pelos 3 planos, do mais sutil ao
+                  mais forte - fundo continua claro em todos, só a borda
+                  escurece e engrossa. Recomendado (Pro) e Premium (Ultra)
+                  ganham também sombra e selo, na mesma lógica de antes.
                 */
-                plano.destaque ? 'border-texto shadow-[0_12px_32px_-16px_rgb(26_26_26_/_0.35)]' : '',
+                plano.destaque === null
+                  ? 'border-contorno-forte'
+                  : plano.destaque === 'recomendado'
+                    ? 'border-texto shadow-[0_12px_32px_-16px_rgb(26_26_26/0.35)]'
+                    : 'border-2 border-texto shadow-[0_16px_40px_-16px_rgb(26_26_26/0.45)]',
               ].join(' ')}
             >
+              {plano.destaque === 'premium' && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-texto px-3.5 py-1 text-[11px] font-medium tracking-[0.1em] text-superficie uppercase">
+                  Mais completo
+                </span>
+              )}
+
               <p className="text-xs font-medium tracking-[0.12em] text-texto-secundario uppercase">
                 {plano.nome}
               </p>
@@ -74,7 +91,7 @@ export function Planos() {
 
               <Button
                 href={ENTRADA_APP}
-                variant={plano.destaque ? 'primary' : 'secondary'}
+                variant={plano.destaque !== null ? 'primary' : 'secondary'}
                 className="mt-10 w-full"
               >
                 Escolher {plano.nome}

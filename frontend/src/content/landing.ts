@@ -166,11 +166,12 @@ export const planos = {
       resumo: 'Para testar o tutor e organizar os estudos',
       preco: 'R$ 39,99',
       periodo: '/mês',
-      destaque: false,
+      destaque: null,
       itens: [
         '100% do limite padrão de uso',
         'Resumos, flashcards e áudio-revisão gerados na hora',
         'Agenda de estudos com sequência e progresso por matéria',
+        'Histórico de estudo salvo por matéria',
       ],
     },
     {
@@ -179,11 +180,13 @@ export const planos = {
       resumo: 'Para quem estuda todo dia e não quer esperar',
       preco: 'R$ 64,99',
       periodo: '/mês',
-      destaque: true,
+      destaque: 'recomendado',
       itens: [
         '71% a mais de limite de uso que o Prisma',
+        'Tudo do Prisma',
         'Respostas do tutor com prioridade',
         'Plano de estudo semanal gerado pela IA',
+        'Exportação de materiais em PDF',
       ],
     },
     {
@@ -192,11 +195,15 @@ export const planos = {
       resumo: 'Para quem quer o tutor no limite',
       preco: 'R$ 99,99',
       periodo: '/mês',
-      destaque: false,
+      destaque: 'premium',
       itens: [
         '171% a mais de limite de uso que o Prisma',
+        'Tudo do Prisma Pro',
         'Acesso aos modelos de IA mais avançados do motor',
         'Suporte prioritário',
+        'Convite antecipado a novos recursos',
+        'Sessões de áudio-revisão com limite mensal ampliado',
+        'Exportação de materiais em lote',
       ],
     },
   ],
@@ -232,7 +239,7 @@ export const creditos = {
 export const ctaFinal = {
   titulo: 'Pronto para começar?',
   descricao: 'Configure a escola e distribua os primeiros créditos.',
-  botao: 'Criar conta da instituição',
+  botao: 'Fale com a gente',
   apoio: 'Migração de dados com apoio da equipe.',
 }
 
