@@ -1,7 +1,6 @@
 import { Button } from '../ui/Button'
 import { AoEntrar } from '../ui/Animar'
 import { ctaFinal } from '../../content/landing'
-import { ENTRADA_APP } from '../../content/destinos'
 
 /** Última conversão antes do rodapé. */
 export function ChamadaFinal() {
@@ -23,8 +22,10 @@ export function ChamadaFinal() {
         </p>
 
         <div className="mt-10 flex justify-center">
-          {/* Mesma porta do "Entrar" no header: a tela inicial da aplicacao */}
-          <Button size="lg" href={ENTRADA_APP}>
+          {/* Onboarding de escola e manual (Andre configura apos fechar
+              contrato) - por isso aponta para contato, nao para a app.
+              Href placeholder ate o e-mail de contato ser definido. */}
+          <Button size="lg" href="#">
             {ctaFinal.botao}
           </Button>
         </div>
