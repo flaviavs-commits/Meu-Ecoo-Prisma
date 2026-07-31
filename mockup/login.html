@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Entrar · Prisma</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -222,7 +223,7 @@ form{display:flex;flex-direction:column;gap:16px}
         <button type="button"><svg><use href="#e-google"/></svg>Continuar com Google</button>
       </div>
 
-      <p class="rodape-troca fade d3">Ainda não tem conta? <a href="criar-conta.html">Criar conta</a></p>
+      <p class="rodape-troca fade d3">Sua escola ainda não usa o Prisma? <a href="#">Fale com a gente</a></p>
     </div>
   </main>
 
@@ -252,7 +253,6 @@ form{display:flex;flex-direction:column;gap:16px}
     document.documentElement.style.setProperty('--acento-glow', c.glow);
     document.getElementById('marca-perfil').innerHTML = '<svg><use href="#' + c.icone + '"/></svg>';
     document.getElementById('regua-etq').textContent = c.etq;
-    document.querySelector('.rodape-troca a').href = 'criar-conta.html?perfil=' + perfil;
   }
 
   document.querySelector('button[type="submit"]').addEventListener('click', function () {
@@ -273,8 +273,6 @@ form{display:flex;flex-direction:column;gap:16px}
   });
 })();
 </script>
-<script>
-(function(){var lm=null;setInterval(function(){fetch(location.href,{method:'HEAD',cache:'no-store'}).then(function(r){var v=r.headers.get('Last-Modified');if(lm&&v&&v!==lm){location.reload();}if(!lm){lm=v;}}).catch(function(){});},2000);})();
-</script>
+<script src="assets/dev-reload.js"></script>
 </body>
 </html>

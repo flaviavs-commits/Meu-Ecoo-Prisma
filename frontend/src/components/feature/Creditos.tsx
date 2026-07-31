@@ -15,6 +15,16 @@ const corPorPlano: Record<string, string> = {
   'Prisma Ultra': 'var(--color-diretor)',
 }
 
+/**
+ * Teto da barra comparativa: o maior "limite" entre os planos, derivado
+ * dos dados em vez de fixo. Um valor fixo (ex. 271) quebraria em silêncio
+ * se um plano mudasse de limite ou um novo plano fosse adicionado sem
+ * que alguém lembrasse de atualizar esse número em dois lugares.
+ */
+const limiteMaximo = Math.max(
+  ...creditos.comparativoPlanos.linhas.map((linha) => parseFloat(linha.limite)),
+)
+
 /** Explica o modelo de créditos e a distribuição pelo diretor. */
 export function Creditos() {
   return (
@@ -85,7 +95,7 @@ export function Creditos() {
                 style={{ backgroundColor: corPorPlano[linha.plano] }}
                 variants={{
                   oculto: { width: 0 },
-                  visivel: { width: `${(parseFloat(linha.limite) / 271) * 100}%` },
+                  visivel: { width: `${(parseFloat(linha.limite) / limiteMaximo) * 100}%` },
                 }}
                 transition={{ duration: 0.7, ease: SUAVE }}
               />

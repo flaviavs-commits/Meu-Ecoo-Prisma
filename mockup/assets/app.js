@@ -29,29 +29,44 @@
   /* Conta de 0 ate o valor final. Guarda o texto original para preservar
      sufixo/prefixo ("6 dias", "92%") - so o numero anima. */
   function animarNumero(el) {
-    var alvo = el.dataset.valor !== undefined ? el.dataset.valor : el.textContent;
+    // O alvo precisa vir de uma fonte estavel. Ler `textContent` a cada
+    // chamada quebrava quando a funcao rodava de novo com uma animacao
+    // ainda em voo: o alvo virava o valor parcial que estava na tela, e
+    // o numero ficava permanentemente errado - trocar de tela rapido
+    // fazia "412 alunos ativos" virar "212". Por isso o texto do HTML e
+    // guardado na primeira passada e reusado nas seguintes.
+    if (el._alvoOriginal === undefined) el._alvoOriginal = el.textContent;
+    var alvo = el.dataset.valor !== undefined ? el.dataset.valor : el._alvoOriginal;
     var m = String(alvo).match(/-?[\d.,]+/);
     if (!m) return;
     var bruto = m[0];
     var destino = parseFloat(bruto.replace(/\./g, '').replace(',', '.'));
     if (isNaN(destino)) return;
-    var decimais = (bruto.split(/[.,]/)[1] || '').length;
+    // So conta como decimal a virgula final ("7,9"): o ponto e separador
+    // de milhar ("18.400"), nao casa de decimal - split(/[.,]/) tratava os
+    // dois igual e inflava "18.400" para 3 casas decimais falsas (virava
+    // "18400,000" ao fim da animacao em vez de manter "18.400").
+    var decimais = (bruto.match(/,(\d+)$/) || ['', ''])[1].length;
     var antes = String(alvo).slice(0, m.index);
     var depois = String(alvo).slice(m.index + bruto.length);
 
     function escrever(v) {
-      var txt = decimais ? v.toFixed(decimais).replace('.', ',') : String(Math.round(v));
+      var txt = decimais ? v.toFixed(decimais).replace('.', ',') : Math.round(v).toLocaleString('pt-BR');
       el.textContent = antes + txt + depois;
     }
     if (reduzMovimento) { escrever(destino); return; }
+
+    // Duas animacoes no mesmo elemento se atropelariam, cada uma
+    // escrevendo por cima da outra a cada quadro.
+    if (el._animId) cancelAnimationFrame(el._animId);
 
     var inicio = performance.now(), dur = 900;
     function passo(agora) {
       var t = Math.min(1, (agora - inicio) / dur);
       escrever(destino * (1 - Math.pow(1 - t, 3)));  // easeOutCubic
-      if (t < 1) requestAnimationFrame(passo);
+      el._animId = t < 1 ? requestAnimationFrame(passo) : null;
     }
-    requestAnimationFrame(passo);
+    el._animId = requestAnimationFrame(passo);
   }
 
   /* Roda os contadores e as barras da tela que acabou de abrir. As
@@ -593,11 +608,6 @@
 
   var AV_TUTOR = '<span class="tmsg-av"><svg><use href="#i-spark"/></svg></span>';
   ligarChat({
-    input: '#s-inicio .composer input', botao: '#s-inicio .composer .send',
-    fluxo: '#s-inicio .chat', classeMe: 'm-me', classeAi: 'm-ai',
-    avatar: '<span class="av"><svg><use href="#i-spark"/></svg></span>',
-  });
-  ligarChat({
     input: '.tut-input input', botao: '.tut-send',
     fluxo: '.tut-chat .tut-flow', rolagem: '.tut-scroll',
     classeMe: 'tmsg me', classeAi: 'tmsg ai', bolha: 'tmsg-bubble', avatar: AV_TUTOR,
@@ -748,8 +758,60 @@
     });
   });
 
+  // ── Professor: gerar/publicar prova, confirmar correção ──
+  // Antes destes ids, esses botoes eram decorativos - nenhum clique tinha
+  // qualquer efeito (nem toast), diferente do resto do app do aluno onde
+  // toda acao de "gerar" ja respondia.
+  var gerarProva = document.getElementById('prova-gerar');
+  if (gerarProva) gerarProva.addEventListener('click', function () {
+    comCarregando(gerarProva, 'Gerando prova…', 1800, function () {
+      toast('Prova gerada · 12 questões', 'ok');
+    });
+  });
+
+  var publicarProva = document.getElementById('prova-publicar');
+  if (publicarProva) publicarProva.addEventListener('click', function () {
+    comCarregando(publicarProva, 'Publicando…', 1000, function () {
+      toast('Prova publicada para a turma', 'ok');
+    });
+  });
+
+  var confirmarNota = document.getElementById('correcao-confirmar');
+  if (confirmarNota) confirmarNota.addEventListener('click', function () {
+    comCarregando(confirmarNota, 'Confirmando…', 700, function () {
+      var fila = document.getElementById('correcao-queue');
+      var atual = fila && fila.querySelector('li');
+      if (atual) atual.remove();
+      var restantes = fila ? fila.querySelectorAll('li').length : 0;
+      ['correcao-badge', 'correcao-pendentes-pill'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = String(restantes);
+      });
+      var proximo = fila && fila.querySelector('li button');
+      if (proximo) proximo.classList.add('on');
+      else confirmarNota.disabled = true; // fila vazia: nao ha mais o que confirmar
+      toast('Nota confirmada · 7,0', 'ok');
+    });
+  });
+
+  // ── Diretor: gerar relatorio ──
+  var gerarRelatorio = document.getElementById('relatorio-gerar');
+  if (gerarRelatorio) gerarRelatorio.addEventListener('click', function () {
+    comCarregando(gerarRelatorio, 'Gerando relatório…', 1800, function () {
+      var lista = document.getElementById('relatorios-lista');
+      var primeiro = lista && lista.querySelector('.rrow');
+      if (lista && primeiro) {
+        var novo = primeiro.cloneNode(true);
+        novo.querySelector('b').textContent = 'Desempenho por turma — agora';
+        novo.querySelector('.end').innerHTML = '<span class="pill p-ia">gerado</span>';
+        lista.insertBefore(novo, primeiro);
+      }
+      toast('Relatório gerado', 'ok');
+    });
+  });
+
   document.querySelectorAll('.selectbox').forEach(function (sel) {
-    sel.addEventListener('click', function () { toast('Seletor apenas ilustrativo neste mockup'); });
+    sel.addEventListener('click', function () { toast('Configuração salva'); });
   });
 
   var editarMeta = document.querySelector('[data-i18n="simulados.editarMeta"]');
@@ -763,9 +825,9 @@
     var btns = document.querySelectorAll('#s-agenda .actions .btn');
     if (!titulo || btns.length < 2) return;
     var semanas = [
-      'Semana de 7 a 11 de julho',
-      'Semana de 14 a 18 de julho',
-      'Semana de 21 a 25 de julho',
+      'Semana de 22 a 26 de julho',
+      'Semana de 29 de julho a 2 de agosto',
+      'Semana de 5 a 9 de agosto',
     ];
     var atual = 1;
     function pintar() {

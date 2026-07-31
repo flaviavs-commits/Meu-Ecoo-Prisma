@@ -2,7 +2,7 @@
 
 Implementacao web da plataforma de estudos com IA para instituicoes de ensino: OpenRouter como motor de IA, creditos por assinatura e memoria persistente por aluno.
 
-> **Status: Fase 0 - fundacao.** A landing page publica esta implementada, com a identidade visual do documento UX/UI aplicada. O backend ainda nao existe. A concepcao do produto (visao, arquitetura, perfis, creditos, memoria, roadmap) e os mockups das telas por perfil vivem no repositorio [`Estudo-com-IA`](https://github.com/flaviavs-commits/Estudo-com-IA).
+> **Status: Fase 0 - fundacao.** A landing page publica esta implementada, com a identidade visual do documento UX/UI aplicada. O backend ainda nao existe. A landing (`frontend/`) e os mockups das telas por perfil (`mockup/`) vivem neste mesmo repositorio - a concepcao do produto e os mockups viviam num repositorio separado no inicio do projeto, mas hoje moram aqui.
 
 **Divisao de trabalho:** Andre no frontend, Felipe no backend.
 
@@ -55,6 +55,8 @@ PrismaTest/
 │       │   └── feature/    # Secoes da landing
 │       ├── content/        # Copy e destino da aplicacao
 │       └── index.css       # Tokens de design e regra de cor (@theme)
+├── mockup/                 # Telas de aluno, professor e diretor (fonte da verdade, HTML estatico)
+├── docs/                   # Constituicao de modularidade e outros documentos do projeto
 └── doktor SystemDesign/    # Padroes de qualidade (copia sincronizada, nao versionada)
 ```
 
@@ -105,19 +107,19 @@ Ainda nao ha teste automatizado: a landing e UI visual sem regra de negocio, cas
 
 ## Landing e aplicacao
 
-Sao duas coisas, em repositorios diferentes:
+Sao duas partes deste mesmo repositorio:
 
 | | Onde vive | O que e |
 |---|---|---|
-| **Landing** | este repositorio, `frontend/src/` | vitrine publica, em React |
-| **Aplicacao** | `Estudo-com-IA`, pasta `mockup/` | telas de aluno, professor e diretor |
+| **Landing** | `frontend/src/` | vitrine publica, em React |
+| **Aplicacao** | `mockup/` | telas de aluno, professor e diretor (HTML estatico) |
 
 Ao clicar em "Entrar", a landing abre a tela inicial da aplicacao,
 que faz a escolha de perfil.
 
 ### Sincronizar a aplicacao
 
-As telas sao mantidas no `Estudo-com-IA`. Para trazer a versao atual:
+As telas sao mantidas em `mockup/`. Para trazer a versao atual para o Vite:
 
 ```bash
 python scripts/sincronizar-app.py
@@ -155,8 +157,6 @@ assim: [docs/CONSTITUICAO-MODULARIDADE.md](docs/CONSTITUICAO-MODULARIDADE.md).
 ## Personalizar a landing
 
 O texto fica em `frontend/src/content/landing.ts`, separado dos componentes. As cores e a tipografia ficam em `frontend/src/index.css`, no bloco `@theme`.
-
-Os depoimentos sao **placeholders propositais**, com borda tracejada. Substitua por relatos reais antes de publicar.
 
 ## Padroes de qualidade
 

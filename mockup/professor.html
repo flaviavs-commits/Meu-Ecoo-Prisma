@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Professor · Prisma</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<!-- Tema salvo aplicado antes do primeiro paint. O app.js roda no fim do
+     body, tarde demais: com o escuro salvo, a pagina piscava clara e so
+     depois virava escura. -->
+<script>try{var t=localStorage.getItem('prisma-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/ui.css">
 </head>
@@ -30,6 +35,8 @@
 <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.6h7l4.4 4.4v11a1.4 1.4 0 0 1-1.4 1.4H7A1.4 1.4 0 0 1 5.6 19V5A1.4 1.4 0 0 1 7 3.6Z"/><path d="M14 3.6V8h4.4"/></symbol>
 <symbol id="i-audio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 17v-4.2a7.2 7.2 0 0 1 14.4 0V17"/><rect x="4" y="14.4" width="3.6" height="5.2" rx="1.6"/><rect x="16.4" y="14.4" width="3.6" height="5.2" rx="1.6"/></symbol>
 <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 8h14M5 16h14"/><circle cx="9" cy="8" r="2.1" fill="var(--card)"/><circle cx="15" cy="16" r="2.1" fill="var(--card)"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3.2v2M12 18.8v2M3.2 12h2M18.8 12h2M5.7 5.7l1.4 1.4M16.9 16.9l1.4 1.4M18.3 5.7l-1.4 1.4M7.1 16.9l-1.4 1.4"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.2A8 8 0 1 1 10.8 4 6.4 6.4 0 0 0 20 13.2Z"/></symbol>
 <!-- Logo oficial do Prisma: mesmo path de frontend/src/components/ui/Logo.tsx -->
 <symbol id="i-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
   <path d="M16 6.38 6.35 21.56 16 25.37l9.65-3.81Z"/>
@@ -45,24 +52,20 @@
   <p class="nlabel">Principal</p>
   <nav class="nav">
     <a class="on" data-s="inicio"><svg class="ic"><use href="#i-home"/></svg>Início</a>
-    <a data-s="turmas"><svg class="ic"><use href="#i-users"/></svg>Workspaces</a>
+    <a data-s="turmas"><svg class="ic"><use href="#i-users"/></svg>Turmas</a>
   </nav>
   <p class="nlabel">Ensino</p>
   <nav class="nav">
     <a data-s="avaliacoes"><svg class="ic"><use href="#i-pen"/></svg>Conteúdos</a>
-    <a data-s="correcao"><svg class="ic"><use href="#i-check"/></svg>Correção<span class="badge">6</span></a>
+    <a data-s="correcao"><svg class="ic"><use href="#i-check"/></svg>Correção<span class="badge" id="correcao-badge">6</span></a>
     <a data-s="acervo"><svg class="ic"><use href="#i-book"/></svg>Acervo</a>
     <a data-s="alertas"><svg class="ic"><use href="#i-spark"/></svg>Insights da IA</a>
   </nav>
-  <p class="nlabel">Compartilhar</p>
-  <nav class="nav">
-    <a data-s="workspace"><svg class="ic"><use href="#i-send"/></svg>Compartilhar workspace</a>
-  </nav>
   <div class="spacer"></div>
   <div class="ddwrap sideuser-wrap">
-    <button class="sideuser" style="cursor:default">
+    <button class="sideuser" data-dd="dd-sideuser" aria-haspopup="true">
       <span class="av" style="background:#2C302D">RA</span>
-      <div><b>Ricardo Almeida</b><span>Tutor</span></div>
+      <div><b>Ricardo Almeida</b><span>Professor</span></div>
       <svg class="ic out-ic"><use href="#i-chev-up"/></svg>
     </button>
     <div class="dd dd-up" id="dd-sideuser">
@@ -78,6 +81,7 @@
 <main class="main">
   <div class="topbar">
     <span class="topsp"></span>
+    <button class="iconbtn" id="themebtn" type="button" aria-label="Alternar tema"><svg class="ic" id="theme-ic"><use href="#i-moon"/></svg></button>
     <span class="ddwrap">
       <button class="iconbtn" data-dd="dd-notif" aria-label="Notificações"><svg class="ic"><use href="#i-bell"/></svg><span class="ndot"></span></button>
       <div class="dd" id="dd-notif">
@@ -116,6 +120,7 @@
       <div class="tile"><span class="tico"><svg class="ic"><use href="#i-chart"/></svg></span><div class="lbl">Média dos estudantes</div><div class="num">7,2</div><div class="sub up">▲ 0,2 na semana</div></div>
       <div class="tile"><span class="tico"><svg class="ic"><use href="#i-users"/></svg></span><div class="lbl">Precisa de atenção</div><div class="num">3</div><div class="sub">de 103 ativos</div></div>
     </div>
+    <p class="sectlbl">Ações do dia</p>
     <div class="cols">
       <div class="card hero">
         <h2><svg class="ic"><use href="#i-check"/></svg>Simulado 03</h2>
@@ -153,28 +158,28 @@
     </div>
   </section>
 
-  <!-- ══ WORKSPACES ══ -->
+  <!-- ══ TURMAS ══ -->
   <section class="screen" id="s-turmas">
     <div class="phead">
-      <div class="tx"><p class="eyebrow">Workspaces</p><h1>Seus espaços de estudo configurados</h1></div>
-      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-users"/></svg>Novo workspace</button></div>
+      <div class="tx"><p class="eyebrow">Turmas</p><h1>Suas turmas</h1></div>
+      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-users"/></svg>Configurar nova turma</button></div>
     </div>
     <div class="tgrid">
       <div class="tcard">
         <div class="thead"><span class="tname">Português ENEM</span><span class="pill p-ok">média 7,2</span></div>
-        <div class="meta">34 estudantes · compartilhado</div>
+        <div class="meta">34 alunos matriculados</div>
         <div class="hbar"><i style="--w:74%"></i></div>
         <div class="prog"><span>Conteúdo configurado</span><span>74%</span></div>
       </div>
       <div class="tcard">
         <div class="thead"><span class="tname">Redação Nota 1000</span><span class="pill p-warn">média 6,9</span></div>
-        <div class="meta">36 estudantes · compartilhado</div>
+        <div class="meta">36 alunos matriculados</div>
         <div class="hbar"><i style="--w:71%"></i></div>
         <div class="prog"><span>Conteúdo configurado</span><span>71%</span></div>
       </div>
       <div class="tcard">
         <div class="thead"><span class="tname">Gramática Avançada</span><span class="pill p-ok">média 7,5</span></div>
-        <div class="meta">33 estudantes · compartilhado</div>
+        <div class="meta">33 alunos matriculados</div>
         <div class="hbar"><i style="--w:78%"></i></div>
         <div class="prog"><span>Conteúdo configurado</span><span>78%</span></div>
       </div>
@@ -189,7 +194,7 @@
         </ul>
       </div>
       <div class="card">
-        <h2><svg class="ic"><use href="#i-chart"/></svg>Uso do tutor por workspace</h2>
+        <h2><svg class="ic"><use href="#i-chart"/></svg>Uso do tutor por turma</h2>
         <div style="margin-top:12px">
           <div class="hrow"><span class="hlbl">Gramática Avançada</span><span class="hbar"><i style="--w:88%"></i></span><span class="hval">88%</span></div>
           <div class="hrow"><span class="hlbl">Português ENEM</span><span class="hbar"><i style="--w:81%"></i></span><span class="hval">81%</span></div>
@@ -205,14 +210,14 @@
     <div class="cols cols-rev">
       <div class="card">
         <h2><svg class="ic"><use href="#i-sliders"/></svg>Configuração</h2>
-        <p class="desc">Prova de Português · Workspace ENEM</p>
+        <p class="desc">Prova de Português · Turma Português ENEM</p>
         <div class="field"><label>Conteúdo-base</label><div class="selectbox">Unidade 4 — Sintaxe do período composto<svg class="ic"><use href="#i-chev"/></svg></div></div>
         <div class="field"><label>Formato</label><div class="selectbox">10 objetivas + 2 dissertativas<svg class="ic"><use href="#i-chev"/></svg></div></div>
         <div class="field"><label>Dificuldade</label><div class="selectbox">Média · curva do ENEM<svg class="ic"><use href="#i-chev"/></svg></div></div>
         <div class="togglerow"><span>Gabarito comentado</span><span class="tg"></span></div>
         <div class="togglerow"><span>Rubrica para dissertativas</span><span class="tg"></span></div>
         <div class="togglerow"><span>Versões A/B embaralhadas</span><span class="tg off"></span></div>
-        <div class="tfoot" style="margin-top:12px"><button class="btn btn-pri" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg>Gerar prova · 12 créditos</button></div>
+        <div class="tfoot" style="margin-top:12px"><button class="btn btn-pri" id="prova-gerar" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg>Gerar prova · 12 créditos</button></div>
       </div>
       <div class="card hero">
         <h2><svg class="ic"><use href="#i-doc"/></svg>Prévia gerada</h2>
@@ -222,7 +227,7 @@
         <div class="tfoot">
           <button class="btn btn-gho btn-sm"><svg class="ic"><use href="#i-spark"/></svg>Regenerar Q1</button>
           <button class="btn btn-gho btn-sm"><svg class="ic"><use href="#i-pen"/></svg>Editar</button>
-          <button class="btn btn-pri btn-sm" style="margin-left:auto">Aprovar e publicar</button>
+          <button class="btn btn-pri btn-sm" id="prova-publicar" style="margin-left:auto">Aprovar e publicar</button>
         </div>
       </div>
     </div>
@@ -236,8 +241,8 @@
     </div>
     <div class="cols cols-rev">
       <div class="card">
-        <h2><svg class="ic"><use href="#i-clock"/></svg>Pendentes <span class="pill p-warn" style="margin-left:auto">6</span></h2>
-        <ul class="queue">
+        <h2><svg class="ic"><use href="#i-clock"/></svg>Pendentes <span class="pill p-warn" id="correcao-pendentes-pill" style="margin-left:auto">6</span></h2>
+        <ul class="queue" id="correcao-queue">
           <li><button class="on"><span class="av">AB</span><span><b>Ana Beatriz Lima</b><span>redação · sugerido 7,0</span></span></button></li>
           <li><button><span class="av">CE</span><span><b>Carlos Eduardo Melo</b><span>redação · sugerido 5,5</span></span></button></li>
           <li><button><span class="av">JF</span><span><b>Júlia Fernandes</b><span>redação · sugerido 6,5</span></span></button></li>
@@ -255,7 +260,7 @@
         <div class="hrow"><span class="hlbl">Estrutura</span><span class="hbar"><i style="--w:63%"></i></span><span class="hval">1,9/3</span></div>
         <div class="memo" style="margin:14px 0 16px"><svg class="ic"><use href="#i-spark"/></svg><span><b>Justificativa da IA</b> — tese clara e bom repertório; desconto por concordância (2×) e conclusão sem agente definido.</span></div>
         <div class="tfoot">
-          <button class="btn btn-pri"><svg class="ic"><use href="#i-check"/></svg>Confirmar 7,0</button>
+          <button class="btn btn-pri" id="correcao-confirmar"><svg class="ic"><use href="#i-check"/></svg>Confirmar 7,0</button>
           <button class="btn btn-gho">Ajustar nota</button>
           <button class="btn btn-gho">Redação completa</button>
         </div>
@@ -275,7 +280,7 @@
     <div class="cols">
       <div class="card">
         <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Apostila — Sintaxe do período composto</b><span>PDF · 42 págs · Unidade 4</span></div><div class="end"><span class="pill p-ia">indexado</span></div></div>
-        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Slides — Orações coordenadas</b><span>PPTX · aula de 08/07</span></div><div class="end"><span class="pill p-ia">indexado</span></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Slides — Orações coordenadas</b><span>PPTX · aula de 23/07</span></div><div class="end"><span class="pill p-ia">indexado</span></div></div>
         <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Banco de questões ENEM 2019–2025</b><span>DOCX · 180 questões</span></div><div class="end"><span class="pill p-ia">indexado</span></div></div>
         <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-audio"/></svg></span><div><b>Aula gravada — Análise sintática</b><span>MP3 · 47 min</span></div><div class="end"><span class="pill p-warn">processando</span></div></div>
       </div>
@@ -291,7 +296,7 @@
 
   <!-- ══ ALERTAS ══ -->
   <section class="screen" id="s-alertas">
-    <div class="phead"><div class="tx"><p class="eyebrow">Alertas da IA</p><h1>O que a IA percebeu nos seus workspaces</h1></div></div>
+    <div class="phead"><div class="tx"><p class="eyebrow">Alertas da IA</p><h1>O que a IA percebeu nas suas turmas</h1></div></div>
     <div class="feed">
       <div class="alertcard"><span class="stripe" style="--c:var(--warn)"></span>
         <div class="tx"><b>14 estudantes travaram em orações subordinadas</b>
@@ -314,49 +319,6 @@
     </div>
   </section>
 
-  <!-- ══ COMPARTILHAR WORKSPACE ══ -->
-  <section class="screen" id="s-workspace">
-    <div class="phead">
-      <div class="tx">
-        <p class="eyebrow">Compartilhar</p>
-        <h1>Compartilhe seu workspace com alunos</h1>
-      </div>
-    </div>
-    <div class="cols">
-      <div class="card hero">
-        <h2><svg class="ic"><use href="#i-send"/></svg>Link para alunos</h2>
-        <p class="desc">Os alunos que usarem este link terão acesso ao seu conteúdo configurado</p>
-        <div class="field" style="margin-top:20px">
-          <label>Link de compartilhamento</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <input class="input" value="https://estudo-ia.com/workspace/ra-lportuguesa" style="flex:1" readonly>
-            <button class="btn btn-pri"><svg class="ic"><use href="#i-doc"/></svg>Copiar</button>
-          </div>
-        </div>
-        <div class="field" style="margin-top:14px">
-          <label>Permissões</label>
-          <div class="togglerow"><span>Acesso ao acervo<small>materiais, resumos, simulados</small></span><span class="tg"></span></div>
-          <div class="togglerow"><span>Correção automática<small>IA usa sua rubrica</small></span><span class="tg"></span></div>
-          <div class="togglerow"><span>Alertas de progresso<small>quando aluno precisa de ajuda</small></span><span class="tg"></span></div>
-        </div>
-        <div class="tfoot" style="margin-top:20px">
-          <button class="btn btn-pri"><svg class="ic"><use href="#i-send"/></svg>Gerar novo link</button>
-          <button class="btn btn-gho">Ver quem acessou</button>
-        </div>
-      </div>
-      <div class="card">
-        <h2><svg class="ic"><use href="#i-users"/></svg>Alunos no seu workspace</h2>
-        <p class="desc">Usando o link atual</p>
-        <div style="margin-top:12px">
-          <div class="hrow"><span class="hlbl">Marina Souza</span><span class="hval">ativa agora</span></div>
-          <div class="hrow"><span class="hlbl">Carlos Eduardo</span><span class="hval">último: ontem</span></div>
-          <div class="hrow"><span class="hlbl">Ana Beatriz</span><span class="hval">último: 15/07</span></div>
-          <div class="hrow"><span class="hlbl">12 outros</span><span class="hval">acessaram este mês</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   </div>
 </main>
 </div>
@@ -373,17 +335,17 @@
         <div class="card acprofile">
           <span class="bigav" style="background:#2C302D">RA</span>
           <h3>Ricardo Almeida</h3>
-          <p>Tutor · Língua Portuguesa</p>
+          <p>Professor · Língua Portuguesa</p>
           <button class="btn btn-gho btn-sm">Alterar foto</button>
           <div class="acmeta" style="margin-top:18px">
-            <span><b>3</b>workspaces</span>
+            <span><b>3</b>turmas</span>
             <span><b>103</b>estudantes</span>
             <span><b>310</b>créditos</span>
           </div>
         </div>
         <div class="card">
           <h2><svg class="ic"><use href="#i-logout"/></svg>Sessão</h2>
-          <p class="desc">Conectado neste dispositivo desde 10/07.</p>
+          <p class="desc">Conectado neste dispositivo desde 25/07.</p>
           <a class="btn btn-danger" href="./"><svg class="ic"><use href="#i-logout"/></svg>Sair da conta</a>
         </div>
       </div>
@@ -403,7 +365,8 @@
           <div style="margin-top:8px">
             <div class="togglerow"><span>Alertas da IA sobre estudantes<small>risco de desengajamento e padrões de erro</small></span><span class="tg"></span></div>
             <div class="togglerow"><span>Resumo diário da correção<small>fila e sugestões pendentes</small></span><span class="tg"></span></div>
-            <div class="togglerow"><span>Novo acesso ao workspace<small>notificar quando alguém entrar pelo link</small></span><span class="tg off"></span></div>
+            <div class="togglerow"><span>Novo aluno na turma<small>notificar quando a secretaria matricular um aluno</small></span><span class="tg off"></span></div>
+            <div class="togglerow"><span>Modo escuro<small>espelha o botão da barra superior</small></span><button type="button" class="tg" id="tg-tema" role="switch" aria-checked="false" aria-label="Modo escuro"></button></div>
           </div>
         </div>
       </div>
@@ -412,8 +375,6 @@
 </div>
 
 <script src="assets/app.js"></script>
-<script>
-(function(){var lm=null;setInterval(function(){fetch(location.href,{method:'HEAD',cache:'no-store'}).then(function(r){var v=r.headers.get('Last-Modified');if(lm&&v&&v!==lm){location.reload();}if(!lm){lm=v;}}).catch(function(){});},2000);})();
-</script>
+<script src="assets/dev-reload.js"></script>
 </body>
 </html>

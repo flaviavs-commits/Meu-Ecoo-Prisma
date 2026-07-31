@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Direção · Prisma</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<!-- Tema salvo aplicado antes do primeiro paint. O app.js roda no fim do
+     body, tarde demais: com o escuro salvo, a pagina piscava clara e so
+     depois virava escura. -->
+<script>try{var t=localStorage.getItem('prisma-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/ui.css">
 </head>
@@ -30,6 +35,8 @@
 <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.6h7l4.4 4.4v11a1.4 1.4 0 0 1-1.4 1.4H7A1.4 1.4 0 0 1 5.6 19V5A1.4 1.4 0 0 1 7 3.6Z"/><path d="M14 3.6V8h4.4"/></symbol>
 <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.6 21 19.4H3Z"/><path d="M12 10.2v4"/><path d="M12 16.8v.1"/></symbol>
 <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 8h14M5 16h14"/><circle cx="9" cy="8" r="2.1" fill="var(--card)"/><circle cx="15" cy="16" r="2.1" fill="var(--card)"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3.2v2M12 18.8v2M3.2 12h2M18.8 12h2M5.7 5.7l1.4 1.4M16.9 16.9l1.4 1.4M18.3 5.7l-1.4 1.4M7.1 16.9l-1.4 1.4"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.2A8 8 0 1 1 10.8 4 6.4 6.4 0 0 0 20 13.2Z"/></symbol>
 <!-- Logo oficial do Prisma: mesmo path de frontend/src/components/ui/Logo.tsx -->
 <symbol id="i-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
   <path d="M16 6.38 6.35 21.56 16 25.37l9.65-3.81Z"/>
@@ -59,7 +66,7 @@
   </nav>
   <div class="spacer"></div>
   <div class="ddwrap sideuser-wrap">
-    <button class="sideuser" style="cursor:default">
+    <button class="sideuser" data-dd="dd-sideuser" aria-haspopup="true">
       <span class="av" style="background:#C79A2A">CN</span>
       <div><b>Cláudia Nunes</b><span>Direção</span></div>
       <svg class="ic out-ic"><use href="#i-chev-up"/></svg>
@@ -77,6 +84,7 @@
 <main class="main">
   <div class="topbar">
     <span class="topsp"></span>
+    <button class="iconbtn" id="themebtn" type="button" aria-label="Alternar tema"><svg class="ic" id="theme-ic"><use href="#i-moon"/></svg></button>
     <span class="ddwrap">
       <button class="iconbtn" data-dd="dd-notif" aria-label="Notificações"><svg class="ic"><use href="#i-bell"/></svg><span class="ndot"></span></button>
       <div class="dd" id="dd-notif">
@@ -116,6 +124,7 @@
       <div class="tile"><span class="tico"><svg class="ic"><use href="#i-cal"/></svg></span><div class="lbl">Frequência média</div><div class="num">93%</div><div class="sub down">▼ 1 p.p. vs. junho</div></div>
       <div class="tile"><span class="tico"><svg class="ic"><use href="#i-coin"/></svg></span><div class="lbl">Créditos usados</div><div class="num">62%</div><div class="sub">do plano mensal</div></div>
     </div>
+    <p class="sectlbl">Detalhamento</p>
     <div class="cols">
       <div class="card">
         <h2><svg class="ic"><use href="#i-chart"/></svg>Média por série</h2>
@@ -281,8 +290,8 @@
         <div class="card">
           <h2><svg class="ic"><use href="#i-clock"/></svg>Movimentos recentes</h2>
           <ul class="list" style="margin-top:12px">
-            <li><div class="tx"><b>+2.000 para professores</b><span>semana de provas · 14/07</span></div><span class="pill p-ok">aplicado</span></li>
-            <li><div class="tx"><b>Recarga extra 5.000</b><span>solicitada · 02/07</span></div><span class="pill p-ok">aplicado</span></li>
+            <li><div class="tx"><b>+2.000 para professores</b><span>semana de provas · 29/07</span></div><span class="pill p-ok">aplicado</span></li>
+            <li><div class="tx"><b>Recarga extra 5.000</b><span>solicitada · 17/07</span></div><span class="pill p-ok">aplicado</span></li>
             <li><div class="tx"><b>Bloqueio fim de semana</b><span>política desde junho</span></div><span class="pill p-ia">ativa</span></li>
           </ul>
         </div>
@@ -294,10 +303,10 @@
   <section class="screen" id="s-relatorios">
     <div class="phead"><div class="tx"><p class="eyebrow">Relatórios</p><h1>Documentos gerados pela IA</h1></div></div>
     <div class="cols">
-      <div class="card">
+      <div class="card" id="relatorios-lista">
         <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Relatório mensal — junho/2026</b><span>desempenho + frequência + créditos · 18 págs</span></div><div class="end"><span class="pill p-ok">enviado</span><button class="btn btn-gho btn-sm" aria-label="Baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
         <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Boletins do 2º bimestre</b><span>412 boletins individuais · PDF</span></div><div class="end"><span class="pill p-ok">gerado</span><button class="btn btn-gho btn-sm" aria-label="Baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
-        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Ata — conselho de classe 9º ano</b><span>rascunho a partir da gravação · 05/07</span></div><div class="end"><span class="pill p-warn">revisar</span><button class="btn btn-gho btn-sm" aria-label="Baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Ata — conselho de classe 9º ano</b><span>rascunho a partir da gravação · 20/07</span></div><div class="end"><span class="pill p-warn">revisar</span><button class="btn btn-gho btn-sm" aria-label="Baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
         <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Relatório mensal — julho/2026</b><span>agendado para 01/08 · automático</span></div><div class="end"><span class="pill p-ia">agendado</span></div></div>
       </div>
       <div class="card">
@@ -306,7 +315,7 @@
         <div class="field"><label>Período</label><div class="selectbox">2º bimestre de 2026<svg class="ic"><use href="#i-chev"/></svg></div></div>
         <div class="field"><label>Modelo</label><div class="selectbox">Padrão da mantenedora<svg class="ic"><use href="#i-chev"/></svg></div></div>
         <div class="togglerow"><span>Incluir análise da IA</span><span class="tg"></span></div>
-        <div class="tfoot" style="margin-top:10px"><button class="btn btn-pri" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg>Gerar · 6 créditos</button></div>
+        <div class="tfoot" style="margin-top:10px"><button class="btn btn-pri" id="relatorio-gerar" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg>Gerar · 6 créditos</button></div>
       </div>
     </div>
   </section>
@@ -374,7 +383,7 @@
         </div>
         <div class="card">
           <h2><svg class="ic"><use href="#i-logout"/></svg>Sessão</h2>
-          <p class="desc">Conectada neste dispositivo desde 01/07.</p>
+          <p class="desc">Conectada neste dispositivo desde 16/07.</p>
           <a class="btn btn-danger" href="./"><svg class="ic"><use href="#i-logout"/></svg>Sair da conta</a>
         </div>
       </div>
@@ -395,6 +404,7 @@
             <div class="togglerow"><span>Alertas de risco de evasão<small>previsões da IA em tempo real</small></span><span class="tg"></span></div>
             <div class="togglerow"><span>Alertas de créditos<small>quando uma cota passar de 80%</small></span><span class="tg"></span></div>
             <div class="togglerow"><span>Relatório mensal automático<small>gerar e enviar à mantenedora</small></span><span class="tg"></span></div>
+            <div class="togglerow"><span>Modo escuro<small>espelha o botão da barra superior</small></span><button type="button" class="tg" id="tg-tema" role="switch" aria-checked="false" aria-label="Modo escuro"></button></div>
           </div>
         </div>
       </div>
@@ -403,8 +413,6 @@
 </div>
 
 <script src="assets/app.js"></script>
-<script>
-(function(){var lm=null;setInterval(function(){fetch(location.href,{method:'HEAD',cache:'no-store'}).then(function(r){var v=r.headers.get('Last-Modified');if(lm&&v&&v!==lm){location.reload();}if(!lm){lm=v;}}).catch(function(){});},2000);})();
-</script>
+<script src="assets/dev-reload.js"></script>
 </body>
 </html>

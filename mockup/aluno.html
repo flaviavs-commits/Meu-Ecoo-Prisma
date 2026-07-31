@@ -4,8 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aluno · Prisma</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<!-- Tema salvo aplicado antes do primeiro paint. O app.js roda no fim do
+     body, tarde demais: com o escuro salvo, a pagina piscava clara e so
+     depois virava escura. -->
+<script>try{var t=localStorage.getItem('prisma-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/ui.css">
+<!-- Tutor: carrega depois do ui.css (herda os tokens) e tutor-painel depois de tutor -->
+<link rel="stylesheet" href="assets/tutor.css">
+<link rel="stylesheet" href="assets/tutor-painel.css">
 </head>
 <body>
 
@@ -62,7 +70,7 @@
   </nav>
   <div class="spacer"></div>
   <div class="ddwrap sideuser-wrap">
-    <button class="sideuser" style="cursor:default">
+    <button class="sideuser" data-dd="dd-sideuser" aria-haspopup="true">
       <span class="av">MS</span>
       <div><b>Marina Souza</b><span data-i18n="perfil.estudante">Estudante</span></div>
       <svg class="ic out-ic"><use href="#i-chev-up"/></svg>
@@ -129,17 +137,14 @@
       <div class="tile"><span class="tico"><svg class="ic"><use href="#i-check"/></svg></span><div class="lbl" data-i18n="inicio.simuladosFeitos">Simulados feitos</div><div class="num" data-estado="simulados">8</div><div class="sub up">▲ 2 esta semana</div></div>
       <div class="tile"><span class="tico"><svg class="ic"><use href="#i-book"/></svg></span><div class="lbl" data-i18n="inicio.materiaisSalvos">Materiais salvos</div><div class="num" data-estado="materiais">23</div><div class="sub">último: ontem</div></div>
     </div>
+    <p class="sectlbl" data-i18n="inicio.continueEstudando">Continue estudando</p>
     <div class="cols">
       <div class="card hero">
         <h2><svg class="ic"><use href="#i-chat"/></svg><span data-i18n="nav.tutor">Tutor de IA</span></h2>
         <p class="desc">Português · retomando a sessão de terça-feira</p>
-        <div class="memo"><svg class="ic"><use href="#i-spark"/></svg><span><b>Dificuldade em orações subordinadas</b> · música · simulado 18/07</span></div>
-        <div class="chat">
-          <div class="m-ai"><span class="av"><svg><use href="#i-spark"/></svg></span><div class="tx">Na terça você confundiu oração <b>adjetiva</b> com <b>adverbial</b>. Que tal testarmos com um verso do Chico Buarque?</div></div>
-          <div class="m-me">Adverbial! Concessão, né?</div>
-          <div class="m-ai"><span class="av"><svg><use href="#i-spark"/></svg></span><div class="tx">A <b>adjetiva</b> qualifica um substantivo, quase sempre com "que". A <b>adverbial</b> indica circunstância. Aplica: <i>"Apesar de você, amanhã há de ser outro dia"</i> — que tipo é?</div></div>
-        </div>
-        <div class="composer"><input placeholder="Responder ao tutor…" aria-label="Mensagem" data-i18n-attr="placeholder:tutor.responder;aria-label:tutor.mensagem"><button class="send" aria-label="Enviar" data-i18n-attr="aria-label:acao.enviar"><svg><use href="#i-send"/></svg></button></div>
+        <div class="memo"><svg class="ic"><use href="#i-spark"/></svg><span><b>Dificuldade em orações subordinadas</b> · música · simulado 24/07</span></div>
+        <div class="m-ai"><span class="av"><svg><use href="#i-spark"/></svg></span><div class="tx">Na terça você confundiu oração <b>adjetiva</b> com <b>adverbial</b>. Vamos retomar com um verso do Chico Buarque?</div></div>
+        <button class="btn btn-pri" data-s="tutor" style="width:100%;justify-content:center;margin-top:16px"><svg class="ic"><use href="#i-send"/></svg><span data-i18n="inicio.continuarConversa">Continuar conversa</span></button>
       </div>
       <div class="stack">
         <div class="card">
@@ -155,14 +160,15 @@
         <div class="card">
           <h2><svg class="ic"><use href="#i-cal"/></svg><span data-i18n="inicio.proximos">Próximos</span></h2>
           <ul class="list" style="margin-top:12px">
-            <li data-ir="simulados" tabindex="0" role="button"><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Simulado de Português</b><span>45 questões · ENEM</span></div><span class="pill p-bad">sexta 18/07</span></li>
-            <li data-ir="materiais" tabindex="0" role="button"><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Revisão de História</b><span>Era Vargas · resumo pendente</span></div><span class="pill p-warn">22/07</span></li>
+            <li data-ir="simulados" tabindex="0" role="button"><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Simulado de Português</b><span>45 questões · ENEM</span></div><span class="pill p-bad">sexta 07/08</span></li>
+            <li data-ir="materiais" tabindex="0" role="button"><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Revisão de História</b><span>Era Vargas · resumo pendente</span></div><span class="pill p-warn">11/08</span></li>
             <li data-ir="notas" tabindex="0" role="button"><span class="dot" style="background:var(--good)"></span><div class="tx"><b>Lista de Matemática</b><span>Funções do 2º grau</span></div><span class="pill p-ok" data-i18n="status.concluida">concluída</span></li>
           </ul>
         </div>
       </div>
     </div>
 
+    <p class="sectlbl" data-i18n="progresso.eyebrow">Desempenho</p>
     <div class="card fullcard">
       <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="progresso.porMateria">Progresso por matéria</span></h2>
       <p class="desc" data-i18n="progresso.ultimosSimulados">Últimos simulados</p>
@@ -314,7 +320,7 @@
                     <label data-i18n="tutor.conteudoEpisodio">Conteúdo do episódio</label>
                     <div class="tut-pick">
                       <label class="tut-pick-item"><input type="checkbox" checked><span><b>Orações reduzidas</b><small>sessão de hoje · Português</small></span></label>
-                      <label class="tut-pick-item"><input type="checkbox"><span><b>Subordinadas adjetivas</b><small>revisado 15/07</small></span></label>
+                      <label class="tut-pick-item"><input type="checkbox"><span><b>Subordinadas adjetivas</b><small>revisado 30/07</small></span></label>
                       <label class="tut-pick-item"><input type="checkbox" checked><span><b>Prova_Portugues_2023.pdf</b><small data-i18n="tutor.arquivoContexto">arquivo de contexto</small></span></label>
                       <label class="tut-pick-item"><input type="checkbox"><span><b>Era Vargas</b><small>História · flashcards</small></span></label>
                     </div>
@@ -353,7 +359,7 @@
                       </div>
                       <div class="tut-ep-item">
                         <button class="tut-ep-play" aria-label="Reproduzir"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></button>
-                        <div class="tut-ep-tx"><b>Análise sintática — resumo</b><span>15/07 · 5:40</span></div>
+                        <div class="tut-ep-tx"><b>Análise sintática — resumo</b><span>30/07 · 5:40</span></div>
                         <span class="tut-ep-dur">5:40</span>
                       </div>
                     </div>
@@ -489,19 +495,19 @@
         <span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><b>Resumo — Orações subordinadas</b><span>Português</span><span class="pill p-ia">gerado por IA</span><span class="mdate">gerado ontem</span>
       </div>
       <div class="mat" data-kind="importado" data-name="apostila análise sintática" data-date="2026-07-10">
-        <span class="mic"><svg class="ic"><use href="#i-book"/></svg></span><b>Apostila — Análise sintática</b><span>Material externo</span><span class="pill p-ok">importado</span><span class="mdate">10/07</span>
+        <span class="mic"><svg class="ic"><use href="#i-book"/></svg></span><b>Apostila — Análise sintática</b><span>Material externo</span><span class="pill p-ok">importado</span><span class="mdate">25/07</span>
       </div>
       <div class="mat" data-kind="gerado" data-name="flashcards era vargas história" data-date="2026-07-09">
-        <span class="mic"><svg class="ic"><use href="#i-cards"/></svg></span><b>Flashcards — Era Vargas</b><span>História · 32 cartões</span><span class="pill p-ia">gerado por IA</span><span class="mdate">09/07</span>
+        <span class="mic"><svg class="ic"><use href="#i-cards"/></svg></span><b>Flashcards — Era Vargas</b><span>História · 32 cartões</span><span class="pill p-ia">gerado por IA</span><span class="mdate">24/07</span>
       </div>
       <div class="mat" data-kind="gerado" data-name="áudio funções do 2º grau matemática" data-date="2026-07-08">
-        <span class="mic"><svg class="ic"><use href="#i-audio"/></svg></span><b>Áudio — Funções do 2º grau</b><span>Matemática · 8 min</span><span class="pill p-ia">gerado por IA</span><span class="mdate">08/07</span>
+        <span class="mic"><svg class="ic"><use href="#i-audio"/></svg></span><b>Áudio — Funções do 2º grau</b><span>Matemática · 8 min</span><span class="pill p-ia">gerado por IA</span><span class="mdate">23/07</span>
       </div>
       <div class="mat" data-kind="importado" data-name="slides química orgânica" data-date="2026-07-08">
-        <span class="mic"><svg class="ic"><use href="#i-book"/></svg></span><b>Slides — Química orgânica</b><span>Material externo</span><span class="pill p-ok">importado</span><span class="mdate">08/07</span>
+        <span class="mic"><svg class="ic"><use href="#i-book"/></svg></span><b>Slides — Química orgânica</b><span>Material externo</span><span class="pill p-ok">importado</span><span class="mdate">23/07</span>
       </div>
       <div class="mat" data-kind="importado" data-name="guia de redação enem português" data-date="2026-07-02">
-        <span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><b>Guia de redação ENEM</b><span>modelo nota 1000</span><span class="pill p-ok">importado</span><span class="mdate">02/07</span>
+        <span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><b>Guia de redação ENEM</b><span>modelo nota 1000</span><span class="pill p-ok">importado</span><span class="mdate">17/07</span>
       </div>
     </div>
 
@@ -532,10 +538,10 @@
         <div class="card">
           <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="simulados.historico">Histórico</span></h2>
           <div style="margin-top:12px">
-            <div class="hrow"><span class="hlbl">Português · 15/07</span><span class="hbar"><i style="--w:80%"></i></span><span class="hval">8,0</span></div>
-            <div class="hrow"><span class="hlbl">Matemática · 14/07</span><span class="hbar"><i style="--w:55%"></i></span><span class="hval">5,5</span></div>
-            <div class="hrow"><span class="hlbl">História · 12/07</span><span class="hbar"><i style="--w:90%"></i></span><span class="hval">9,0</span></div>
-            <div class="hrow"><span class="hlbl">Português · 09/07</span><span class="hbar"><i style="--w:70%"></i></span><span class="hval">7,0</span></div>
+            <div class="hrow"><span class="hlbl">Português · 30/07</span><span class="hbar"><i style="--w:80%"></i></span><span class="hval">8,0</span></div>
+            <div class="hrow"><span class="hlbl">Matemática · 29/07</span><span class="hbar"><i style="--w:55%"></i></span><span class="hval">5,5</span></div>
+            <div class="hrow"><span class="hlbl">História · 27/07</span><span class="hbar"><i style="--w:90%"></i></span><span class="hval">9,0</span></div>
+            <div class="hrow"><span class="hlbl">Português · 24/07</span><span class="hbar"><i style="--w:70%"></i></span><span class="hval">7,0</span></div>
           </div>
         </div>
       </div>
@@ -582,8 +588,8 @@
         <div class="card">
           <h2><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="progresso.ultimosSimulados">Últimos simulados</span></h2>
           <ul class="list" style="margin-top:12px">
-            <li data-ir="simulados" tabindex="0" role="button"><div class="tx"><b>História — Era Vargas</b><span>15 questões · 11/07</span></div><span class="pill p-ok">92%</span></li>
-            <li data-ir="simulados" tabindex="0" role="button"><div class="tx"><b>Matemática — Funções</b><span>10 questões · 08/07</span></div><span class="pill p-warn">58%</span></li>
+            <li data-ir="simulados" tabindex="0" role="button"><div class="tx"><b>História — Era Vargas</b><span>15 questões · 26/07</span></div><span class="pill p-ok">92%</span></li>
+            <li data-ir="simulados" tabindex="0" role="button"><div class="tx"><b>Matemática — Funções</b><span>10 questões · 23/07</span></div><span class="pill p-warn">58%</span></li>
             <li data-ir="simulados" tabindex="0" role="button"><div class="tx"><b>Português — Redação</b><span>tema: meio ambiente</span></div><span class="pill p-ok">80%</span></li>
           </ul>
         </div>
@@ -594,7 +600,7 @@
   <!-- ══ AGENDA ══ -->
   <section class="screen" id="s-agenda">
     <div class="phead">
-      <div class="tx"><p class="eyebrow" data-i18n="nav.agendaEyebrow">Agenda</p><h1>Semana de 14 a 18 de julho</h1></div>
+      <div class="tx"><p class="eyebrow" data-i18n="nav.agendaEyebrow">Agenda</p><h1>Semana de 29 de julho a 2 de agosto</h1></div>
       <div class="actions"><button class="btn btn-gho" data-i18n="acao.anterior">Anterior</button><button class="btn btn-gho" data-i18n="acao.proxima">Próxima</button></div>
     </div>
     <div class="card">
@@ -634,7 +640,7 @@
         </div>
         <div class="card">
           <h2><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sessao">Sessão</span></h2>
-          <p class="desc">Conectada neste dispositivo desde 14/07.</p>
+          <p class="desc">Conectada neste dispositivo desde 29/07.</p>
           <a class="btn btn-danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sairDaConta">Sair da conta</span></a>
         </div>
       </div>
@@ -663,8 +669,6 @@
 
 <script src="assets/i18n.js"></script>
 <script src="assets/app.js"></script>
-<script>
-(function(){var lm=null;setInterval(function(){fetch(location.href,{method:'HEAD',cache:'no-store'}).then(function(r){var v=r.headers.get('Last-Modified');if(lm&&v&&v!==lm){location.reload();}if(!lm){lm=v;}}).catch(function(){});},2000);})();
-</script>
+<script src="assets/dev-reload.js"></script>
 </body>
 </html>

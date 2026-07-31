@@ -43,7 +43,6 @@ DESTINO = RAIZ / "frontend" / "public" / "app"
 TELAS = (
     "index.html",
     "login.html",
-    "criar-conta.html",
     "aluno.html",
     "professor.html",
     "diretor.html",

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prisma</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/fonts.css">
 <!-- Josefin Sans: mesma fonte de titulo usada em toda a landing do
      Prisma (frontend/index.html). Sem este import, o navegador cai
@@ -166,7 +167,7 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercas
 <div class="split">
 
   <aside class="dark">
-    <a class="brand" href="landing.html"><svg><use href="#e-logo"/></svg><b>Prisma</b></a>
+    <a class="brand" href="./"><svg><use href="#e-logo"/></svg><b>Prisma</b></a>
     <div class="mid">
       <h1>Um crédito.<br>Três perfis.<br>Uma memória.</h1>
       <p class="lead">Um tema entra. Saem materiais prontos para aluno, professor e diretor — cada um com sua própria cor, ferramentas e saldo de créditos.</p>
@@ -215,8 +216,6 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercas
 document.getElementById('foot-copyright').textContent =
   '© ' + new Date().getFullYear() + ' Prisma. Todos os direitos reservados.';
 </script>
-<script>
-(function(){var lm=null;setInterval(function(){fetch(location.href,{method:'HEAD',cache:'no-store'}).then(function(r){var v=r.headers.get('Last-Modified');if(lm&&v&&v!==lm){location.reload();}if(!lm){lm=v;}}).catch(function(){});},2000);})();
-</script>
+<script src="assets/dev-reload.js"></script>
 </body>
 </html>

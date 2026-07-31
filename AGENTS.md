@@ -8,9 +8,9 @@
 
 ## 0. Contexto deste projeto
 
-O **PrismaTest** e a implementacao web do produto documentado em `Estudo-com-IA`: uma plataforma SaaS de estudos para instituicoes de ensino, com OpenRouter como motor de IA, creditos por assinatura e memoria persistente por aluno.
+O **PrismaTest** e a plataforma SaaS de estudos para instituicoes de ensino, com OpenRouter como motor de IA, creditos por assinatura e memoria persistente por aluno.
 
-O repositorio de origem contem a concepcao (visao, arquitetura, perfis, creditos, memoria, roadmap) e um mockup HTML estatico. Este repositorio contem o **codigo real**.
+Este repositorio contem o **codigo real**: a landing publica (`frontend/`) e as telas de aluno, professor e diretor (`mockup/`). No inicio do projeto, concepcao e mockup viviam num repositorio separado (`Estudo-com-IA`) - hoje moram aqui, no mesmo lugar do codigo.
 
 Os padroes de qualidade ficam sincronizados em `doktor SystemDesign/`, atualizaveis com o comando `doktor` rodado na raiz.
 
