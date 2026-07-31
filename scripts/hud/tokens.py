@@ -66,4 +66,4 @@ ICONES = {
 
 RAIO = 14                  # bordas suaves, 12-16px como pedido
 ESPACO = 20                # respiro entre secoes
-ALTURA_CONSOLE = 300       # piso do console, para caber saida de verdade
+ALTURA_CONSOLE = 260       # piso do console, para caber saida de verdade

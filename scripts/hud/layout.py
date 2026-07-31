@@ -259,11 +259,15 @@ class LayoutMixin:
         self.raiz.update_idletasks()
 
         preciso = self.coluna.winfo_reqheight() + 2 * ESPACO
-        disponivel = int(self.raiz.winfo_screenheight() * 0.9)
+        # Deixa folga para a barra de tarefas e a borda da janela, senao
+        # o rodape do console fica atras dela em telas menores.
+        disponivel = int(self.raiz.winfo_screenheight() * 0.85)
         altura = min(preciso, disponivel)
         largura = max(980, self.coluna.winfo_reqwidth() + 2 * ESPACO)
 
-        self.raiz.geometry(f"{largura}x{altura}")
+        x = (self.raiz.winfo_screenwidth() - largura) // 2
+        y = max(0, (self.raiz.winfo_screenheight() - altura) // 2 - 20)
+        self.raiz.geometry(f"{largura}x{altura}+{x}+{y}")
         # Minimo: tudo que e fixo, mais um console utilizavel.
         fixo = preciso - ALTURA_CONSOLE
         self.raiz.minsize(820, min(disponivel, fixo + 160))
