@@ -337,12 +337,22 @@ h1{font-family:'Josefin Sans','Inter',sans-serif;font-size:29px;font-weight:660;
 
 /* ── Tiles ── */
 .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-.tile{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--sh);transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s}
-.tile:hover{transform:translateY(-2px);box-shadow:var(--sh-lg)}
+.tile{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--sh);transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s,border-color .2s}
+/* Filete de acento no topo, revelado no hover: da profundidade ao tile
+   sem pesar a superficie em repouso. */
+.tile::before{
+  content:"";position:absolute;inset:0 0 auto;height:2px;
+  background:linear-gradient(90deg,var(--green),color-mix(in srgb,var(--green) 30%,transparent));
+  transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.16,1,.3,1);
+}
+.tile:hover::before{transform:scaleX(1)}
+.tile:hover{transform:translateY(-2px);box-shadow:var(--sh-lg);border-color:color-mix(in srgb,var(--green) 30%,var(--line))}
 .tile .tico{
   position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:9px;
   display:grid;place-items:center;color:var(--green-ink);background:var(--green-soft);
+  transition:transform .25s cubic-bezier(.16,1,.3,1);
 }
+.tile:hover .tico{transform:scale(1.08) rotate(-4deg)}
 .tile .tico .ic{width:15px;height:15px}
 .tile .lbl{font-size:10.5px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
 .tile .num{font-family:'Josefin Sans','Inter',sans-serif;font-size:27px;font-weight:660;letter-spacing:-.02em;margin:6px 0 2px;font-variant-numeric:tabular-nums;line-height:1.05}
@@ -1173,4 +1183,63 @@ td .name{font-weight:560}
   .urgent-card .time{grid-column:auto}
   .focus-top,.bill-head{flex-direction:row}
 }
+/* ══ Retorno de acao ══
+   Mock sem backend: toda acao que salva, gera ou envia precisa de sinal
+   visivel, senao o clique parece nao ter funcionado. */
+
+/* ── Toast ── */
+.toast-host{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:120;
+  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;
+}
+.toast{
+  display:flex;align-items:center;gap:9px;max-width:min(420px,92vw);
+  padding:11px 17px;border-radius:999px;
+  background:var(--side);color:var(--side-ink);
+  border:1px solid color-mix(in srgb,var(--side-ink) 16%,transparent);
+  font-size:13px;font-weight:560;line-height:1.4;box-shadow:var(--sh-lg);
+  animation:toastIn .32s cubic-bezier(.16,1,.3,1) both;
+}
+.toast::before{
+  content:"";width:7px;height:7px;border-radius:50%;flex:none;
+  background:var(--green);box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 22%,transparent);
+}
+.toast-ok::before{background:var(--good);box-shadow:0 0 0 3px color-mix(in srgb,var(--good) 22%,transparent)}
+.toast.out{animation:toastOut .3s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.96)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(8px) scale(.97)}}
+
+/* ── Tutor digitando ── */
+.typing-dots{display:inline-flex;gap:4px;align-items:center;padding:2px 0}
+.typing-dots i{
+  width:6px;height:6px;border-radius:50%;background:var(--ink-3);
+  animation:typingBounce 1.2s infinite ease-in-out;
+}
+.typing-dots i:nth-child(2){animation-delay:.16s}
+.typing-dots i:nth-child(3){animation-delay:.32s}
+@keyframes typingBounce{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+
+/* ── Quiz respondido ── */
+.tut-opts.respondido .tut-opt{cursor:default}
+.tut-opt.certa{
+  border-color:var(--good);background:var(--good-soft);color:var(--good);font-weight:640;
+}
+.tut-opt.certa b{background:var(--good);color:var(--card);border-color:var(--good)}
+.tut-opt.errada{
+  border-color:var(--bad);background:var(--bad-soft);color:var(--bad);
+}
+.tut-opt.errada b{background:var(--bad);color:var(--card);border-color:var(--bad)}
+
+/* ── Itens de lista que navegam ── */
+[data-ir]{cursor:pointer;transition:background-color .15s,transform .15s}
+[data-ir]:hover{background:var(--card2)}
+[data-ir]:active{transform:scale(.995)}
+[data-ir]:focus-visible{outline:2px solid var(--green-ink);outline-offset:-2px;border-radius:var(--radius)}
+.list li[data-ir]{margin-inline:-8px;padding-inline:8px;border-radius:var(--radius)}
+.mat{cursor:pointer}
+
+/* Botao ocupado: o spinner herda o tamanho do texto ao lado */
+.btn:disabled,.libai-composer button:disabled{opacity:.72;cursor:default}
+.btn .tut-file-spin{margin-right:2px}
+
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}

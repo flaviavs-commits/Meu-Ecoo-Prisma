@@ -124,10 +124,10 @@
       <div class="actions"><button class="btn btn-pri" data-s="tutor"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="inicio.continuarEstudo">Continuar estudo</span></button></div>
     </div>
     <div class="tiles">
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-chat"/></svg></span><div class="lbl" data-i18n="inicio.sessoesEstudo">Sessões de estudo</div><div class="num">14</div><div class="sub up">▲ 3 esta semana</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-chat"/></svg></span><div class="lbl" data-i18n="inicio.sessoesEstudo">Sessões de estudo</div><div class="num" data-estado="sessoes">14</div><div class="sub up">▲ 3 esta semana</div></div>
       <div class="tile"><span class="tico"><svg class="ic"><use href="#i-spark"/></svg></span><div class="lbl" data-i18n="inicio.sequencia">Sequência</div><div class="num">6 dias</div><div class="sub">recorde: 11</div></div>
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-check"/></svg></span><div class="lbl" data-i18n="inicio.simuladosFeitos">Simulados feitos</div><div class="num">8</div><div class="sub up">▲ 2 esta semana</div></div>
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-book"/></svg></span><div class="lbl" data-i18n="inicio.materiaisSalvos">Materiais salvos</div><div class="num">23</div><div class="sub">último: ontem</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-check"/></svg></span><div class="lbl" data-i18n="inicio.simuladosFeitos">Simulados feitos</div><div class="num" data-estado="simulados">8</div><div class="sub up">▲ 2 esta semana</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-book"/></svg></span><div class="lbl" data-i18n="inicio.materiaisSalvos">Materiais salvos</div><div class="num" data-estado="materiais">23</div><div class="sub">último: ontem</div></div>
     </div>
     <div class="cols">
       <div class="card hero">
@@ -146,18 +146,18 @@
           <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="inicio.gerarMaterial">Gerar material</span></h2>
           <p class="desc" data-i18n="inicio.gerarMaterialDesc">Para o que foi importado ou pedido à IA</p>
           <div class="qgrid">
-            <button class="qa" data-s="materiais"><span class="qic"><svg class="ic"><use href="#i-doc"/></svg></span><span><b data-i18n="material.resumo">Resumo</b><span data-i18n="material.resumoDesc">de qualquer conteúdo</span></span></button>
+            <button class="qa" data-gerar="resumo"><span class="qic"><svg class="ic"><use href="#i-doc"/></svg></span><span><b data-i18n="material.resumo">Resumo</b><span data-i18n="material.resumoDesc">de qualquer conteúdo</span></span></button>
             <button class="qa" data-s="simulados"><span class="qic"><svg class="ic"><use href="#i-check"/></svg></span><span><b data-i18n="material.simulado">Simulado</b><span data-i18n="material.simuladoDesc">com correção</span></span></button>
-            <button class="qa" data-s="materiais"><span class="qic"><svg class="ic"><use href="#i-cards"/></svg></span><span><b data-i18n="material.flashcards">Flashcards</b><span data-i18n="material.flashcardsDesc">revisão espaçada</span></span></button>
-            <button class="qa" data-s="materiais"><span class="qic"><svg class="ic"><use href="#i-audio"/></svg></span><span><b data-i18n="material.audio">Áudio-revisão</b><span data-i18n="material.audioDesc">para o caminho</span></span></button>
+            <button class="qa" data-gerar="flashcards"><span class="qic"><svg class="ic"><use href="#i-cards"/></svg></span><span><b data-i18n="material.flashcards">Flashcards</b><span data-i18n="material.flashcardsDesc">revisão espaçada</span></span></button>
+            <button class="qa" data-gerar="audio"><span class="qic"><svg class="ic"><use href="#i-audio"/></svg></span><span><b data-i18n="material.audio">Áudio-revisão</b><span data-i18n="material.audioDesc">para o caminho</span></span></button>
           </div>
         </div>
         <div class="card">
           <h2><svg class="ic"><use href="#i-cal"/></svg><span data-i18n="inicio.proximos">Próximos</span></h2>
           <ul class="list" style="margin-top:12px">
-            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Simulado de Português</b><span>45 questões · ENEM</span></div><span class="pill p-bad">sexta 18/07</span></li>
-            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Revisão de História</b><span>Era Vargas · resumo pendente</span></div><span class="pill p-warn">22/07</span></li>
-            <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b>Lista de Matemática</b><span>Funções do 2º grau</span></div><span class="pill p-ok" data-i18n="status.concluida">concluída</span></li>
+            <li data-ir="simulados" tabindex="0" role="button"><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Simulado de Português</b><span>45 questões · ENEM</span></div><span class="pill p-bad">sexta 18/07</span></li>
+            <li data-ir="materiais" tabindex="0" role="button"><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Revisão de História</b><span>Era Vargas · resumo pendente</span></div><span class="pill p-warn">22/07</span></li>
+            <li data-ir="notas" tabindex="0" role="button"><span class="dot" style="background:var(--good)"></span><div class="tx"><b>Lista de Matemática</b><span>Funções do 2º grau</span></div><span class="pill p-ok" data-i18n="status.concluida">concluída</span></li>
           </ul>
         </div>
       </div>
@@ -440,7 +440,7 @@
   <section class="screen" id="s-materiais">
     <div class="phead">
       <div class="tx"><p class="eyebrow" data-i18n="nav.materiais">Materiais</p><h1 data-i18n="materiais.biblioteca">Biblioteca</h1></div>
-      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="materiais.gerarNovo">Gerar novo material</span></button></div>
+      <div class="actions"><button class="btn btn-pri" data-gerar="material"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="materiais.gerarNovo">Gerar novo material</span></button></div>
     </div>
 
     <div class="libai">
@@ -547,7 +547,7 @@
         <div class="field"><label data-i18n="simulados.questoes">Questões</label><div class="selectbox">15 questões · ~40 min<svg class="ic"><use href="#i-chev"/></svg></div></div>
         <div class="togglerow"><span data-i18n="simulados.focarDificuldades">Focar nas minhas dificuldades</span><button type="button" class="tg" role="switch" aria-checked="true" aria-label="Focar nas minhas dificuldades" data-i18n-attr="aria-label:simulados.focarDificuldades"></button></div>
         <div class="togglerow"><span data-i18n="tutor.correcaoComentada">Correção comentada</span><button type="button" class="tg" role="switch" aria-checked="true" aria-label="Correção comentada" data-i18n-attr="aria-label:tutor.correcaoComentada"></button></div>
-        <div class="tfoot" style="margin-top:10px"><button class="btn btn-pri" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="simulados.gerarCreditos">Gerar · 4 créditos</span></button></div>
+        <div class="tfoot" style="margin-top:10px"><button class="btn btn-pri" id="sim-gerar" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="simulados.gerarCreditos">Gerar · 4 créditos</span></button></div>
       </div>
     </div>
   </section>
@@ -582,9 +582,9 @@
         <div class="card">
           <h2><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="progresso.ultimosSimulados">Últimos simulados</span></h2>
           <ul class="list" style="margin-top:12px">
-            <li><div class="tx"><b>História — Era Vargas</b><span>15 questões · 11/07</span></div><span class="pill p-ok">92%</span></li>
-            <li><div class="tx"><b>Matemática — Funções</b><span>10 questões · 08/07</span></div><span class="pill p-warn">58%</span></li>
-            <li><div class="tx"><b>Português — Redação</b><span>tema: meio ambiente</span></div><span class="pill p-ok">80%</span></li>
+            <li data-ir="simulados" tabindex="0" role="button"><div class="tx"><b>História — Era Vargas</b><span>15 questões · 11/07</span></div><span class="pill p-ok">92%</span></li>
+            <li data-ir="simulados" tabindex="0" role="button"><div class="tx"><b>Matemática — Funções</b><span>10 questões · 08/07</span></div><span class="pill p-warn">58%</span></li>
+            <li data-ir="simulados" tabindex="0" role="button"><div class="tx"><b>Português — Redação</b><span>tema: meio ambiente</span></div><span class="pill p-ok">80%</span></li>
           </ul>
         </div>
       </div>
@@ -627,9 +627,9 @@
           <p><span data-i18n="perfil.estudante">Estudante</span> · 86 <span data-i18n="conta.creditosDisponiveis">créditos disponíveis</span></p>
           <button class="btn btn-gho btn-sm" data-i18n="conta.alterarFoto">Alterar foto</button>
           <div class="acmeta" style="margin-top:18px">
-            <span><b>14</b><span data-i18n="conta.sessoes">sessões</span></span>
+            <span><b data-estado="sessoes">14</b><span data-i18n="conta.sessoes">sessões</span></span>
             <span><b>78%</b><span data-i18n="conta.aproveitamento">aproveitamento</span></span>
-            <span><b>86</b><span data-i18n="conta.creditos">créditos</span></span>
+            <span><b data-estado="creditos">86</b><span data-i18n="conta.creditos">créditos</span></span>
           </div>
         </div>
         <div class="card">

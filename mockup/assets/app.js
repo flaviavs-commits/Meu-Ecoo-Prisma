@@ -1,11 +1,102 @@
 /* Navegação entre telas + dropdowns (notificações / conta) */
 (function () {
+
+  // ══════════════════════════════════════════════════════════════════
+  // Infraestrutura compartilhada: toast, contadores animados e estado
+  // ══════════════════════════════════════════════════════════════════
+
+  var reduzMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Aviso flutuante. Mock nao tem backend, entao toda acao que "salva"
+     ou "gera" precisa de uma confirmacao visivel - sem isso o clique
+     parece nao ter funcionado. */
+  var toastHost = null;
+  function toast(texto, tipo) {
+    if (!toastHost) {
+      toastHost = document.createElement('div');
+      toastHost.className = 'toast-host';
+      document.body.appendChild(toastHost);
+    }
+    var el = document.createElement('div');
+    el.className = 'toast' + (tipo ? ' toast-' + tipo : '');
+    el.setAttribute('role', 'status');
+    el.textContent = texto;
+    toastHost.appendChild(el);
+    setTimeout(function () { el.classList.add('out'); }, 2600);
+    setTimeout(function () { el.remove(); }, 3000);
+  }
+
+  /* Conta de 0 ate o valor final. Guarda o texto original para preservar
+     sufixo/prefixo ("6 dias", "92%") - so o numero anima. */
+  function animarNumero(el) {
+    var alvo = el.dataset.valor !== undefined ? el.dataset.valor : el.textContent;
+    var m = String(alvo).match(/-?[\d.,]+/);
+    if (!m) return;
+    var bruto = m[0];
+    var destino = parseFloat(bruto.replace(/\./g, '').replace(',', '.'));
+    if (isNaN(destino)) return;
+    var decimais = (bruto.split(/[.,]/)[1] || '').length;
+    var antes = String(alvo).slice(0, m.index);
+    var depois = String(alvo).slice(m.index + bruto.length);
+
+    function escrever(v) {
+      var txt = decimais ? v.toFixed(decimais).replace('.', ',') : String(Math.round(v));
+      el.textContent = antes + txt + depois;
+    }
+    if (reduzMovimento) { escrever(destino); return; }
+
+    var inicio = performance.now(), dur = 900;
+    function passo(agora) {
+      var t = Math.min(1, (agora - inicio) / dur);
+      escrever(destino * (1 - Math.pow(1 - t, 3)));  // easeOutCubic
+      if (t < 1) requestAnimationFrame(passo);
+    }
+    requestAnimationFrame(passo);
+  }
+
+  /* Roda os contadores e as barras da tela que acabou de abrir. As
+     barras usam --w (largura final) ja no HTML; aqui so disparamos a
+     transicao a partir de zero. */
+  function animarTela(tela) {
+    if (!tela) return;
+    tela.querySelectorAll('.tile .num').forEach(animarNumero);
+    tela.querySelectorAll('.hval').forEach(animarNumero);
+    if (reduzMovimento) return;
+    tela.querySelectorAll('.hbar i, .chart .b i').forEach(function (barra) {
+      var final = barra.style.getPropertyValue('--w') || barra.style.getPropertyValue('--h');
+      var prop = barra.style.getPropertyValue('--w') ? '--w' : '--h';
+      if (!final) return;
+      barra.style.setProperty(prop, '0%');
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { barra.style.setProperty(prop, final); });
+      });
+    });
+  }
+
+  /* Estado do aluno compartilhado entre as abas. Os tiles da tela
+     Inicio leem daqui, entao concluir um simulado numa aba reflete na
+     outra - sem isso os numeros seriam texto morto no HTML. */
+  var estado = {
+    sessoes: 14,
+    simulados: 8,
+    materiais: 23,
+    creditos: 86,
+  };
+  function definir(chave, valor) {
+    estado[chave] = valor;
+    document.querySelectorAll('[data-estado="' + chave + '"]').forEach(function (el) {
+      el.dataset.valor = String(valor);
+      animarNumero(el);
+    });
+  }
+  function somar(chave, delta) { definir(chave, (estado[chave] || 0) + delta); }
+
   // Telas
   var links = document.querySelectorAll('[data-s]');
   function show(s) {
     document.querySelectorAll('.screen').forEach(function (x) { x.classList.remove('on'); });
     var el = document.getElementById('s-' + s);
-    if (el) { void el.offsetWidth; el.classList.add('on'); }
+    if (el) { void el.offsetWidth; el.classList.add('on'); animarTela(el); }
     document.querySelectorAll('.nav a[data-s]').forEach(function (a) {
       a.classList.toggle('on', a.dataset.s === s);
     });
@@ -418,4 +509,289 @@
     }
     updateCount();
   }
+
+  // ══════════════════════════════════════════════════════════════════
+  // Acoes que antes nao respondiam ao clique
+  // ══════════════════════════════════════════════════════════════════
+
+  /* Botao "trabalhando": desabilita, troca o rotulo por um spinner e
+     devolve o original no fim. Todo fluxo de gerar usa isto, para o
+     resultado aparecer depois de uma espera - nunca instantaneo. */
+  function comCarregando(btn, rotulo, ms, aoTerminar) {
+    if (!btn || btn.disabled) return;
+    var original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="tut-file-spin"></span>' + rotulo;
+    setTimeout(function () {
+      btn.disabled = false;
+      btn.innerHTML = original;
+      if (aoTerminar) aoTerminar();
+    }, ms || 1500);
+  }
+
+  // ── Chat: composer da tela Inicio e do Tutor ──
+  /* Enviar acrescenta a fala do aluno e o tutor responde depois de uma
+     pausa com indicador de digitacao. As respostas sao um roteiro fixo
+     (nao ha IA por tras), mas o ciclo enviar/esperar/responder e real. */
+  var RESPOSTAS = [
+    'Boa. Repare que o conectivo muda o valor da oração — testa trocar por "embora" e vê se o sentido se mantém.',
+    'Quase. Reduzidas não têm conectivo explícito: o verbo vem no infinitivo, gerúndio ou particípio. Qual dos três aparece aí?',
+    'Isso mesmo. Quer fixar com três questões parecidas ou seguimos para o próximo tópico?',
+    'Vou anotar essa dúvida no seu contexto para retomarmos na próxima sessão.',
+  ];
+  var proximaResposta = 0;
+
+  function ligarChat(cfg) {
+    var input = document.querySelector(cfg.input);
+    var botao = document.querySelector(cfg.botao);
+    var fluxo = document.querySelector(cfg.fluxo);
+    if (!input || !botao || !fluxo) return;
+    var rolagem = cfg.rolagem ? document.querySelector(cfg.rolagem) : null;
+
+    function aoFim() {
+      var alvo = rolagem || fluxo;
+      alvo.scrollTop = alvo.scrollHeight;
+    }
+    function enviar() {
+      var texto = input.value.trim();
+      if (!texto) return;
+      var meu = document.createElement('div');
+      meu.className = cfg.classeMe;
+      if (cfg.bolha) {
+        var b = document.createElement('div');
+        b.className = cfg.bolha;
+        b.textContent = texto;
+        meu.appendChild(b);
+      } else {
+        meu.textContent = texto;
+      }
+      fluxo.appendChild(meu);
+      input.value = '';
+      aoFim();
+
+      var espera = document.createElement('div');
+      espera.className = cfg.classeAi + ' typing';
+      espera.innerHTML = cfg.avatar + '<div class="' + (cfg.bolha || 'tx') +
+        '"><span class="typing-dots"><i></i><i></i><i></i></span></div>';
+      fluxo.appendChild(espera);
+      aoFim();
+
+      setTimeout(function () {
+        var alvo = espera.querySelector(cfg.bolha ? '.' + cfg.bolha : '.tx');
+        espera.classList.remove('typing');
+        alvo.textContent = RESPOSTAS[proximaResposta % RESPOSTAS.length];
+        proximaResposta++;
+        aoFim();
+      }, 1400);
+    }
+
+    botao.addEventListener('click', enviar);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); enviar(); }
+    });
+  }
+
+  var AV_TUTOR = '<span class="tmsg-av"><svg><use href="#i-spark"/></svg></span>';
+  ligarChat({
+    input: '#s-inicio .composer input', botao: '#s-inicio .composer .send',
+    fluxo: '#s-inicio .chat', classeMe: 'm-me', classeAi: 'm-ai',
+    avatar: '<span class="av"><svg><use href="#i-spark"/></svg></span>',
+  });
+  ligarChat({
+    input: '.tut-input input', botao: '.tut-send',
+    fluxo: '.tut-chat .tut-flow', rolagem: '.tut-scroll',
+    classeMe: 'tmsg me', classeAi: 'tmsg ai', bolha: 'tmsg-bubble', avatar: AV_TUTOR,
+  });
+
+  // ── Tutor: quiz, matérias, ações rápidas e histórico ──
+  document.querySelectorAll('.tut-opts').forEach(function (grupo) {
+    // A alternativa "c" (condição) é a correta no enunciado do mock.
+    var certa = grupo.querySelectorAll('.tut-opt')[2];
+    grupo.addEventListener('click', function (e) {
+      var opt = e.target.closest('.tut-opt');
+      if (!opt || grupo.classList.contains('respondido')) return;
+      grupo.classList.add('respondido');
+      opt.classList.add(opt === certa ? 'certa' : 'errada');
+      if (opt !== certa) certa.classList.add('certa');
+
+      var fluxo = grupo.closest('.tut-flow');
+      var msg = document.createElement('div');
+      msg.className = 'tmsg ai';
+      msg.innerHTML = AV_TUTOR + '<div class="tmsg-bubble"></div>';
+      msg.querySelector('.tmsg-bubble').textContent = opt === certa
+        ? 'Isso. "Caminhando" é gerúndio com valor de condição — equivale a "se caminhasse".'
+        : 'Ainda não. O gerúndio aqui equivale a "se caminhasse", então o valor é de condição.';
+      fluxo.appendChild(msg);
+      var rolagem = document.querySelector('.tut-scroll');
+      if (rolagem) rolagem.scrollTop = rolagem.scrollHeight;
+    });
+  });
+
+  var subs = document.querySelectorAll('.tut-sub');
+  subs.forEach(function (b) {
+    b.addEventListener('click', function () {
+      subs.forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      toast('Sessão de ' + b.textContent.trim() + ' carregada');
+    });
+  });
+
+  document.querySelectorAll('.tut-quick button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var fluxo = document.querySelector('.tut-chat .tut-flow');
+      if (!fluxo) return;
+      var msg = document.createElement('div');
+      msg.className = 'tmsg ai';
+      msg.innerHTML = AV_TUTOR + '<div class="tmsg-bubble"></div>';
+      msg.querySelector('.tmsg-bubble').textContent =
+        b.textContent.indexOf('dica') !== -1
+          ? 'Dica: troque a oração por "se ele caminhasse". Se o sentido se mantém, o valor é condicional.'
+          : b.textContent.indexOf('parecidas') !== -1
+            ? 'Separei 3 questões do mesmo tipo. Quer começar pela mais direta?'
+            : 'Reduzida de gerúndio: verbo em -ndo, sem conectivo. O valor (causa, modo, condição, tempo) vem do contexto.';
+      fluxo.appendChild(msg);
+      var rolagem = document.querySelector('.tut-scroll');
+      if (rolagem) rolagem.scrollTop = rolagem.scrollHeight;
+    });
+  });
+
+  var histBtn = document.querySelector('.tut-hist');
+  if (histBtn) histBtn.addEventListener('click', function () {
+    toast('4 sessões anteriores nesta matéria');
+  });
+
+  // ── Listas navegáveis (Próximos, últimos simulados, agenda) ──
+  /* Cada item vira um alvo real: leva para a aba correspondente em vez
+     de ser um <li> decorativo. */
+  document.querySelectorAll('[data-ir]').forEach(function (el) {
+    el.addEventListener('click', function () { show(el.dataset.ir); });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(el.dataset.ir); }
+    });
+  });
+
+  // ── Materiais: gerar novo, assistente e abrir card ──
+  var grade = document.getElementById('lib-grid');
+  function novoMaterial(titulo, materia, icone) {
+    if (!grade) return;
+    var el = document.createElement('div');
+    el.className = 'mat';
+    el.dataset.kind = 'gerado';
+    el.dataset.name = (titulo + ' ' + materia).toLowerCase();
+    el.dataset.date = new Date().toISOString().slice(0, 10);
+    el.innerHTML =
+      '<span class="mic"><svg class="ic"><use href="#i-' + icone + '"/></svg></span>' +
+      '<b></b><span></span><span class="pill p-ia">gerado por IA</span>' +
+      '<span class="mdate">agora</span>';
+    el.querySelector('b').textContent = titulo;
+    el.querySelectorAll('span')[1].textContent = materia;
+    grade.prepend(el);
+    somar('materiais', 1);
+    toast(titulo + ' criado');
+  }
+
+  document.querySelectorAll('[data-gerar]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var tipo = btn.dataset.gerar;
+      var mapa = {
+        resumo: ['Resumo — Orações reduzidas', 'Português', 'doc'],
+        flashcards: ['Flashcards — Orações reduzidas', 'Português · 24 cartões', 'cards'],
+        audio: ['Áudio — Orações reduzidas', 'Português · 7 min', 'audio'],
+        material: ['Resumo — Análise sintática', 'Português', 'doc'],
+      };
+      var m = mapa[tipo] || mapa.material;
+      show('materiais');
+      var alvo = document.querySelector('#s-materiais .phead .btn-pri') || btn;
+      comCarregando(alvo, 'Gerando…', 1600, function () {
+        novoMaterial(m[0], m[1], m[2]);
+      });
+    });
+  });
+
+  var libaiBtn = document.querySelector('.libai-composer button');
+  var libaiInp = document.querySelector('.libai-composer input');
+  if (libaiBtn && libaiInp) {
+    libaiBtn.addEventListener('click', function () {
+      if (!libaiInp.value.trim()) { libaiInp.focus(); return; }
+      comCarregando(libaiBtn, '', 1200, function () {
+        toast('Biblioteca organizada por matéria');
+        libaiInp.value = '';
+      });
+    });
+    libaiInp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); libaiBtn.click(); }
+    });
+  }
+
+  if (grade) {
+    grade.addEventListener('click', function (e) {
+      var mat = e.target.closest('.mat');
+      if (mat) toast('Abrindo "' + mat.querySelector('b').textContent + '"');
+    });
+  }
+
+  // ── Simulados: gerar, editar meta e selects ──
+  var gerarSim = document.getElementById('sim-gerar');
+  if (gerarSim) gerarSim.addEventListener('click', function () {
+    comCarregando(gerarSim, 'Gerando simulado…', 1800, function () {
+      somar('simulados', 1);
+      somar('creditos', -4);
+      var hist = document.querySelector('#s-simulados .hrow');
+      if (hist) {
+        var novo = hist.cloneNode(true);
+        novo.querySelector('.hlbl').textContent = 'Português · agora';
+        novo.querySelector('.hbar i').style.setProperty('--w', '0%');
+        novo.querySelector('.hval').textContent = '—';
+        hist.parentElement.prepend(novo);
+      }
+      toast('Simulado gerado · 15 questões', 'ok');
+    });
+  });
+
+  document.querySelectorAll('.selectbox').forEach(function (sel) {
+    sel.addEventListener('click', function () { toast('Seletor apenas ilustrativo neste mockup'); });
+  });
+
+  var editarMeta = document.querySelector('[data-i18n="simulados.editarMeta"]');
+  if (editarMeta) editarMeta.addEventListener('click', function () {
+    toast('Edição de meta chega na próxima versão');
+  });
+
+  // ── Agenda: navegar entre semanas ──
+  (function () {
+    var titulo = document.querySelector('#s-agenda h1');
+    var btns = document.querySelectorAll('#s-agenda .actions .btn');
+    if (!titulo || btns.length < 2) return;
+    var semanas = [
+      'Semana de 7 a 11 de julho',
+      'Semana de 14 a 18 de julho',
+      'Semana de 21 a 25 de julho',
+    ];
+    var atual = 1;
+    function pintar() {
+      titulo.textContent = semanas[atual];
+      btns[0].disabled = atual === 0;
+      btns[1].disabled = atual === semanas.length - 1;
+    }
+    btns[0].addEventListener('click', function () { if (atual > 0) { atual--; pintar(); } });
+    btns[1].addEventListener('click', function () { if (atual < semanas.length - 1) { atual++; pintar(); } });
+    pintar();
+  })();
+
+  // ── Conta: salvar, trocar senha, foto ──
+  var salvar = document.querySelector('[data-i18n="conta.salvarAlteracoes"]');
+  if (salvar) salvar.addEventListener('click', function () {
+    comCarregando(salvar, 'Salvando…', 900, function () { toast('Alterações salvas', 'ok'); });
+  });
+  var trocarSenha = document.querySelector('[data-i18n="conta.trocarSenha"]');
+  if (trocarSenha) trocarSenha.addEventListener('click', function () {
+    toast('Enviamos um link de troca de senha para o seu e-mail');
+  });
+  var alterarFoto = document.querySelector('[data-i18n="conta.alterarFoto"]');
+  if (alterarFoto) alterarFoto.addEventListener('click', function () {
+    toast('Upload de foto chega na próxima versão');
+  });
+
+  // Anima a tela que ja esta aberta no carregamento
+  animarTela(document.querySelector('.screen.on'));
 })();
