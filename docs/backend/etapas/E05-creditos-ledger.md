@@ -1,6 +1,6 @@
 # E05 - Creditos (ledger)
 
-> **Status:** BLOQUEADA · **Responsavel:** /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md
+> **Status:** CONCLUIDA · **Responsavel:** /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md
 > **Depende de:** E04 · **Destrava:** E06
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -207,16 +207,17 @@ exponha na API; registre o envio como pendencia.
 - [2026-08-03] **Estado real ao parar**: codigo de `creditos/` completo e correto contra o contrato (models, servicos, views, 12 testes). Volto para `EM ANDAMENTO` sozinho quando **E02 definir `contas.Instituicao`/`contas.Usuario` de verdade** (contrato: campos `instituicao`, `perfil`, email como login) - nesse momento: adicionar `"creditos"` a `INSTALLED_APPS`, rodar `makemigrations creditos`, `migrate`, e os 12 testes com `pytest creditos/`. Proximo passo concreto de quem retomar (eu ou outro agente, verificando este diario primeiro): checar se `contas/models.py` deixou de ser stub; se sim, rodar a bateria acima e colar a saida real aqui antes de marcar `CONCLUIDA`. Nao commitar `backend/.venv/` (adicionar a `.gitignore` se ainda nao estiver).
 - [2026-08-03] Retomei E05 como /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md - por que: E02 existe e o usuario autorizou assumir todas as etapas - como validei: criei os apps mínimos `academico.Turma` e `ia.ChamadaIA`, registrei `creditos`, gerei `creditos/migrations/0001_initial.py` e rodei `DATABASE_URL=sqlite:///local-test.sqlite3 pytest creditos/ -q`: `11 passed, 1 skipped`. O único skip é a concorrência real, pois SQLite retorna `database table is locked`; esse cenário exige PostgreSQL e não foi falsamente marcado como aprovado. Estado final: **BLOQUEADA** até validar concorrência em PostgreSQL e integrar as views ao roteador.
 - [2026-08-03] Completei a retomada local de E05 como /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md - por que: o usuario autorizou SQLite somente para desenvolvimento, mantendo PostgreSQL como alvo de producao; integrei as rotas de creditos ao roteador, adicionei consulta de alerta de saldo, validei escopo de usuario/turma entre tenants, auditoria da reducao e testes HTTP com APIClient. Como validei: `DATABASE_URL=sqlite:///local-test.sqlite3 .venv/bin/pytest ./creditos/ -q` retornou `22 passed, 1 skipped`; o skip continua somente no teste concorrente real, porque SQLite bloqueia a tabela inteira. A suite transversal retornou `45 passed, 1 skipped` e `manage.py check` passou. Estado final: **BLOQUEADA** apenas pela prova de concorrencia que requer PostgreSQL acessivel.
+- [2026-08-03] Desbloqueei e concluí a E05 localmente como /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md - por que: havia PostgreSQL local acessível, então a prova que o SQLite não consegue representar foi executada sem Railway. Como validei: `DATABASE_URL=postgresql://postgres@localhost:5432/postgres .venv/bin/pytest ./creditos/tests/test_concorrencia.py -q` retornou `1 passed`; a suíte transversal contra o mesmo PostgreSQL retornou `46 passed`, `manage.py check` passou e `makemigrations --check --dry-run --noinput` retornou `No changes detected`. Estado final: **CONCLUIDA localmente**; Railway continua fora da validação por cobrança vencida.
 
 ## 9. Criterio de pronto
 
 - [x] Os 12 cenarios do item 5.8 foram exercitados - `11` passam no SQLite e o 12o, concorrencia, fica explicitamente bloqueado
-- [ ] O teste de concorrencia e **realmente** concorrente - escrito com duas threads e `threading.Barrier`, aguardando execucao em PostgreSQL
+- [x] O teste de concorrencia e **realmente** concorrente - duas threads e `threading.Barrier`, validado em PostgreSQL local (`1 passed`)
 - [x] Imutabilidade garantida por excecao, nao por convencao
 - [x] Nenhum `float` na cadeia de credito - verificado
 - [x] Idempotencia provada com retry simulado
 - [x] Reducao de alocacao grava auditoria - conferido no banco
 - [x] Alertas de saldo baixo calculados sem coluna mutavel e expostos na API
 - [x] Nenhum arquivo passa de 300 linhas
-- [ ] `IA.md` atualizado com a regra de bloqueio implementada - atualizacao preparada nesta retomada, ainda fora do commit por conter alteracoes de outros agentes
+- [ ] `IA.md` atualizado com a regra de bloqueio implementada - atualização feita no arquivo vivo, aguardando commit separado por conter alterações de outros agentes
 - [x] Commit feito, somente depois de validar o escopo desta etapa
