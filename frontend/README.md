@@ -30,6 +30,8 @@ do cookie HttpOnly de refresh emitido pelo backend.
 O frontend esta publicado em `https://frontend-three-ecru-55.vercel.app`. O
 build de producao usa `VITE_API_URL=/api/v1`; `vercel.json` encaminha as rotas
 da SPA e `api/proxy.ts` faz a ponte same-origin para a API publica do Railway.
+O favicon Prisma e publicado em SVG, PNG e ICO para cobrir navegadores e
+clientes que procuram o caminho tradicional `/favicon.ico`.
 
 Para publicar manualmente:
 
