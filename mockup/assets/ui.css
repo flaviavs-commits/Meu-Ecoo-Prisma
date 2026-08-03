@@ -123,7 +123,7 @@ kbd{font-family:inherit;font-size:10px;color:var(--ink-3);border:1px solid var(-
 .side{
   width:100%;flex:none;background:var(--side);border-right:0;border-bottom:1px solid var(--line-strong);
   display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;
-  padding:10px 14px;position:sticky;top:0;z-index:50;overflow:visible;
+  padding:calc(10px + env(safe-area-inset-top)) 14px calc(10px + env(safe-area-inset-bottom));position:sticky;top:0;z-index:50;overflow:visible;
 }
 .brand{display:flex;align-items:center;gap:9px;font-weight:680;font-size:13.5px;letter-spacing:-.01em;text-decoration:none;color:var(--side-ink)}
 .brand .mark{width:29px;height:29px;border-radius:9px;background:var(--green);display:grid;place-items:center;color:#fff;flex:none}
@@ -181,7 +181,7 @@ kbd{font-family:inherit;font-size:10px;color:var(--ink-3);border:1px solid var(-
 .main{flex:1;min-width:0}
 .topbar{
   position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;
-  padding:10px 16px;border-bottom:1px solid var(--line-strong);
+  padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line-strong);
   background:color-mix(in srgb,var(--canvas) 84%,transparent);
   backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);
 }
@@ -781,7 +781,7 @@ td .name{font-weight:560}
 
 /* Controles e blocos compostos mantêm leitura e toque confortáveis em telefones. */
 @media (max-width:559px){
-  .content{padding:16px 12px 44px}
+  .content{padding:16px 12px calc(44px + env(safe-area-inset-bottom))}
   .phead .tx{min-width:0}
   .phead h1{font-size:clamp(22px,7vw,32px);line-height:1.12}
   .tiles{grid-template-columns:1fr}
