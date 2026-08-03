@@ -129,9 +129,6 @@ Isso copia as telas para `frontend/public/app/`, que o Vite serve em
 `/app/`. **Rode de novo sempre que as telas mudarem la** - a pasta e
 uma copia derivada, ignorada pelo git.
 
-O script tambem ajusta o link interno `landing.html`, que nao existe
-mais aqui, para a raiz do site.
-
 > **Nao ha autenticacao.** Qualquer pessoa acessa qualquer area: o
 > "Entrar" e navegacao, nao controle de acesso. O login real entra
 > com o backend. Quando existir, basta trocar `ENTRADA_APP` em

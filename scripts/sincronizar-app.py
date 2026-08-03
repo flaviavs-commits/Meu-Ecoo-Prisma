@@ -37,9 +37,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 DESTINO = RAIZ / "frontend" / "public" / "app"
 
-# Telas que a landing referencia. `app.html` e `landing.html` ficam de
-# fora: o primeiro é um protótipo antigo, o segundo é a landing que
-# este projeto substitui.
+# Telas que a landing referencia - todas as que existem no `mockup/`.
 TELAS = (
     "index.html",
     "login.html",
@@ -48,11 +46,10 @@ TELAS = (
     "diretor.html",
 )
 
-# As telas do mockup linkam para `landing.html`, que não é copiada -
-# quem cumpre esse papel agora é a landing React, na raiz do site.
-# Sem esta troca o link cai em 404 quando servido estaticamente (em
-# desenvolvimento o Vite disfarça, devolvendo o fallback do SPA).
-SUBSTITUICOES = (('href="landing.html"', 'href="/"'),)
+# Até 2026-08-03 havia aqui uma reescrita de `href="landing.html"` para
+# `/`: o mockup tinha uma landing própria, não copiada, e o link caía em
+# 404 quando servido estaticamente. Essa landing foi apagada e as telas
+# já apontam para a raiz - a cópia agora é literal.
 
 
 def origem_padrao() -> Path:
@@ -92,17 +89,8 @@ def sincronizar(mockup: Path) -> int:
 
     copiados = 0
     for tela in TELAS:
-        conteudo = (mockup / tela).read_text(encoding="utf-8")
-
-        trocas = 0
-        for antes, depois in SUBSTITUICOES:
-            if antes in conteudo:
-                trocas += conteudo.count(antes)
-                conteudo = conteudo.replace(antes, depois)
-
-        (DESTINO / tela).write_text(conteudo, encoding="utf-8")
-        sufixo = f"  ({trocas} link ajustado)" if trocas else ""
-        print(f"    {tela}{sufixo}")
+        shutil.copy2(mockup / tela, DESTINO / tela)
+        print(f"    {tela}")
         copiados += 1
 
     assets_origem = mockup / "assets"
