@@ -24,9 +24,20 @@ A instituicao assina a plataforma e recebe creditos de IA, distribuidos pelo dir
 | Backend | Django + Django REST Framework | API, regras de negocio, contabilidade de creditos |
 | IA | OpenRouter | Acesso multi-modelo (geracao, correcao, tutoria) |
 | Banco | PostgreSQL | Usuarios, conteudo, notas, faltas, creditos, memoria |
-| Deploy | Railway | Hospedagem do backend |
+| Deploy frontend | Vercel | Landing e entrada autenticada |
+| Deploy backend | Railway | API Django e PostgreSQL |
 
 Toda chamada de IA passa pelo gateway do backend. O frontend nunca fala com o OpenRouter diretamente.
+
+## URLs de producao
+
+- Frontend: <https://frontend-three-ecru-55.vercel.app>
+- API: <https://api-production-8b58.up.railway.app>
+
+O build da Vercel usa `VITE_API_URL=/api/v1`. As rotas de autenticacao e o
+health check passam por uma funcao same-origin em `frontend/api/proxy.ts`, que
+encaminha as requisicoes para o Railway e preserva o cookie HttpOnly de refresh.
+O frontend nao depende de variaveis privadas no navegador.
 
 ## Estrutura
 
@@ -90,8 +101,8 @@ cp .env.example .env              # mantenha DATABASE_URL em SQLite no desenvolv
 ```
 
 O SQLite e a escolha segura para desenvolvimento e TDD local. Nao e necessario
-Railway para rodar ou validar o MVP. Em producao, use PostgreSQL e as variaveis
-do ambiente correspondente.
+Railway para rodar ou validar o MVP. Em producao, o frontend roda na Vercel e a
+API usa PostgreSQL no Railway com as variaveis do ambiente correspondente.
 
 ### Criar uma instituicao nova
 

@@ -25,6 +25,18 @@ npm run build
 O login usa e-mail e senha, guarda o access token apenas em memoria e depende
 do cookie HttpOnly de refresh emitido pelo backend.
 
+## Producao
+
+O frontend esta publicado em `https://frontend-three-ecru-55.vercel.app`. O
+build de producao usa `VITE_API_URL=/api/v1`; `vercel.json` encaminha as rotas
+da SPA e `api/proxy.ts` faz a ponte same-origin para a API publica do Railway.
+
+Para publicar manualmente:
+
+```bash
+vercel deploy --prod --yes --build-env VITE_API_URL=/api/v1
+```
+
 ## Template original
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.

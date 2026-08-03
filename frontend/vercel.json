@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/v1/health/",
+      "destination": "/api/proxy?path=health/"
+    },
+    {
+      "source": "/api/v1/auth/login/",
+      "destination": "/api/proxy?path=auth/login/"
+    },
+    {
+      "source": "/api/v1/auth/refresh/",
+      "destination": "/api/proxy?path=auth/refresh/"
+    },
+    {
+      "source": "/api/v1/auth/eu/",
+      "destination": "/api/proxy?path=auth/eu/"
+    },
+    {
+      "source": "/api/v1/auth/logout/",
+      "destination": "/api/proxy?path=auth/logout/"
+    },
+    {
+      "source": "/entrar",
+      "destination": "/"
+    }
+  ]
+}

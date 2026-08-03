@@ -28,7 +28,7 @@
   sem reler toda a linha do tempo abaixo. Reescreva-a a cada mudanca de estado.
 -->
 
-[2026-08-03] Landing page concluida em `frontend/` (React 19 + TypeScript + Vite 8 + Tailwind 4 + Motion 12); telas por perfil em `mockup/`. **O MVP backend local esta implementado**: E01, E03-E11 entregues em Django/DRF, com SQLite para desenvolvimento e TDD; E02 permanece bloqueada somente quanto a validacao remota de multi-tenancy. A integracao inicial esta em `/entrar`: e-mail e senha, access token apenas em memoria, refresh em cookie HttpOnly e CORS local. O HUD agora prepara SQLite, sobe Django e Vite em sequencia e encerra as arvores de processos em Windows/macOS/Linux. Railway fica fora do ciclo local enquanto a assinatura estiver pendente. Ponto de entrada: [`docs/backend/README.md`](docs/backend/README.md).
+[2026-08-03] Landing page concluida em `frontend/` (React 19 + TypeScript + Vite 8 + Tailwind 4 + Motion 12); telas por perfil em `mockup/`. **O MVP backend local esta implementado**: E01, E03-E11 entregues em Django/DRF, com SQLite para desenvolvimento e TDD; E02 permanece bloqueada somente quanto a validacao remota de multi-tenancy. A integracao inicial esta em `/entrar`: e-mail e senha, access token apenas em memoria, refresh em cookie HttpOnly e CORS local. O HUD agora prepara SQLite, sobe Django e Vite em sequencia e encerra as arvores de processos em Windows/macOS/Linux. Em producao, o frontend esta publicado na Vercel e a API permanece no Railway; o endurecimento do novo container Railway aguarda a regularizacao da assinatura. Ponto de entrada: [`docs/backend/README.md`](docs/backend/README.md).
 
 ## Objetivo do projeto
 
@@ -51,7 +51,8 @@ O repositorio `Estudo-com-IA` mantem a documentacao de concepcao (visao, arquite
 - Backend: Django 5.2.16 + DRF 3.17.1 (monolito modular), em `backend/`. Fundacao (E01) concluida em 2026-08-03. Python 3.11.15 (3.12 pedido pelo desenho, indisponivel nesta maquina - ver diario da E01).
 - Banco: PostgreSQL (Railway) - projeto "Prisma" ainda nao existe la, entao nenhuma conexao real foi validada ainda
 - IA: OpenRouter (API unificada multi-modelo)
-- Deploy: Railway
+- Deploy frontend: Vercel
+- Deploy backend: Railway
 - Testes: `pytest` + `pytest-django` no backend e Vitest no frontend, com TDD nos fluxos de autenticacao e contrato API (ver `backend/` e `frontend/src/api/`)
 
 ## Decisoes de arquitetura
@@ -458,3 +459,5 @@ Nao registre chain of thought interno. Registre apenas informacao tecnica util, 
 Nao apague nem reescreva registros antigos ao mudar uma decisao: adicione um novo registro datado explicando a mudanca, o motivo e a validacao. A unica secao reescrevivel e "Estado atual (resumo vivo)".
 
 Quando este arquivo crescer demais, mova os registros mais antigos (sem editar) para `docs/ia-archive/IA-ARCHIVE-<ano>.md` e deixe um ponteiro datado aqui.
+
+[2026-08-03] **Produção frontend/backend por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** o frontend do Meu-Ecoo-Prisma foi publicado na Vercel, com o projeto renomeado para `meu-ecoo-prisma` e alias `https://frontend-three-ecru-55.vercel.app`. O build usa `VITE_API_URL=/api/v1`; `frontend/api/proxy.ts` encaminha health e autenticacao para `https://api-production-8b58.up.railway.app`, preservando o cookie HttpOnly. Validacao real: Vercel `READY`, raiz e `/entrar` HTTP 200, health via Vercel HTTP 200, identidade sem token HTTP 401 e login invalido HTTP 401. O Railway segue com API e Postgres publicamente saudaveis no deployment anterior; a troca para `settings.prod` + Gunicorn foi aceita em configuracao, mas os deployments `557f5982-96a6-492e-a5bb-3a86c9af222c` e `588682c1-1e49-4641-9f76-34025adb7a5a` nao concluiram por restricao de assinatura/billing. Nenhum segredo foi gravado em codigo ou documentacao.

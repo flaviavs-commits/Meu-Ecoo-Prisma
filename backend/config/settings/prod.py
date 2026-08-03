@@ -5,6 +5,7 @@ import os
 from .base import *  # noqa: F401,F403
 
 DEBUG = False
+CORS_ALLOW_CREDENTIALS = True
 
 ALLOWED_HOSTS = [
     host

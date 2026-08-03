@@ -13,8 +13,9 @@ O backend ja existe em codigo e as etapas E01, E03-E11 foram implementadas e
 validadas localmente com SQLite. A E02 continua marcada como bloqueada por sua
 validacao remota/multi-tenant pendente; nao altere seus arquivos sem registrar
 a decisao no diario. A integracao atual do frontend usa `/api/v1/auth/` e o
-endpoint de saude; o Railway nao participa do ciclo local enquanto a conta
-estiver com cobranca pendente.
+endpoint de saude. Em producao, o frontend esta na Vercel e usa uma ponte
+same-origin para a API publica do Railway; o endurecimento do novo container
+Railway aguarda a regularizacao da assinatura.
 
 **Estado deste no:** as etapas de backend necessarias ao MVP local estao
 entregues. O trabalho corrente e a integracao frontend/backend e a validacao
