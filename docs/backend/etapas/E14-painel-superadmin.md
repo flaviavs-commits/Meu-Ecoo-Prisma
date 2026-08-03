@@ -1,0 +1,44 @@
+# E14 - Painel operacional do superadmin
+
+> **Status:** AGUARDANDO DECISÃO · **Responsavel:** Analizar o front do Prisma
+> **Depende de:** E04, E11 · **Destrava:** operacao interna do backend
+
+## 1. Objetivo
+
+Adicionar um painel web interno para o superadmin acompanhar e operar o
+backend do Prisma, inspirado no painel do projeto Vs, sem criar um segundo
+servico Railway ou duplicar banco/API.
+
+## 2. Decisoes
+
+- O painel sera um app Django no mesmo servico do backend, em `/painel/`.
+- O acesso inicial sera exclusivo para `is_superuser`; `is_staff` continua
+  suficiente apenas para o Django Admin existente.
+- "Tier" significa o campo `perfil` atual: `ALUNO`, `PROFESSOR` ou `DIRETOR`.
+- O superadmin pode trocar o perfil sempre que quiser. A troca exige motivo e
+  fica registrada em `RegistroDeAuditoria`.
+- O painel nao exibira conversa crua de aluno, senha, token ou segredo.
+- Exclusao fisica nao sera oferecida nesta primeira fatia; desativacao auditada
+  e o comportamento seguro ja definido pela E11.
+
+## 3. Primeira fatia
+
+- dashboard com contagens de usuarios, instituicoes e auditoria recente;
+- lista e busca de usuarios;
+- detalhe de usuario sem dados sensiveis;
+- troca de perfil com motivo e auditoria;
+- links para os registros somente leitura do Django Admin.
+
+## 4. Diario de execucao
+
+- [2026-08-03] Etapa aberta por Analizar o front do Prisma - o usuario escolheu tratar tier como perfil ALUNO/PROFESSOR/DIRETOR e autorizou troca irrestrita pelo superadmin; validacao: E11 e o codigo existente foram lidos antes da implementacao.
+- [2026-08-03] Criado o núcleo do painel em `painel_admin/` com dashboard, listagem/busca, detalhe e troca de perfil auditada - por que: entregar a primeira fatia sem duplicar o Django Admin; como validei: `pytest painel_admin/tests/test_painel_superadmin.py -q` retornou `4 passed` e `manage.py check` retornou `0 silenced` em SQLite local. Estado: falta ampliar registros, operações destrutivas e validação Railway.
+- [2026-08-03] Primeira fatia concluída localmente - por que: o núcleo seguro de troca de perfil está entregue; como validei: testes e check passaram. Estado final: **AGUARDANDO DECISÃO** para priorizar a próxima fatia (registros do backend, logs operacionais e ações destrutivas auditadas) e autorizar a validação/deploy Railway.
+
+## 5. Criterio de pronto da primeira fatia
+
+- [ ] testes TDD de acesso, troca de perfil, validação e auditoria;
+- [ ] painel protegido contra usuario comum e staff não-superuser;
+- [ ] `manage.py check` e suíte do painel passando;
+- [ ] documentação e estado atual atualizados;
+- [ ] deploy Railway validado ou bloqueio operacional registrado.

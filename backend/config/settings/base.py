@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "memoria",
     "arquivos",
     "conteudo",
+    "painel_admin",
 ]
 
 MIDDLEWARE = [

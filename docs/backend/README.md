@@ -52,6 +52,7 @@ quando houver escopo definido no painel.
 | E11 | [Admin e onboarding da escola](etapas/E11-admin-e-onboarding.md) | CONCLUIDA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md | E04 | - |
 | E12 | [Infra Railway e deploy](etapas/E12-infra-railway-e-deploy.md) | AGUARDANDO DECISAO | Claude (agente de infra) | E01 | - |
 | E13 | [API nos repos satelites](etapas/E13-api-nos-repos-satelites.md) | AGUARDANDO DECISAO | Claude (sessao 2026-08-03) | - | integracao real de E06 |
+| E14 | [Painel operacional do superadmin](etapas/E14-painel-superadmin.md) | AGUARDANDO DECISÃO | Analizar o front do Prisma | E04, E11 | operacao interna do backend |
 
 ## Ordem e paralelismo
 
@@ -90,6 +91,7 @@ E13  (independente - acontece em OUTROS repositorios)
 | E11 | Django Admin utilizavel para criar e operar a conta de uma escola |
 | E12 | Deploy no Railway, variaveis, volume, health check em producao |
 | E13 | `Estudo-IA-Resumo` e `Audiofy-Content-AI` expostos como API HTTP |
+| E14 | Painel interno do superadmin, com usuarios, auditoria e troca de perfil |
 
 ## Documentos de apoio
 
