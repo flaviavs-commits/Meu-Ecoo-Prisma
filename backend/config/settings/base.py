@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "creditos",
     "core",
     "memoria",
+    "arquivos",
 ]
 
 MIDDLEWARE = [
@@ -83,6 +84,12 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "media/"
+ARQUIVO_MAX_BYTES = int(os.environ.get("ARQUIVO_MAX_BYTES", str(10 * 1024 * 1024)))
+ARQUIVO_COTA_INSTITUICAO_BYTES = int(
+    os.environ.get("ARQUIVO_COTA_INSTITUICAO_BYTES", str(100 * 1024 * 1024))
+)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
