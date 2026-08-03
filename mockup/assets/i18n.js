@@ -83,11 +83,19 @@
     document.documentElement.lang = codigo;
   }
 
+  function fecharSeletor() {
+    var seletor = document.getElementById('dd-lang');
+    var fundo = document.getElementById('dd-backdrop');
+    if (seletor) seletor.classList.remove('open');
+    if (fundo) fundo.classList.remove('open');
+  }
+
   function setLang(codigo) {
     if (IDIOMAS.indexOf(codigo) === -1) return;
     carregar(codigo).then(function (dic) {
       aplicar(dic);
       marcarSelecionado(codigo);
+      fecharSeletor();
       try { localStorage.setItem(CHAVE_LS, codigo); } catch (e) {}
     }).catch(function (err) {
       console.error('[i18n] falha ao trocar para', codigo, err);

@@ -256,3 +256,11 @@
   .tut-opts{grid-template-columns:1fr}
   .tmsg.ai .tmsg-bubble,.tmsg.me .tmsg-bubble,.tmsg-quiz{max-width:100%}
 }
+
+@media (max-width:420px){
+  .tut-bar{padding-inline:12px}
+  .tut-scroll{padding-inline:12px}
+  .tut-dock{padding-inline:12px}
+  .tut-input{padding-left:14px}
+  .tut-brand-tx b{font-size:13px}
+}

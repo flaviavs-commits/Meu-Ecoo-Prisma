@@ -349,6 +349,57 @@ h1{font-family:'Josefin Sans','Inter',sans-serif;font-size:29px;font-weight:660;
 .card .desc{font-size:12.5px;color:var(--ink-2);margin:3px 0 16px}
 .fullcard{margin-top:16px}
 
+/* Dashboard: uma camada semântica sobre os componentes compartilhados.
+   O espaço é tratado como produto, não como uma coleção de cards: primeiro
+   contexto, depois métricas, então decisão e atividade. */
+.dashboard{max-width:1240px}
+.dashboard .dashboard-header{padding:8px 0 22px;margin-bottom:22px;border-bottom:0}
+.dashboard .dashboard-header h1{font-size:clamp(30px,3vw,42px);letter-spacing:-.035em}
+.dashboard .dashboard-header p.sub{max-width:66ch;font-size:14.5px;line-height:1.55}
+.dashboard .dashboard-header .actions{align-self:flex-end}
+.dashboard-period{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--card2);margin-left:auto}
+.dashboard-period-item{border:0;border-radius:7px;background:transparent;color:var(--ink-3);font:inherit;font-size:11.5px;font-weight:650;padding:7px 10px;cursor:pointer;transition:background .18s,color .18s,box-shadow .18s}
+.dashboard-period-item:hover{color:var(--ink)}
+.dashboard-period-item.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+.dashboard-period-item:focus-visible{outline:2px solid var(--green-ink);outline-offset:2px}
+.dashboard .dashboard-metrics{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:28px}
+.dashboard .dashboard-metrics .tile{min-height:122px;padding:18px 18px 16px;border-radius:16px}
+.dashboard .dashboard-metrics .tile .num{font-size:32px;margin-top:12px}
+.dashboard .dashboard-main{grid-template-columns:minmax(0,1.45fr) minmax(300px,.85fr);gap:18px}
+.dashboard .dashboard-main>.card,.dashboard .dashboard-main>.stack>.card{border-radius:16px}
+.dashboard .dashboard-main>.card{padding:22px}
+.dashboard .dashboard-main>.stack{gap:18px}
+.dashboard .dashboard-main .card>h2{font-size:18px}
+.dashboard .dashboard-insight{padding:22px;margin-top:20px}
+.dashboard .dashboard-insight .hrow{padding:10px 0}
+.dashboard .qa{min-height:58px}
+.dashboard .list li{min-height:48px}
+.dashboard .tile:focus-visible,.dashboard .chart .b:focus-visible{outline:2px solid var(--green-ink);outline-offset:3px}
+.dashboard-loading{pointer-events:none}
+.dashboard-loading .tile,.dashboard-loading .card{position:relative;color:transparent!important;overflow:hidden}
+.dashboard-loading .tile::after,.dashboard-loading .card::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,color-mix(in srgb,var(--card) 72%,white) 50%,transparent 80%);transform:translateX(-100%);animation:dashboardShimmer 1.15s infinite}
+.dashboard-empty-state{display:grid;place-items:center;min-height:180px;margin-top:18px;padding:24px;border:1px dashed var(--line-strong);border-radius:16px;color:var(--ink-2);background:var(--card2);text-align:center}
+@keyframes dashboardShimmer{to{transform:translateX(100%)}}
+@media (prefers-reduced-motion:reduce){.dashboard-loading .tile::after,.dashboard-loading .card::after{animation:none;transform:none;opacity:.35}}
+
+@media (max-width:900px){
+  .dashboard .dashboard-main{grid-template-columns:minmax(0,1fr)}
+  .dashboard .dashboard-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media (max-width:560px){
+  .dashboard .dashboard-header{padding-top:0;margin-bottom:18px}
+  .dashboard .dashboard-header .actions{width:100%;align-self:stretch}
+  .dashboard .dashboard-period{order:3;width:100%;margin-left:0}
+  .dashboard .dashboard-period-item{flex:1}
+  .dashboard .dashboard-header .actions .btn{flex:1;justify-content:center}
+  .dashboard .dashboard-metrics{gap:10px;margin-bottom:22px}
+  .dashboard .dashboard-metrics .tile{min-height:108px;padding:14px}
+  .dashboard .dashboard-metrics .tile .num{font-size:27px;margin-top:9px}
+  .dashboard .dashboard-main>.card{padding:16px}
+  .dashboard .dashboard-insight{padding:16px;margin-top:16px}
+}
+
 /* Divisoria essencial entre zonas da pagina: rotulo curto + regua que
    preenche o resto da largura. Distinta do .eyebrow (title da .phead,
    sempre par com h1) e do .nlabel (so sidebar) - esta e para separar
