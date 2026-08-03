@@ -79,7 +79,10 @@ export function montar(container) {
           aoConfirmar: function () { return new Promise(function (r) { setTimeout(r, 700); }); },
         }).then(function (ok) {
           if (!ok) return;
+          const pai = linha.parentNode;
+          const proximo = linha.nextSibling;
           linha.remove();
+          if (window.PrismaToastUndo) window.PrismaToastUndo('Chave revogada', function () { pai.insertBefore(linha, proximo); });
           avisar('Chave revogada', 'ok');
         });
       });

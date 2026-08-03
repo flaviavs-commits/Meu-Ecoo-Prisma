@@ -56,7 +56,10 @@ export function montar(container, ctx) {
       aoConfirmar: function () { return new Promise(function (r) { setTimeout(r, 700); }); },
     }).then(function (ok) {
       if (!ok) return;
+      const pai = linhaEl.parentNode;
+      const proximo = linhaEl.nextSibling;
       linhaEl.remove();
+      if (window.PrismaToastUndo) window.PrismaToastUndo('Pessoa removida da equipe', function () { pai.insertBefore(linhaEl, proximo); });
       avisar('Pessoa removida da equipe', 'ok');
     });
   });

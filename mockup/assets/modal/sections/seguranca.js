@@ -118,7 +118,10 @@ export function montar(container, ctx) {
       aoConfirmar: function () { return new Promise(function (r) { setTimeout(r, 700); }); },
     }).then(function (ok) {
       if (!ok) return;
+      const pai = linha.parentNode;
+      const proximo = linha.nextSibling;
       linha.remove();
+      if (window.PrismaToastUndo) window.PrismaToastUndo('Sessão encerrada', function () { pai.insertBefore(linha, proximo); });
       avisar('Sessão encerrada', 'ok');
     });
   });
@@ -135,7 +138,10 @@ export function montar(container, ctx) {
       aoConfirmar: function () { return new Promise(function (r) { setTimeout(r, 700); }); },
     }).then(function (ok) {
       if (!ok) return;
+      const pai = linha.parentNode;
+      const proximo = linha.nextSibling;
       linha.remove();
+      if (window.PrismaToastUndo) window.PrismaToastUndo('Dispositivo removido', function () { pai.insertBefore(linha, proximo); });
       avisar('Dispositivo removido', 'ok');
     });
   });

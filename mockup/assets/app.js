@@ -26,6 +26,15 @@
     setTimeout(function () { el.remove(); }, 3000);
   }
 
+  function toastUndo(texto, desfazer) {
+    if (!toastHost) { toastHost = document.createElement('div'); toastHost.className = 'toast-host'; document.body.appendChild(toastHost); }
+    var el = document.createElement('div'); el.className = 'toast toast-ok toast-undo'; el.setAttribute('role', 'status');
+    var mensagem = document.createElement('span'); mensagem.textContent = texto; el.appendChild(mensagem);
+    var botao = document.createElement('button'); botao.type = 'button'; botao.className = 'toast-undo-btn'; botao.textContent = 'Desfazer';
+    botao.addEventListener('click', function () { if (typeof desfazer === 'function') desfazer(); el.remove(); }); el.appendChild(botao); toastHost.appendChild(el);
+    setTimeout(function () { el.classList.add('out'); }, 5200); setTimeout(function () { el.remove(); }, 5600);
+  }
+
   /* Conta de 0 ate o valor final. Guarda o texto original para preservar
      sufixo/prefixo ("6 dias", "92%") - so o numero anima. */
   function animarNumero(el) {
@@ -833,6 +842,7 @@
   // duplicar os dois. (window.PrismaTheme e exposto dentro do proprio
   // IIFE de tema, mais acima, onde `temaAtual`/`aplicar` existem.)
   window.PrismaToast = toast;
+  window.PrismaToastUndo = toastUndo;
   window.PrismaCarregando = comCarregando;
 
   // Anima a tela que ja esta aberta no carregamento
