@@ -36,6 +36,7 @@
 <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.6 21 19.4H3Z"/><path d="M12 10.2v4"/><path d="M12 16.8v.1"/></symbol>
 <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 8h14M5 16h14"/><circle cx="9" cy="8" r="2.1" fill="var(--card)"/><circle cx="15" cy="16" r="2.1" fill="var(--card)"/></symbol>
 <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3.2v2M12 18.8v2M3.2 12h2M18.8 12h2M5.7 5.7l1.4 1.4M16.9 16.9l1.4 1.4M18.3 5.7l-1.4 1.4M7.1 16.9l-1.4 1.4"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8M12 3.6c2.4 2.3 3.6 5.2 3.6 8.4s-1.2 6.1-3.6 8.4c-2.4-2.3-3.6-5.2-3.6-8.4S9.6 5.9 12 3.6Z"/></symbol>
 <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.2A8 8 0 1 1 10.8 4 6.4 6.4 0 0 0 20 13.2Z"/></symbol>
 <!-- Logo oficial do Prisma: mesmo path de frontend/src/components/ui/Logo.tsx -->
 <symbol id="i-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -49,33 +50,33 @@
 <aside class="side">
   <a class="brand" href="./"><span class="mark"><svg><use href="#i-logo"/></svg></span>Prisma<span> · Direção</span></a>
 
-  <p class="nlabel">Principal</p>
+  <p class="nlabel" data-i18n="nav.principal">Principal</p>
   <nav class="nav">
-    <a class="on" data-s="visao"><svg class="ic"><use href="#i-home"/></svg>Visão geral</a>
+    <a class="on" data-s="visao"><svg class="ic"><use href="#i-home"/></svg><span data-i18n="dir.visaoGeral">Visão geral</span></a>
   </nav>
-  <p class="nlabel">Análise</p>
+  <p class="nlabel" data-i18n="dir.analise">Análise</p>
   <nav class="nav">
-    <a data-s="desempenho"><svg class="ic"><use href="#i-chart"/></svg>Desempenho</a>
-    <a data-s="frequencia"><svg class="ic"><use href="#i-cal"/></svg>Frequência</a>
+    <a data-s="desempenho"><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="dir.desempenho">Desempenho</span></a>
+    <a data-s="frequencia"><svg class="ic"><use href="#i-cal"/></svg><span data-i18n="dir.frequencia">Frequência</span></a>
   </nav>
-  <p class="nlabel">Gestão</p>
+  <p class="nlabel" data-i18n="dir.gestao">Gestão</p>
   <nav class="nav">
-    <a data-s="creditos"><svg class="ic"><use href="#i-coin"/></svg>Créditos de IA</a>
-    <a data-s="relatorios"><svg class="ic"><use href="#i-doc"/></svg>Relatórios</a>
-    <a data-s="equipe"><svg class="ic"><use href="#i-users"/></svg>Equipe</a>
+    <a data-s="creditos"><svg class="ic"><use href="#i-coin"/></svg><span data-i18n="dir.creditosIA">Créditos de IA</span></a>
+    <a data-s="relatorios"><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="dir.relatorios">Relatórios</span></a>
+    <a data-s="equipe"><svg class="ic"><use href="#i-users"/></svg><span data-i18n="dir.equipe">Equipe</span></a>
   </nav>
   <div class="spacer"></div>
   <div class="ddwrap sideuser-wrap">
     <button class="sideuser" data-dd="dd-sideuser" aria-haspopup="true">
       <span class="av" style="background:#C79A2A">CN</span>
-      <div><b>Cláudia Nunes</b><span>Direção</span></div>
+      <div><b>Cláudia Nunes</b><span data-i18n="perfil.direcao">Direção</span></div>
       <svg class="ic out-ic"><use href="#i-chev-up"/></svg>
     </button>
     <div class="dd dd-up" id="dd-sideuser">
       <p class="ddh">Cláudia Nunes</p>
-      <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b>Minha conta</b></span></a>
+      <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
       <div class="ddsep"></div>
-      <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b>Sair</b></span></a>
+      <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
     </div>
   </div>
 </aside>
@@ -84,24 +85,35 @@
 <main class="main">
   <div class="topbar">
     <span class="topsp"></span>
-    <button class="iconbtn" id="themebtn" type="button" aria-label="Alternar tema"><svg class="ic" id="theme-ic"><use href="#i-moon"/></svg></button>
     <span class="ddwrap">
-      <button class="iconbtn" data-dd="dd-notif" aria-label="Notificações"><svg class="ic"><use href="#i-bell"/></svg><span class="ndot"></span></button>
+      <button class="iconbtn" data-dd="dd-lang" aria-label="Idioma" aria-haspopup="true" data-i18n-attr="aria-label:topbar.idioma"><svg class="ic"><use href="#i-globe"/></svg></button>
+      <div class="dd" id="dd-lang" style="width:200px">
+        <p class="ddh" data-i18n="topbar.idioma">Idioma</p>
+        <button type="button" class="ddi lang-opt" data-lang="pt-BR"><span><b>Português</b><span>Brasil</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="en"><span><b>English</b><span>United States</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="es"><span><b>Español</b><span>España</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="fr"><span><b>Français</b><span>France</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="de"><span><b>Deutsch</b><span>Deutschland</span></span></button>
+      </div>
+    </span>
+    <button class="iconbtn" id="themebtn" type="button" aria-label="Alternar tema" data-i18n-attr="aria-label:topbar.alternarTema"><svg class="ic" id="theme-ic"><use href="#i-moon"/></svg></button>
+    <span class="ddwrap">
+      <button class="iconbtn" data-dd="dd-notif" aria-label="Notificações" data-i18n-attr="aria-label:topbar.notificacoes"><svg class="ic"><use href="#i-bell"/></svg><span class="ndot"></span></button>
       <div class="dd" id="dd-notif">
-        <p class="ddh">Notificações</p>
-        <a class="ddi" data-s="frequencia"><span class="dot" style="--c:var(--bad)"></span><span><b>9º ano: frequência em queda</b><span>2º mês seguido · 3 alunos críticos</span></span></a>
-        <a class="ddi" data-s="creditos"><span class="dot" style="--c:var(--gold)"></span><span><b>Reserva da direção: 500 créditos</b><span>semana de provas à frente</span></span></a>
-        <a class="ddi" data-s="relatorios"><span class="dot" style="--c:var(--good)"></span><span><b>Boletins do 2º bimestre prontos</b><span>412 PDFs gerados pela IA</span></span></a>
+        <p class="ddh" data-i18n="topbar.notificacoes">Notificações</p>
+        <a class="ddi" data-s="frequencia"><span class="dot" style="--c:var(--bad)"></span><span><b data-i18n="dir.notifFrequencia">9º ano: frequência em queda</b><span data-i18n="dir.notifFrequenciaDesc">2º mês seguido · 3 alunos críticos</span></span></a>
+        <a class="ddi" data-s="creditos"><span class="dot" style="--c:var(--gold)"></span><span><b data-i18n="dir.notifReserva">Reserva da direção: 500 créditos</b><span data-i18n="dir.notifReservaDesc">semana de provas à frente</span></span></a>
+        <a class="ddi" data-s="relatorios"><span class="dot" style="--c:var(--good)"></span><span><b data-i18n="dir.notifBoletins">Boletins do 2º bimestre prontos</b><span data-i18n="dir.notifBoletinsDesc">412 PDFs gerados pela IA</span></span></a>
       </div>
     </span>
     <span class="ddwrap">
-      <button class="avbtn" data-dd="dd-user" style="background:#C79A2A" aria-label="Conta">CN</button>
+      <button class="avbtn" data-dd="dd-user" style="background:#C79A2A" aria-label="Conta" data-i18n-attr="aria-label:topbar.conta">CN</button>
       <div class="dd" id="dd-user" style="width:230px">
         <p class="ddh">Cláudia Nunes</p>
-        <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b>Minha conta</b></span></a>
-        <a class="ddi" data-s="relatorios"><svg class="ic"><use href="#i-doc"/></svg><span><b>Relatórios</b></span></a>
+        <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+        <a class="ddi" data-s="relatorios"><svg class="ic"><use href="#i-doc"/></svg><span><b data-i18n="dir.relatorios">Relatórios</b></span></a>
         <div class="ddsep"></div>
-        <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b>Sair</b></span></a>
+        <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
       </div>
     </span>
   </div>
@@ -112,23 +124,23 @@
   <section class="screen on" id="s-visao">
     <div class="phead">
       <div class="tx">
-        <p class="eyebrow">Visão geral</p>
-        <h1>Painel da Direção</h1>
-        <p class="sub">Semestre fecha 0,3 acima da meta; frequência em queda em uma turma.</p>
+        <p class="eyebrow" data-i18n="dir.visaoGeral">Visão geral</p>
+        <h1 data-i18n="dir.painelDirecao">Painel da Direção</h1>
+        <p class="sub" data-i18n="dir.visaoSub">Semestre fecha 0,3 acima da meta; frequência em queda em uma turma.</p>
       </div>
-      <div class="actions"><button class="btn btn-gho" data-s="relatorios"><svg class="ic"><use href="#i-doc"/></svg>Relatório mensal</button><button class="btn btn-pri" data-s="creditos"><svg class="ic"><use href="#i-coin"/></svg>Gerir créditos</button></div>
+      <div class="actions"><button class="btn btn-gho" data-s="relatorios"><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="dir.relatorioMensal">Relatório mensal</span></button><button class="btn btn-pri" data-s="creditos"><svg class="ic"><use href="#i-coin"/></svg><span data-i18n="dir.gerirCreditos">Gerir créditos</span></button></div>
     </div>
     <div class="tiles">
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-users"/></svg></span><div class="lbl">Alunos ativos</div><div class="num">412</div><div class="sub up">96% de adesão</div></div>
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-chart"/></svg></span><div class="lbl">Média da escola</div><div class="num">7,2</div><div class="sub up">▲ 0,3 no semestre</div></div>
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-cal"/></svg></span><div class="lbl">Frequência média</div><div class="num">93%</div><div class="sub down">▼ 1 p.p. vs. junho</div></div>
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-coin"/></svg></span><div class="lbl">Créditos usados</div><div class="num">62%</div><div class="sub">do plano mensal</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-users"/></svg></span><div class="lbl" data-i18n="dir.alunosAtivos">Alunos ativos</div><div class="num">412</div><div class="sub up" data-i18n="dir.adesao96">96% de adesão</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-chart"/></svg></span><div class="lbl" data-i18n="dir.mediaEscola">Média da escola</div><div class="num">7,2</div><div class="sub up" data-i18n="dir.variacaoSemestre">▲ 0,3 no semestre</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-cal"/></svg></span><div class="lbl" data-i18n="dir.frequenciaMedia">Frequência média</div><div class="num">93%</div><div class="sub down" data-i18n="dir.variacaoJunho">▼ 1 p.p. vs. junho</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-coin"/></svg></span><div class="lbl" data-i18n="dir.creditosUsados">Créditos usados</div><div class="num">62%</div><div class="sub" data-i18n="dir.doPlanoMensal">do plano mensal</div></div>
     </div>
-    <p class="sectlbl">Detalhamento</p>
+    <p class="sectlbl" data-i18n="dir.detalhamento">Detalhamento</p>
     <div class="cols">
       <div class="card">
-        <h2><svg class="ic"><use href="#i-chart"/></svg>Média por série</h2>
-        <p class="desc">Bimestre atual · destaque para o 2º ano do EM</p>
+        <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="dir.mediaPorSerie">Média por série</span></h2>
+        <p class="desc" data-i18n="dir.bimestreAtual">Bimestre atual · destaque para o 2º ano do EM</p>
         <div class="chart">
           <div class="b"><b>7,1</b><i style="--h:60%"></i></div>
           <div class="b"><b>6,8</b><i style="--h:53%"></i></div>
@@ -138,24 +150,24 @@
           <div class="b hl"><b>7,9</b><i style="--h:79%"></i></div>
           <div class="b"><b>7,3</b><i style="--h:65%"></i></div>
         </div>
-        <div class="xlabels"><span>6º</span><span>7º</span><span>8º</span><span>9º</span><span>1º EM</span><span>2º EM</span><span>3º EM</span></div>
+        <div class="xlabels"><span data-i18n="serie.6">6º</span><span data-i18n="serie.7">7º</span><span data-i18n="serie.8">8º</span><span data-i18n="serie.9">9º</span><span data-i18n="serie.em1">1º EM</span><span data-i18n="serie.em2">2º EM</span><span data-i18n="serie.em3">3º EM</span></div>
       </div>
       <div class="stack">
         <div class="card">
-          <h2><svg class="ic"><use href="#i-coin"/></svg>Créditos de IA</h2>
-          <p class="desc">Plano Escola Plus · 50.000/mês</p>
+          <h2><svg class="ic"><use href="#i-coin"/></svg><span data-i18n="dir.creditosIA">Créditos de IA</span></h2>
+          <p class="desc" data-i18n="dir.planoEscolaPlus">Plano Escola Plus · 50.000/mês</p>
           <ul class="list">
-            <li><span class="dot" style="background:var(--green)"></span><div class="tx"><b>Professores</b><span>28 contas</span></div><span class="pill p-ok">18.400 usados</span></li>
-            <li><span class="dot" style="background:var(--green)"></span><div class="tx"><b>Alunos</b><span>412 contas</span></div><span class="pill p-ok">12.100 usados</span></li>
-            <li><span class="dot" style="background:var(--gold)"></span><div class="tx"><b>Reserva da direção</b><span>uso administrativo</span></div><span class="pill p-warn">500 restantes</span></li>
+            <li><span class="dot" style="background:var(--green)"></span><div class="tx"><b data-i18n="dir.professores">Professores</b><span>28 <span data-i18n="dir.contas">contas</span></span></div><span class="pill p-ok">18.400 <span data-i18n="dir.usados">usados</span></span></li>
+            <li><span class="dot" style="background:var(--green)"></span><div class="tx"><b data-i18n="dir.alunos">Alunos</b><span>412 <span data-i18n="dir.contas">contas</span></span></div><span class="pill p-ok">12.100 <span data-i18n="dir.usados">usados</span></span></li>
+            <li><span class="dot" style="background:var(--gold)"></span><div class="tx"><b data-i18n="dir.reservaDirecao">Reserva da direção</b><span data-i18n="dir.usoAdministrativo">uso administrativo</span></div><span class="pill p-warn">500 <span data-i18n="dir.restantes">restantes</span></span></li>
           </ul>
-          <div class="tfoot"><button class="btn btn-pri btn-sm" data-s="creditos">Redistribuir cotas</button></div>
+          <div class="tfoot"><button class="btn btn-pri btn-sm" data-s="creditos" data-i18n="dir.redistribuirCotas">Redistribuir cotas</button></div>
         </div>
         <div class="card">
-          <h2><svg class="ic"><use href="#i-alert"/></svg>Atenção necessária</h2>
+          <h2><svg class="ic"><use href="#i-alert"/></svg><span data-i18n="dir.atencaoNecessaria">Atenção necessária</span></h2>
           <ul class="list" style="margin-top:12px">
-            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>9º ano com queda de frequência</b><span>3 alunos perto do limite</span></div></li>
-            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>7º B abaixo da meta em Matemática</b><span>IA sugere listas adaptativas</span></div></li>
+            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b data-i18n="dir.aviso9ano">9º ano com queda de frequência</b><span data-i18n="dir.aviso9anoDesc">3 alunos perto do limite</span></div></li>
+            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b data-i18n="dir.aviso7B">7º B abaixo da meta em Matemática</b><span data-i18n="dir.aviso7BDesc">IA sugere listas adaptativas</span></div></li>
           </ul>
         </div>
       </div>
@@ -165,13 +177,13 @@
   <!-- ══ DESEMPENHO ══ -->
   <section class="screen" id="s-desempenho">
     <div class="phead">
-      <div class="tx"><p class="eyebrow">Desempenho</p><h1>Desempenho detalhado</h1></div>
-      <div class="actions"><button class="btn btn-gho"><svg class="ic"><use href="#i-download"/></svg>Exportar dados</button></div>
+      <div class="tx"><p class="eyebrow" data-i18n="dir.desempenho">Desempenho</p><h1 data-i18n="dir.desempenhoDetalhado">Desempenho detalhado</h1></div>
+      <div class="actions"><button class="btn btn-gho"><svg class="ic"><use href="#i-download"/></svg><span data-i18n="dir.exportarDados">Exportar dados</span></button></div>
     </div>
     <div class="cols">
       <div class="card">
-        <h2><svg class="ic"><use href="#i-chart"/></svg>Evolução da média geral</h2>
-        <p class="desc">Fevereiro a julho de 2026</p>
+        <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="dir.evolucaoMediaGeral">Evolução da média geral</span></h2>
+        <p class="desc" data-i18n="dir.fevAJul2026">Fevereiro a julho de 2026</p>
         <div class="chart">
           <div class="b"><b>6,7</b><i style="--h:50%"></i></div>
           <div class="b"><b>6,8</b><i style="--h:53%"></i></div>
@@ -180,31 +192,31 @@
           <div class="b"><b>7,1</b><i style="--h:61%"></i></div>
           <div class="b hl"><b>7,2</b><i style="--h:63%"></i></div>
         </div>
-        <div class="xlabels"><span>fev</span><span>mar</span><span>abr</span><span>mai</span><span>jun</span><span>jul</span></div>
-        <div class="memo" style="margin-top:16px"><svg class="ic"><use href="#i-spark"/></svg><span><b>IA Sugere</b> — 3+ sessões semanais com tutor aumentam notas em 0,8p.</span></div>
+        <div class="xlabels"><span data-i18n="mes.fev">fev</span><span data-i18n="mes.mar">mar</span><span data-i18n="mes.abr">abr</span><span data-i18n="mes.mai">mai</span><span data-i18n="mes.jun">jun</span><span data-i18n="mes.jul">jul</span></div>
+        <div class="memo" style="margin-top:16px"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n-html="dir.iaSugereMemo"><b>IA Sugere</b> — 3+ sessões semanais com tutor aumentam notas em 0,8p.</span></div>
       </div>
       <div class="card">
-        <h2><svg class="ic"><use href="#i-chart"/></svg>Média por disciplina</h2>
-        <p class="desc">Todas as séries · 2º bimestre</p>
-        <div class="hrow"><span class="hlbl">História</span><span class="hbar"><i style="--w:81%"></i></span><span class="hval">8,1</span></div>
-        <div class="hrow"><span class="hlbl">Português</span><span class="hbar"><i style="--w:76%"></i></span><span class="hval">7,6</span></div>
-        <div class="hrow"><span class="hlbl">Biologia</span><span class="hbar"><i style="--w:74%"></i></span><span class="hval">7,4</span></div>
-        <div class="hrow"><span class="hlbl">Geografia</span><span class="hbar"><i style="--w:72%"></i></span><span class="hval">7,2</span></div>
-        <div class="hrow"><span class="hlbl">Química</span><span class="hbar"><i style="--w:66%"></i></span><span class="hval">6,6</span></div>
-        <div class="hrow"><span class="hlbl">Física</span><span class="hbar mute"><i style="--w:62%"></i></span><span class="hval">6,2</span></div>
-        <div class="hrow"><span class="hlbl">Matemática</span><span class="hbar gold"><i style="--w:59%"></i></span><span class="hval">5,9</span></div>
+        <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="dir.mediaPorDisciplina">Média por disciplina</span></h2>
+        <p class="desc" data-i18n="dir.todasSeries">Todas as séries · 2º bimestre</p>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.historia">História</span><span class="hbar"><i style="--w:81%"></i></span><span class="hval">8,1</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.portugues">Português</span><span class="hbar"><i style="--w:76%"></i></span><span class="hval">7,6</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.biologia">Biologia</span><span class="hbar"><i style="--w:74%"></i></span><span class="hval">7,4</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.geografia">Geografia</span><span class="hbar"><i style="--w:72%"></i></span><span class="hval">7,2</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.quimica">Química</span><span class="hbar"><i style="--w:66%"></i></span><span class="hval">6,6</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.fisica">Física</span><span class="hbar mute"><i style="--w:62%"></i></span><span class="hval">6,2</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.matematica">Matemática</span><span class="hbar gold"><i style="--w:59%"></i></span><span class="hval">5,9</span></div>
       </div>
     </div>
     <div class="card fullcard">
-      <h2><svg class="ic"><use href="#i-chart"/></svg>Desempenho por turma</h2>
+      <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="dir.desempenhoPorTurma">Desempenho por turma</span></h2>
       <div class="tablewrap" style="margin-top:8px"><table>
-        <thead><tr><th>Turma</th><th>Média</th><th>Frequência</th><th>Engajamento IA</th><th>Status</th></tr></thead>
+        <thead><tr><th data-i18n="dir.colTurma">Turma</th><th data-i18n="dir.colMedia">Média</th><th data-i18n="dir.frequencia">Frequência</th><th data-i18n="dir.colEngajamento">Engajamento IA</th><th data-i18n="prof.colStatus">Status</th></tr></thead>
         <tbody>
-          <tr><td class="name">2º EM — A</td><td>7,9</td><td>95%</td><td>88%</td><td><span class="pill p-ok">acima da meta</span></td></tr>
-          <tr><td class="name">1º EM — B</td><td>7,4</td><td>94%</td><td>81%</td><td><span class="pill p-ok">acima da meta</span></td></tr>
-          <tr><td class="name">8º ano — A</td><td>7,0</td><td>93%</td><td>74%</td><td><span class="pill p-ok">na meta</span></td></tr>
-          <tr><td class="name">7º ano — B</td><td>6,3</td><td>92%</td><td>58%</td><td><span class="pill p-warn">atenção</span></td></tr>
-          <tr><td class="name">9º ano — A</td><td>6,1</td><td>88%</td><td>47%</td><td><span class="pill p-bad">intervenção</span></td></tr>
+          <tr><td class="name">2º EM — A</td><td>7,9</td><td>95%</td><td>88%</td><td><span class="pill p-ok" data-i18n="dir.acimaDaMeta">acima da meta</span></td></tr>
+          <tr><td class="name">1º EM — B</td><td>7,4</td><td>94%</td><td>81%</td><td><span class="pill p-ok" data-i18n="dir.acimaDaMeta">acima da meta</span></td></tr>
+          <tr><td class="name">8º ano — A</td><td>7,0</td><td>93%</td><td>74%</td><td><span class="pill p-ok" data-i18n="dir.naMeta">na meta</span></td></tr>
+          <tr><td class="name">7º ano — B</td><td>6,3</td><td>92%</td><td>58%</td><td><span class="pill p-warn" data-i18n="dir.atencao">atenção</span></td></tr>
+          <tr><td class="name">9º ano — A</td><td>6,1</td><td>88%</td><td>47%</td><td><span class="pill p-bad" data-i18n="dir.intervencao">intervenção</span></td></tr>
         </tbody>
       </table></div>
     </div>
@@ -212,39 +224,39 @@
 
   <!-- ══ FREQUÊNCIA ══ -->
   <section class="screen" id="s-frequencia">
-    <div class="phead"><div class="tx"><p class="eyebrow">Frequência</p><h1>Mapa de presença por série</h1></div></div>
+    <div class="phead"><div class="tx"><p class="eyebrow" data-i18n="dir.frequencia">Frequência</p><h1 data-i18n="dir.mapaPresenca">Mapa de presença por série</h1></div></div>
     <div class="cols">
       <div class="card">
-        <h2><svg class="ic"><use href="#i-cal"/></svg>Frequência média · mar-jul</h2>
-        <p class="desc">Quanto mais escuro, maior a presença</p>
+        <h2><svg class="ic"><use href="#i-cal"/></svg><span data-i18n="dir.frequenciaMediaPeriodo">Frequência média · mar-jul</span></h2>
+        <p class="desc" data-i18n="dir.legendaMapa">Quanto mais escuro, maior a presença</p>
         <div class="heat">
-          <span class="hl"></span><span class="hl" style="text-align:center">mar</span><span class="hl" style="text-align:center">abr</span><span class="hl" style="text-align:center">mai</span><span class="hl" style="text-align:center">jun</span><span class="hl" style="text-align:center">jul</span>
-          <span class="hl">6º ano</span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h4"></span>
-          <span class="hl">7º ano</span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h3"></span>
-          <span class="hl">8º ano</span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h3"></span>
-          <span class="hl">9º ano</span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h2"></span><span class="cell h1"></span><span class="cell h1"></span>
-          <span class="hl">1º EM</span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h3"></span>
-          <span class="hl">2º EM</span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h4"></span>
-          <span class="hl">3º EM</span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h4"></span>
+          <span class="hl"></span><span class="hl" style="text-align:center" data-i18n="mes.mar">mar</span><span class="hl" style="text-align:center" data-i18n="mes.abr">abr</span><span class="hl" style="text-align:center" data-i18n="mes.mai">mai</span><span class="hl" style="text-align:center" data-i18n="mes.jun">jun</span><span class="hl" style="text-align:center" data-i18n="mes.jul">jul</span>
+          <span class="hl" data-i18n="serie.ano6">6º ano</span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h4"></span>
+          <span class="hl" data-i18n="serie.ano7">7º ano</span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h3"></span>
+          <span class="hl" data-i18n="serie.ano8">8º ano</span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h3"></span>
+          <span class="hl" data-i18n="serie.ano9">9º ano</span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h2"></span><span class="cell h1"></span><span class="cell h1"></span>
+          <span class="hl" data-i18n="serie.em1">1º EM</span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h3"></span>
+          <span class="hl" data-i18n="serie.em2">2º EM</span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h4"></span>
+          <span class="hl" data-i18n="serie.em3">3º EM</span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h4"></span>
         </div>
-        <div class="heatlegend">menor <i class="h0"></i><i class="h1"></i><i class="h2"></i><i class="h3"></i><i class="h4"></i> maior</div>
+        <div class="heatlegend"><span data-i18n="dir.menor">menor</span> <i class="h0"></i><i class="h1"></i><i class="h2"></i><i class="h3"></i><i class="h4"></i> <span data-i18n="dir.maior">maior</span></div>
       </div>
       <div class="stack">
         <div class="card">
-          <b>Risco de evasão</b>
-          <p class="desc">IA: Faltas + notas baixas</p>
+          <b data-i18n="dir.riscoEvasao">Risco de evasão</b>
+          <p class="desc" data-i18n="dir.riscoEvasaoDesc">IA: Faltas + notas baixas</p>
           <ul class="list">
-            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Diego Ramos — 9º A</b><span>11 faltas · média caiu 1,4</span></div><span class="pill p-bad">alto</span></li>
-            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Larissa Pinto — 9º B</b><span>9 faltas · sem entregas</span></div><span class="pill p-bad">alto</span></li>
-            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Felipe Costa — 7º B</b><span>7 faltas · engajamento baixo</span></div><span class="pill p-warn">médio</span></li>
+            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Diego Ramos — 9º A</b><span data-i18n="dir.evasao1Desc">11 faltas · média caiu 1,4</span></div><span class="pill p-bad" data-i18n="dir.alto">alto</span></li>
+            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Larissa Pinto — 9º B</b><span data-i18n="dir.evasao2Desc">9 faltas · sem entregas</span></div><span class="pill p-bad" data-i18n="dir.alto">alto</span></li>
+            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Felipe Costa — 7º B</b><span data-i18n="dir.evasao3Desc">7 faltas · engajamento baixo</span></div><span class="pill p-warn" data-i18n="dir.medio">médio</span></li>
           </ul>
-          <div class="tfoot"><button class="btn btn-pri btn-sm">Acionar coordenação</button><button class="btn btn-gho btn-sm">Ver todos</button></div>
+          <div class="tfoot"><button class="btn btn-pri btn-sm" data-i18n="dir.acionarCoordenacao">Acionar coordenação</button><button class="btn btn-gho btn-sm" data-i18n="dir.verTodos">Ver todos</button></div>
         </div>
         <div class="card">
-          <h2><svg class="ic"><use href="#i-check"/></svg>Chamada digital — hoje</h2>
+          <h2><svg class="ic"><use href="#i-check"/></svg><span data-i18n="dir.chamadaDigital">Chamada digital — hoje</span></h2>
           <div style="margin-top:12px">
-            <div class="hrow"><span class="hlbl">Registradas</span><span class="hbar"><i style="--w:91%"></i></span><span class="hval">31/34</span></div>
-            <div class="hrow"><span class="hlbl">Pendentes</span><span class="hbar gold"><i style="--w:9%"></i></span><span class="hval">3</span></div>
+            <div class="hrow"><span class="hlbl" data-i18n="dir.registradas">Registradas</span><span class="hbar"><i style="--w:91%"></i></span><span class="hval">31/34</span></div>
+            <div class="hrow"><span class="hlbl" data-i18n="prof.pendentes">Pendentes</span><span class="hbar gold"><i style="--w:9%"></i></span><span class="hval">3</span></div>
           </div>
         </div>
       </div>
@@ -254,45 +266,45 @@
   <!-- ══ CRÉDITOS ══ -->
   <section class="screen" id="s-creditos">
     <div class="phead">
-      <div class="tx"><p class="eyebrow">Créditos de IA</p><h1>Créditos de IA — julho</h1></div>
-      <div class="actions"><button class="btn btn-gho">Mudar plano</button><button class="btn btn-pri"><svg class="ic"><use href="#i-coin"/></svg>Comprar créditos extras</button></div>
+      <div class="tx"><p class="eyebrow" data-i18n="dir.creditosIA">Créditos de IA</p><h1 data-i18n="dir.creditosTitulo">Créditos de IA — julho</h1></div>
+      <div class="actions"><button class="btn btn-gho" data-i18n="dir.mudarPlano">Mudar plano</button><button class="btn btn-pri"><svg class="ic"><use href="#i-coin"/></svg><span data-i18n="dir.comprarExtras">Comprar créditos extras</span></button></div>
     </div>
     <div class="cols">
       <div class="card hero">
-        <h2><svg class="ic"><use href="#i-coin"/></svg>Uso do mês</h2>
-        <p class="desc">Renova em 01/08 · 50.000 créditos</p>
+        <h2><svg class="ic"><use href="#i-coin"/></svg><span data-i18n="dir.usoDoMes">Uso do mês</span></h2>
+        <p class="desc" data-i18n="dir.renovaEm">Renova em 01/08 · 50.000 créditos</p>
         <div class="donutwrap">
           <div class="donut">
             <svg viewBox="0 0 140 140">
               <circle class="ringbg" cx="70" cy="70" r="56"></circle>
               <circle class="ringfg" cx="70" cy="70" r="56" style="--off:133.7"></circle>
             </svg>
-            <div class="cent"><div><b>62%</b><span>31.000 usados</span></div></div>
+            <div class="cent"><div><b>62%</b><span>31.000 <span data-i18n="dir.usados">usados</span></span></div></div>
           </div>
           <div class="legend">
-            <div class="hrow" style="grid-template-columns:100px 1fr 60px"><span class="hlbl">Professores</span><span class="hbar"><i style="--w:74%"></i></span><span class="hval">18.400</span></div>
-            <div class="hrow" style="grid-template-columns:100px 1fr 60px"><span class="hlbl">Alunos</span><span class="hbar"><i style="--w:48%"></i></span><span class="hval">12.100</span></div>
-            <div class="hrow" style="grid-template-columns:100px 1fr 60px"><span class="hlbl">Direção</span><span class="hbar gold"><i style="--w:17%"></i></span><span class="hval">500</span></div>
+            <div class="hrow" style="grid-template-columns:100px 1fr 60px"><span class="hlbl" data-i18n="dir.professores">Professores</span><span class="hbar"><i style="--w:74%"></i></span><span class="hval">18.400</span></div>
+            <div class="hrow" style="grid-template-columns:100px 1fr 60px"><span class="hlbl" data-i18n="dir.alunos">Alunos</span><span class="hbar"><i style="--w:48%"></i></span><span class="hval">12.100</span></div>
+            <div class="hrow" style="grid-template-columns:100px 1fr 60px"><span class="hlbl" data-i18n="perfil.direcao">Direção</span><span class="hbar gold"><i style="--w:17%"></i></span><span class="hval">500</span></div>
           </div>
         </div>
-        <div class="memo" style="margin-top:16px"><svg class="ic"><use href="#i-spark"/></svg><span><b>Projeção da IA</b> — o plano cobre o mês com folga de ~8%. A semana de provas deve elevar o uso dos alunos em 30%.</span></div>
+        <div class="memo" style="margin-top:16px"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n-html="dir.projecaoMemo"><b>Projeção da IA</b> — o plano cobre o mês com folga de ~8%. A semana de provas deve elevar o uso dos alunos em 30%.</span></div>
       </div>
       <div class="stack">
         <div class="card">
-          <h2><svg class="ic"><use href="#i-sliders"/></svg>Cotas por perfil</h2>
+          <h2><svg class="ic"><use href="#i-sliders"/></svg><span data-i18n="dir.cotasPorPerfil">Cotas por perfil</span></h2>
           <div style="margin-top:12px">
-            <div class="hrow"><span class="hlbl">Professor</span><span class="hbar"><i style="--w:66%"></i></span><span class="hval">800</span></div>
-            <div class="hrow"><span class="hlbl">Aluno</span><span class="hbar"><i style="--w:24%"></i></span><span class="hval">120</span></div>
-            <div class="hrow"><span class="hlbl">Coordenação</span><span class="hbar"><i style="--w:41%"></i></span><span class="hval">400</span></div>
+            <div class="hrow"><span class="hlbl" data-i18n="perfil.professor">Professor</span><span class="hbar"><i style="--w:66%"></i></span><span class="hval">800</span></div>
+            <div class="hrow"><span class="hlbl" data-i18n="dir.aluno">Aluno</span><span class="hbar"><i style="--w:24%"></i></span><span class="hval">120</span></div>
+            <div class="hrow"><span class="hlbl" data-i18n="dir.coordenacao">Coordenação</span><span class="hbar"><i style="--w:41%"></i></span><span class="hval">400</span></div>
           </div>
-          <div class="tfoot"><button class="btn btn-pri btn-sm">Salvar cotas</button><button class="btn btn-gho btn-sm">Restaurar padrão</button></div>
+          <div class="tfoot"><button class="btn btn-pri btn-sm" data-i18n="dir.salvarCotas">Salvar cotas</button><button class="btn btn-gho btn-sm" data-i18n="dir.restaurarPadrao">Restaurar padrão</button></div>
         </div>
         <div class="card">
-          <h2><svg class="ic"><use href="#i-clock"/></svg>Movimentos recentes</h2>
+          <h2><svg class="ic"><use href="#i-clock"/></svg><span data-i18n="dir.movimentosRecentes">Movimentos recentes</span></h2>
           <ul class="list" style="margin-top:12px">
-            <li><div class="tx"><b>+2.000 para professores</b><span>semana de provas · 29/07</span></div><span class="pill p-ok">aplicado</span></li>
-            <li><div class="tx"><b>Recarga extra 5.000</b><span>solicitada · 17/07</span></div><span class="pill p-ok">aplicado</span></li>
-            <li><div class="tx"><b>Bloqueio fim de semana</b><span>política desde junho</span></div><span class="pill p-ia">ativa</span></li>
+            <li><div class="tx"><b data-i18n="dir.mov1">+2.000 para professores</b><span data-i18n="dir.mov1Desc">semana de provas · 29/07</span></div><span class="pill p-ok" data-i18n="dir.aplicado">aplicado</span></li>
+            <li><div class="tx"><b data-i18n="dir.mov2">Recarga extra 5.000</b><span data-i18n="dir.mov2Desc">solicitada · 17/07</span></div><span class="pill p-ok" data-i18n="dir.aplicado">aplicado</span></li>
+            <li><div class="tx"><b data-i18n="dir.mov3">Bloqueio fim de semana</b><span data-i18n="dir.mov3Desc">política desde junho</span></div><span class="pill p-ia" data-i18n="dir.ativa">ativa</span></li>
           </ul>
         </div>
       </div>
@@ -301,21 +313,21 @@
 
   <!-- ══ RELATÓRIOS ══ -->
   <section class="screen" id="s-relatorios">
-    <div class="phead"><div class="tx"><p class="eyebrow">Relatórios</p><h1>Documentos gerados pela IA</h1></div></div>
+    <div class="phead"><div class="tx"><p class="eyebrow" data-i18n="dir.relatorios">Relatórios</p><h1 data-i18n="dir.documentosIA">Documentos gerados pela IA</h1></div></div>
     <div class="cols">
       <div class="card" id="relatorios-lista">
-        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Relatório mensal — junho/2026</b><span>desempenho + frequência + créditos · 18 págs</span></div><div class="end"><span class="pill p-ok">enviado</span><button class="btn btn-gho btn-sm" aria-label="Baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
-        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Boletins do 2º bimestre</b><span>412 boletins individuais · PDF</span></div><div class="end"><span class="pill p-ok">gerado</span><button class="btn btn-gho btn-sm" aria-label="Baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
-        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Ata — conselho de classe 9º ano</b><span>rascunho a partir da gravação · 20/07</span></div><div class="end"><span class="pill p-warn">revisar</span><button class="btn btn-gho btn-sm" aria-label="Baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
-        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Relatório mensal — julho/2026</b><span>agendado para 01/08 · automático</span></div><div class="end"><span class="pill p-ia">agendado</span></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b data-i18n="dir.rel1">Relatório mensal — junho/2026</b><span data-i18n="dir.rel1Desc">desempenho + frequência + créditos · 18 págs</span></div><div class="end"><span class="pill p-ok" data-i18n="dir.enviado">enviado</span><button class="btn btn-gho btn-sm" aria-label="Baixar" data-i18n-attr="aria-label:dir.baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b data-i18n="dir.rel2">Boletins do 2º bimestre</b><span data-i18n="dir.rel2Desc">412 boletins individuais · PDF</span></div><div class="end"><span class="pill p-ok" data-i18n="dir.gerado">gerado</span><button class="btn btn-gho btn-sm" aria-label="Baixar" data-i18n-attr="aria-label:dir.baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b data-i18n="dir.rel3">Ata — conselho de classe 9º ano</b><span data-i18n="dir.rel3Desc">rascunho a partir da gravação · 20/07</span></div><div class="end"><span class="pill p-warn" data-i18n="prof.revisar">revisar</span><button class="btn btn-gho btn-sm" aria-label="Baixar" data-i18n-attr="aria-label:dir.baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b data-i18n="dir.rel4">Relatório mensal — julho/2026</b><span data-i18n="dir.rel4Desc">agendado para 01/08 · automático</span></div><div class="end"><span class="pill p-ia" data-i18n="dir.agendado">agendado</span></div></div>
       </div>
       <div class="card">
-        <h2><svg class="ic"><use href="#i-spark"/></svg>Novo relatório</h2>
-        <div class="field" style="margin-top:14px"><label>Tipo</label><div class="selectbox">Desempenho por turma<svg class="ic"><use href="#i-chev"/></svg></div></div>
-        <div class="field"><label>Período</label><div class="selectbox">2º bimestre de 2026<svg class="ic"><use href="#i-chev"/></svg></div></div>
-        <div class="field"><label>Modelo</label><div class="selectbox">Padrão da mantenedora<svg class="ic"><use href="#i-chev"/></svg></div></div>
-        <div class="togglerow"><span>Incluir análise da IA</span><span class="tg"></span></div>
-        <div class="tfoot" style="margin-top:10px"><button class="btn btn-pri" id="relatorio-gerar" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg>Gerar · 6 créditos</button></div>
+        <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="dir.novoRelatorio">Novo relatório</span></h2>
+        <div class="field" style="margin-top:14px"><label data-i18n="dir.tipo">Tipo</label><div class="selectbox"><span data-i18n="dir.desempenhoPorTurma">Desempenho por turma</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="field"><label data-i18n="dir.periodo">Período</label><div class="selectbox"><span data-i18n="dir.bimestre2026">2º bimestre de 2026</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="field"><label data-i18n="dir.modelo">Modelo</label><div class="selectbox"><span data-i18n="dir.padraoMantenedora">Padrão da mantenedora</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="togglerow"><span data-i18n="dir.incluirAnaliseIA">Incluir análise da IA</span><span class="tg"></span></div>
+        <div class="tfoot" style="margin-top:10px"><button class="btn btn-pri" id="relatorio-gerar" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="dir.gerarCreditos">Gerar · 6 créditos</span></button></div>
       </div>
     </div>
   </section>
@@ -323,34 +335,34 @@
   <!-- ══ EQUIPE ══ -->
   <section class="screen" id="s-equipe">
     <div class="phead">
-      <div class="tx"><p class="eyebrow">Equipe</p><h1>28 professores, 4 coordenadores</h1></div>
-      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-users"/></svg>Convidar professor</button></div>
+      <div class="tx"><p class="eyebrow" data-i18n="dir.equipe">Equipe</p><h1 data-i18n="dir.equipeTitulo">28 professores, 4 coordenadores</h1></div>
+      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-users"/></svg><span data-i18n="dir.convidarProfessor">Convidar professor</span></button></div>
     </div>
     <div class="cols">
       <div class="card">
         <div class="tablewrap"><table>
-          <thead><tr><th>Professor</th><th>Disciplina</th><th>Créditos/mês</th><th>Adoção</th></tr></thead>
+          <thead><tr><th data-i18n="perfil.professor">Professor</th><th data-i18n="dir.colDisciplina">Disciplina</th><th data-i18n="dir.colCreditosMes">Créditos/mês</th><th data-i18n="dir.colAdocao">Adoção</th></tr></thead>
           <tbody>
-            <tr><td class="name">Ricardo Almeida</td><td>Português</td><td>310 de 800</td><td><span class="pill p-ok">alta</span></td></tr>
-            <tr><td class="name">Helena Castro</td><td>Química</td><td>520 de 800</td><td><span class="pill p-ok">alta</span></td></tr>
-            <tr><td class="name">Marcos Vieira</td><td>Matemática</td><td>140 de 800</td><td><span class="pill p-warn">média</span></td></tr>
-            <tr><td class="name">Paula Duarte</td><td>História</td><td>460 de 800</td><td><span class="pill p-ok">alta</span></td></tr>
-            <tr><td class="name">João Pereira</td><td>Física</td><td>30 de 800</td><td><span class="pill p-bad">baixa</span></td></tr>
+            <tr><td class="name">Ricardo Almeida</td><td data-i18n="materia.portugues">Português</td><td>310 <span data-i18n="dir.de800">de 800</span></td><td><span class="pill p-ok" data-i18n="dir.alta">alta</span></td></tr>
+            <tr><td class="name">Helena Castro</td><td data-i18n="materia.quimica">Química</td><td>520 <span data-i18n="dir.de800">de 800</span></td><td><span class="pill p-ok" data-i18n="dir.alta">alta</span></td></tr>
+            <tr><td class="name">Marcos Vieira</td><td data-i18n="materia.matematica">Matemática</td><td>140 <span data-i18n="dir.de800">de 800</span></td><td><span class="pill p-warn" data-i18n="dir.mediaAdocao">média</span></td></tr>
+            <tr><td class="name">Paula Duarte</td><td data-i18n="materia.historia">História</td><td>460 <span data-i18n="dir.de800">de 800</span></td><td><span class="pill p-ok" data-i18n="dir.alta">alta</span></td></tr>
+            <tr><td class="name">João Pereira</td><td data-i18n="materia.fisica">Física</td><td>30 <span data-i18n="dir.de800">de 800</span></td><td><span class="pill p-bad" data-i18n="dir.baixa">baixa</span></td></tr>
           </tbody>
         </table></div>
       </div>
       <div class="stack">
         <div class="card">
-          <h2><svg class="ic"><use href="#i-spark"/></svg>Sugestão da IA</h2>
+          <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="progresso.sugestaoIA">Sugestão da IA</span></h2>
           <ul class="list" style="margin-top:12px">
-            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Oficina para Física e Matemática</b><span>professores com menor uso · 40 min</span></div></li>
-            <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b>Profa. Helena como multiplicadora</b><span>maior domínio da correção assistida</span></div></li>
+            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b data-i18n="dir.sugestaoOficina">Oficina para Física e Matemática</b><span data-i18n="dir.sugestaoOficinaDesc">professores com menor uso · 40 min</span></div></li>
+            <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b data-i18n="dir.sugestaoHelena">Profa. Helena como multiplicadora</b><span data-i18n="dir.sugestaoHelenaDesc">maior domínio da correção assistida</span></div></li>
           </ul>
         </div>
         <div class="card">
-          <h2><svg class="ic"><use href="#i-users"/></svg>Convite pendente</h2>
+          <h2><svg class="ic"><use href="#i-users"/></svg><span data-i18n="dir.convitePendente">Convite pendente</span></h2>
           <ul class="list" style="margin-top:12px">
-            <li><div class="tx"><b>bio.fernanda@horizonte.edu</b><span>enviado há 2 dias</span></div><button class="btn btn-gho btn-sm">Reenviar</button></li>
+            <li><div class="tx"><b>bio.fernanda@horizonte.edu</b><span data-i18n="dir.enviadoHa2Dias">enviado há 2 dias</span></div><button class="btn btn-gho btn-sm" data-i18n="dir.reenviar">Reenviar</button></li>
           </ul>
         </div>
       </div>
@@ -364,8 +376,8 @@
 <div class="modal-backdrop" id="modal-backdrop"></div>
 <div class="modal" id="modal-conta">
   <div class="modal-head">
-    <h3>Minha conta</h3>
-    <button class="modal-x" data-modal-close aria-label="Fechar">✕</button>
+    <h3 data-i18n="conta.minhaConta">Minha conta</h3>
+    <button class="modal-x" data-modal-close aria-label="Fechar" data-i18n-attr="aria-label:acao.fechar">✕</button>
   </div>
   <div class="modal-body">
     <div class="acgrid">
@@ -373,38 +385,38 @@
         <div class="card acprofile">
           <span class="bigav" style="background:#C79A2A">CN</span>
           <h3>Cláudia Nunes</h3>
-          <p>Diretora · desde 2015</p>
-          <button class="btn btn-gho btn-sm">Alterar foto</button>
+          <p data-i18n="dir.cargoDemo">Diretora · desde 2015</p>
+          <button class="btn btn-gho btn-sm" data-i18n="conta.alterarFoto">Alterar foto</button>
           <div class="acmeta" style="margin-top:18px">
-            <span><b>412</b>alunos</span>
-            <span><b>32</b>equipe</span>
-            <span><b>14</b>turmas</span>
+            <span><b>412</b><span data-i18n="dir.alunosMin">alunos</span></span>
+            <span><b>32</b><span data-i18n="dir.equipeMin">equipe</span></span>
+            <span><b>14</b><span data-i18n="prof.turmasMin">turmas</span></span>
           </div>
         </div>
         <div class="card">
-          <h2><svg class="ic"><use href="#i-logout"/></svg>Sessão</h2>
-          <p class="desc">Conectada neste dispositivo desde 16/07.</p>
-          <a class="btn btn-danger" href="./"><svg class="ic"><use href="#i-logout"/></svg>Sair da conta</a>
+          <h2><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sessao">Sessão</span></h2>
+          <p class="desc" data-i18n="dir.conectadaDesde">Conectada neste dispositivo desde 16/07.</p>
+          <a class="btn btn-danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sairDaConta">Sair da conta</span></a>
         </div>
       </div>
       <div class="stack">
         <div class="card">
-          <h2><svg class="ic"><use href="#i-user"/></svg>Dados pessoais</h2>
+          <h2><svg class="ic"><use href="#i-user"/></svg><span data-i18n="conta.dadosPessoais">Dados pessoais</span></h2>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
-            <div class="field" style="margin:0"><label>Nome completo</label><input class="input" value="Cláudia Nunes"></div>
-            <div class="field" style="margin:0"><label>E-mail</label><input class="input" value="claudia.nunes@horizonte.edu"></div>
-            <div class="field" style="margin:0"><label>Cargo</label><input class="input" value="Diretora geral"></div>
-            <div class="field" style="margin:0"><label>Telefone</label><input class="input" value="(11) 9 6644-1029"></div>
+            <div class="field" style="margin:0"><label data-i18n="conta.nomeCompleto">Nome completo</label><input class="input" value="Cláudia Nunes"></div>
+            <div class="field" style="margin:0"><label data-i18n="conta.email">E-mail</label><input class="input" value="claudia.nunes@horizonte.edu"></div>
+            <div class="field" style="margin:0"><label data-i18n="dir.cargo">Cargo</label><input class="input" value="Diretora geral"></div>
+            <div class="field" style="margin:0"><label data-i18n="conta.telefone">Telefone</label><input class="input" value="(11) 9 6644-1029"></div>
           </div>
-          <div class="tfoot"><button class="btn btn-pri">Salvar alterações</button><button class="btn btn-gho">Trocar senha</button></div>
+          <div class="tfoot"><button class="btn btn-pri" data-i18n="conta.salvarAlteracoes">Salvar alterações</button><button class="btn btn-gho" data-i18n="conta.trocarSenha">Trocar senha</button></div>
         </div>
         <div class="card">
-          <h2><svg class="ic"><use href="#i-bell"/></svg>Preferências</h2>
+          <h2><svg class="ic"><use href="#i-bell"/></svg><span data-i18n="conta.preferencias">Preferências</span></h2>
           <div style="margin-top:8px">
-            <div class="togglerow"><span>Alertas de risco de evasão<small>previsões da IA em tempo real</small></span><span class="tg"></span></div>
-            <div class="togglerow"><span>Alertas de créditos<small>quando uma cota passar de 80%</small></span><span class="tg"></span></div>
-            <div class="togglerow"><span>Relatório mensal automático<small>gerar e enviar à mantenedora</small></span><span class="tg"></span></div>
-            <div class="togglerow"><span>Modo escuro<small>espelha o botão da barra superior</small></span><button type="button" class="tg" id="tg-tema" role="switch" aria-checked="false" aria-label="Modo escuro"></button></div>
+            <div class="togglerow"><span data-i18n-html="dir.prefEvasao">Alertas de risco de evasão<small>previsões da IA em tempo real</small></span><span class="tg"></span></div>
+            <div class="togglerow"><span data-i18n-html="dir.prefCreditos">Alertas de créditos<small>quando uma cota passar de 80%</small></span><span class="tg"></span></div>
+            <div class="togglerow"><span data-i18n-html="dir.prefRelatorio">Relatório mensal automático<small>gerar e enviar à mantenedora</small></span><span class="tg"></span></div>
+            <div class="togglerow"><span data-i18n-html="prof.prefModoEscuro">Modo escuro<small>espelha o botão da barra superior</small></span><button type="button" class="tg" id="tg-tema" role="switch" aria-checked="false" aria-label="Modo escuro" data-i18n-attr="aria-label:conta.modoEscuro"></button></div>
           </div>
         </div>
       </div>
@@ -412,6 +424,7 @@
   </div>
 </div>
 
+<script src="assets/i18n.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/dev-reload.js"></script>
 </body>

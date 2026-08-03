@@ -36,6 +36,7 @@
 <symbol id="i-audio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 17v-4.2a7.2 7.2 0 0 1 14.4 0V17"/><rect x="4" y="14.4" width="3.6" height="5.2" rx="1.6"/><rect x="16.4" y="14.4" width="3.6" height="5.2" rx="1.6"/></symbol>
 <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 8h14M5 16h14"/><circle cx="9" cy="8" r="2.1" fill="var(--card)"/><circle cx="15" cy="16" r="2.1" fill="var(--card)"/></symbol>
 <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3.2v2M12 18.8v2M3.2 12h2M18.8 12h2M5.7 5.7l1.4 1.4M16.9 16.9l1.4 1.4M18.3 5.7l-1.4 1.4M7.1 16.9l-1.4 1.4"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8M12 3.6c2.4 2.3 3.6 5.2 3.6 8.4s-1.2 6.1-3.6 8.4c-2.4-2.3-3.6-5.2-3.6-8.4S9.6 5.9 12 3.6Z"/></symbol>
 <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.2A8 8 0 1 1 10.8 4 6.4 6.4 0 0 0 20 13.2Z"/></symbol>
 <!-- Logo oficial do Prisma: mesmo path de frontend/src/components/ui/Logo.tsx -->
 <symbol id="i-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -49,30 +50,30 @@
 <aside class="side">
   <a class="brand" href="./"><span class="mark"><svg><use href="#i-logo"/></svg></span>Prisma<span> · Professor</span></a>
 
-  <p class="nlabel">Principal</p>
+  <p class="nlabel" data-i18n="nav.principal">Principal</p>
   <nav class="nav">
-    <a class="on" data-s="inicio"><svg class="ic"><use href="#i-home"/></svg>Início</a>
-    <a data-s="turmas"><svg class="ic"><use href="#i-users"/></svg>Turmas</a>
+    <a class="on" data-s="inicio"><svg class="ic"><use href="#i-home"/></svg><span data-i18n="nav.inicio">Início</span></a>
+    <a data-s="turmas"><svg class="ic"><use href="#i-users"/></svg><span data-i18n="prof.turmas">Turmas</span></a>
   </nav>
-  <p class="nlabel">Ensino</p>
+  <p class="nlabel" data-i18n="prof.ensino">Ensino</p>
   <nav class="nav">
-    <a data-s="avaliacoes"><svg class="ic"><use href="#i-pen"/></svg>Conteúdos</a>
-    <a data-s="correcao"><svg class="ic"><use href="#i-check"/></svg>Correção<span class="badge" id="correcao-badge">6</span></a>
-    <a data-s="acervo"><svg class="ic"><use href="#i-book"/></svg>Acervo</a>
-    <a data-s="alertas"><svg class="ic"><use href="#i-spark"/></svg>Insights da IA</a>
+    <a data-s="avaliacoes"><svg class="ic"><use href="#i-pen"/></svg><span data-i18n="prof.conteudos">Conteúdos</span></a>
+    <a data-s="correcao"><svg class="ic"><use href="#i-check"/></svg><span data-i18n="prof.correcao">Correção</span><span class="badge" id="correcao-badge">6</span></a>
+    <a data-s="acervo"><svg class="ic"><use href="#i-book"/></svg><span data-i18n="prof.acervo">Acervo</span></a>
+    <a data-s="alertas"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.insightsIA">Insights da IA</span></a>
   </nav>
   <div class="spacer"></div>
   <div class="ddwrap sideuser-wrap">
     <button class="sideuser" data-dd="dd-sideuser" aria-haspopup="true">
       <span class="av" style="background:#2C302D">RA</span>
-      <div><b>Ricardo Almeida</b><span>Professor</span></div>
+      <div><b>Ricardo Almeida</b><span data-i18n="perfil.professor">Professor</span></div>
       <svg class="ic out-ic"><use href="#i-chev-up"/></svg>
     </button>
     <div class="dd dd-up" id="dd-sideuser">
       <p class="ddh">Ricardo Almeida</p>
-      <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b>Minha conta</b></span></a>
+      <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
       <div class="ddsep"></div>
-      <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b>Sair</b></span></a>
+      <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
     </div>
   </div>
 </aside>
@@ -81,23 +82,34 @@
 <main class="main">
   <div class="topbar">
     <span class="topsp"></span>
-    <button class="iconbtn" id="themebtn" type="button" aria-label="Alternar tema"><svg class="ic" id="theme-ic"><use href="#i-moon"/></svg></button>
     <span class="ddwrap">
-      <button class="iconbtn" data-dd="dd-notif" aria-label="Notificações"><svg class="ic"><use href="#i-bell"/></svg><span class="ndot"></span></button>
+      <button class="iconbtn" data-dd="dd-lang" aria-label="Idioma" aria-haspopup="true" data-i18n-attr="aria-label:topbar.idioma"><svg class="ic"><use href="#i-globe"/></svg></button>
+      <div class="dd" id="dd-lang" style="width:200px">
+        <p class="ddh" data-i18n="topbar.idioma">Idioma</p>
+        <button type="button" class="ddi lang-opt" data-lang="pt-BR"><span><b>Português</b><span>Brasil</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="en"><span><b>English</b><span>United States</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="es"><span><b>Español</b><span>España</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="fr"><span><b>Français</b><span>France</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="de"><span><b>Deutsch</b><span>Deutschland</span></span></button>
+      </div>
+    </span>
+    <button class="iconbtn" id="themebtn" type="button" aria-label="Alternar tema" data-i18n-attr="aria-label:topbar.alternarTema"><svg class="ic" id="theme-ic"><use href="#i-moon"/></svg></button>
+    <span class="ddwrap">
+      <button class="iconbtn" data-dd="dd-notif" aria-label="Notificações" data-i18n-attr="aria-label:topbar.notificacoes"><svg class="ic"><use href="#i-bell"/></svg><span class="ndot"></span></button>
       <div class="dd" id="dd-notif">
-        <p class="ddh">Notificações</p>
-        <a class="ddi" data-s="correcao"><span class="dot" style="--c:var(--warn)"></span><span><b>6 redações</b><span>Simulado 03 · IA já sugeriu as notas</span></span></a>
-        <a class="ddi" data-s="alertas"><span class="dot" style="--c:var(--bad)"></span><span><b>Carlos Eduardo: risco de evasão</b><span>sem estudar há 12 dias</span></span></a>
+        <p class="ddh" data-i18n="topbar.notificacoes">Notificações</p>
+        <a class="ddi" data-s="correcao"><span class="dot" style="--c:var(--warn)"></span><span><b data-i18n="prof.notifRedacoes">6 redações</b><span data-i18n="prof.notifRedacoesDesc">Simulado 03 · IA já sugeriu as notas</span></span></a>
+        <a class="ddi" data-s="alertas"><span class="dot" style="--c:var(--bad)"></span><span><b data-i18n="prof.notifEvasao">Carlos Eduardo: risco de evasão</b><span data-i18n="prof.notifEvasaoDesc">sem estudar há 12 dias</span></span></a>
       </div>
     </span>
     <span class="ddwrap">
-      <button class="avbtn" data-dd="dd-user" style="background:#2C302D" aria-label="Conta">RA</button>
+      <button class="avbtn" data-dd="dd-user" style="background:#2C302D" aria-label="Conta" data-i18n-attr="aria-label:topbar.conta">RA</button>
       <div class="dd" id="dd-user" style="width:230px">
         <p class="ddh">Ricardo Almeida</p>
-        <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b>Minha conta</b></span></a>
-        <a class="ddi" data-s="turmas"><svg class="ic"><use href="#i-users"/></svg><span><b>Minhas turmas</b></span></a>
+        <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+        <a class="ddi" data-s="turmas"><svg class="ic"><use href="#i-users"/></svg><span><b data-i18n="prof.minhasTurmas">Minhas turmas</b></span></a>
         <div class="ddsep"></div>
-        <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b>Sair</b></span></a>
+        <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
       </div>
     </span>
   </div>
@@ -108,50 +120,50 @@
   <section class="screen on" id="s-inicio">
     <div class="phead">
       <div class="tx">
-        <p class="eyebrow">Início</p>
-        <h1>Correção Simulado 03 (92%)</h1>
-        <p class="sub">IA corrigiu objetivas e sugeriu notas. Faltam 6 redações para revisar.</p>
+        <p class="eyebrow" data-i18n="nav.inicio">Início</p>
+        <h1 data-i18n="prof.inicioTitulo">Correção Simulado 03 (92%)</h1>
+        <p class="sub" data-i18n="prof.inicioSub">IA corrigiu objetivas e sugeriu notas. Faltam 6 redações para revisar.</p>
       </div>
-      <div class="actions"><button class="btn btn-gho" data-s="avaliacoes"><svg class="ic"><use href="#i-pen"/></svg>Nova avaliação</button><button class="btn btn-pri" data-s="correcao"><svg class="ic"><use href="#i-check"/></svg>Revisar pendentes</button></div>
+      <div class="actions"><button class="btn btn-gho" data-s="avaliacoes"><svg class="ic"><use href="#i-pen"/></svg><span data-i18n="prof.novaAvaliacao">Nova avaliação</span></button><button class="btn btn-pri" data-s="correcao"><svg class="ic"><use href="#i-check"/></svg><span data-i18n="prof.revisarPendentes">Revisar pendentes</span></button></div>
     </div>
     <div class="tiles">
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-pen"/></svg></span><div class="lbl">Redações na fila</div><div class="num">6</div><div class="sub warn">aguardam revisão</div></div>
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-clock"/></svg></span><div class="lbl">Tempo devolvido</div><div class="num">11h</div><div class="sub up">este mês</div></div>
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-chart"/></svg></span><div class="lbl">Média dos estudantes</div><div class="num">7,2</div><div class="sub up">▲ 0,2 na semana</div></div>
-      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-users"/></svg></span><div class="lbl">Precisa de atenção</div><div class="num">3</div><div class="sub">de 103 ativos</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-pen"/></svg></span><div class="lbl" data-i18n="prof.redacoesNaFila">Redações na fila</div><div class="num">6</div><div class="sub warn" data-i18n="prof.aguardamRevisao">aguardam revisão</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-clock"/></svg></span><div class="lbl" data-i18n="prof.tempoDevolvido">Tempo devolvido</div><div class="num">11h</div><div class="sub up" data-i18n="prof.esteMes">este mês</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-chart"/></svg></span><div class="lbl" data-i18n="prof.mediaEstudantes">Média dos estudantes</div><div class="num">7,2</div><div class="sub up" data-i18n="prof.variacaoSemana">▲ 0,2 na semana</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-users"/></svg></span><div class="lbl" data-i18n="prof.precisaAtencao">Precisa de atenção</div><div class="num">3</div><div class="sub" data-i18n="prof.de103Ativos">de 103 ativos</div></div>
     </div>
-    <p class="sectlbl">Ações do dia</p>
+    <p class="sectlbl" data-i18n="prof.acoesDia">Ações do dia</p>
     <div class="cols">
       <div class="card hero">
-        <h2><svg class="ic"><use href="#i-check"/></svg>Simulado 03</h2>
-        <p class="desc">Rubrica: arg (4,0) · gramática (3,0) · estrutura (3,0)</p>
+        <h2><svg class="ic"><use href="#i-check"/></svg><span data-i18n="prof.simulado03">Simulado 03</span></h2>
+        <p class="desc" data-i18n="prof.rubricaResumo">Rubrica: arg (4,0) · gramática (3,0) · estrutura (3,0)</p>
         <div class="tablewrap"><table>
-          <thead><tr><th>Aluno</th><th>Objetivas</th><th>Redação · IA</th><th>Status</th></tr></thead>
+          <thead><tr><th data-i18n="prof.colAluno">Aluno</th><th data-i18n="prof.colObjetivas">Objetivas</th><th data-i18n="prof.colRedacaoIA">Redação · IA</th><th data-i18n="prof.colStatus">Status</th></tr></thead>
           <tbody>
-            <tr><td class="name">Ana Beatriz Lima</td><td>8,5</td><td>7,0 sugerido</td><td><span class="pill p-warn">revisar</span></td></tr>
-            <tr><td class="name">Carlos Eduardo Melo</td><td>6,0</td><td>5,5 sugerido</td><td><span class="pill p-warn">revisar</span></td></tr>
-            <tr><td class="name">Marina Souza</td><td>9,0</td><td>8,0 confirmado</td><td><span class="pill p-ok">concluído</span></td></tr>
-            <tr><td class="name">Pedro Henrique Tavares</td><td>7,5</td><td>7,5 confirmado</td><td><span class="pill p-ok">concluído</span></td></tr>
+            <tr><td class="name">Ana Beatriz Lima</td><td>8,5</td><td>7,0 <span data-i18n="prof.sugerido">sugerido</span></td><td><span class="pill p-warn" data-i18n="prof.revisar">revisar</span></td></tr>
+            <tr><td class="name">Carlos Eduardo Melo</td><td>6,0</td><td>5,5 <span data-i18n="prof.sugerido">sugerido</span></td><td><span class="pill p-warn" data-i18n="prof.revisar">revisar</span></td></tr>
+            <tr><td class="name">Marina Souza</td><td>9,0</td><td>8,0 <span data-i18n="prof.confirmado">confirmado</span></td><td><span class="pill p-ok" data-i18n="prof.concluido">concluído</span></td></tr>
+            <tr><td class="name">Pedro Henrique Tavares</td><td>7,5</td><td>7,5 <span data-i18n="prof.confirmado">confirmado</span></td><td><span class="pill p-ok" data-i18n="prof.concluido">concluído</span></td></tr>
           </tbody>
         </table></div>
-        <div class="tfoot"><button class="btn btn-pri" data-s="correcao">Revisar pendentes</button><button class="btn btn-gho">Exportar notas</button></div>
+        <div class="tfoot"><button class="btn btn-pri" data-s="correcao" data-i18n="prof.revisarPendentes">Revisar pendentes</button><button class="btn btn-gho" data-i18n="prof.exportarNotas">Exportar notas</button></div>
       </div>
       <div class="stack">
         <div class="card">
-          <h2><svg class="ic"><use href="#i-pen"/></svg>Criar material</h2>
-          <p class="desc">Com seu acervo: gabarito e rubrica</p>
+          <h2><svg class="ic"><use href="#i-pen"/></svg><span data-i18n="prof.criarMaterial">Criar material</span></h2>
+          <p class="desc" data-i18n="prof.criarMaterialDesc">Com seu acervo: gabarito e rubrica</p>
           <div class="qgrid">
-            <button class="qa" data-s="avaliacoes"><span class="qic"><svg class="ic"><use href="#i-doc"/></svg></span><span><b>Prova</b><span>com gabarito</span></span></button>
-            <button class="qa" data-s="avaliacoes"><span class="qic"><svg class="ic"><use href="#i-check"/></svg></span><span><b>Lista</b><span>de exercícios</span></span></button>
-            <button class="qa" data-s="avaliacoes"><span class="qic"><svg class="ic"><use href="#i-book"/></svg></span><span><b>Plano de estudos</b><span>estrutura semanas de conteúdo</span></span></button>
-            <button class="qa" data-s="turmas"><span class="qic"><svg class="ic"><use href="#i-users"/></svg></span><span><b>Feedback</b><span>individual, em escala</span></span></button>
+            <button class="qa" data-s="avaliacoes"><span class="qic"><svg class="ic"><use href="#i-doc"/></svg></span><span><b data-i18n="prof.prova">Prova</b><span data-i18n="prof.provaDesc">com gabarito</span></span></button>
+            <button class="qa" data-s="avaliacoes"><span class="qic"><svg class="ic"><use href="#i-check"/></svg></span><span><b data-i18n="prof.lista">Lista</b><span data-i18n="prof.listaDesc">de exercícios</span></span></button>
+            <button class="qa" data-s="avaliacoes"><span class="qic"><svg class="ic"><use href="#i-book"/></svg></span><span><b data-i18n="prof.planoEstudos">Plano de estudos</b><span data-i18n="prof.planoEstudosDesc">estrutura semanas de conteúdo</span></span></button>
+            <button class="qa" data-s="turmas"><span class="qic"><svg class="ic"><use href="#i-users"/></svg></span><span><b data-i18n="prof.feedback">Feedback</b><span data-i18n="prof.feedbackDesc">individual, em escala</span></span></button>
           </div>
         </div>
         <div class="card">
-          <h2><svg class="ic"><use href="#i-spark"/></svg>Alertas da IA</h2>
+          <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.alertasIA">Alertas da IA</span></h2>
           <ul class="list" style="margin-top:12px">
-            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>14 alunos travaram em subordinadas</b><span>revisão sugerida antes do simulado</span></div></li>
-            <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b>Gramática Avançada: +18% em interpretação</b><span>efeito das listas adaptativas</span></div></li>
+            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b data-i18n="prof.alerta14Curto">14 alunos travaram em subordinadas</b><span data-i18n="prof.alerta14CurtoDesc">revisão sugerida antes do simulado</span></div></li>
+            <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b data-i18n="prof.alertaGramaticaCurto">Gramática Avançada: +18% em interpretação</b><span data-i18n="prof.alertaGramaticaCurtoDesc">efeito das listas adaptativas</span></div></li>
           </ul>
         </div>
       </div>
@@ -161,40 +173,40 @@
   <!-- ══ TURMAS ══ -->
   <section class="screen" id="s-turmas">
     <div class="phead">
-      <div class="tx"><p class="eyebrow">Turmas</p><h1>Suas turmas</h1></div>
-      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-users"/></svg>Configurar nova turma</button></div>
+      <div class="tx"><p class="eyebrow" data-i18n="prof.turmas">Turmas</p><h1 data-i18n="prof.suasTurmas">Suas turmas</h1></div>
+      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-users"/></svg><span data-i18n="prof.configurarNovaTurma">Configurar nova turma</span></button></div>
     </div>
     <div class="tgrid">
       <div class="tcard">
-        <div class="thead"><span class="tname">Português ENEM</span><span class="pill p-ok">média 7,2</span></div>
-        <div class="meta">34 alunos matriculados</div>
+        <div class="thead"><span class="tname">Português ENEM</span><span class="pill p-ok"><span data-i18n="prof.media">média</span> 7,2</span></div>
+        <div class="meta">34 <span data-i18n="prof.alunosMatriculados">alunos matriculados</span></div>
         <div class="hbar"><i style="--w:74%"></i></div>
-        <div class="prog"><span>Conteúdo configurado</span><span>74%</span></div>
+        <div class="prog"><span data-i18n="prof.conteudoConfigurado">Conteúdo configurado</span><span>74%</span></div>
       </div>
       <div class="tcard">
-        <div class="thead"><span class="tname">Redação Nota 1000</span><span class="pill p-warn">média 6,9</span></div>
-        <div class="meta">36 alunos matriculados</div>
+        <div class="thead"><span class="tname">Redação Nota 1000</span><span class="pill p-warn"><span data-i18n="prof.media">média</span> 6,9</span></div>
+        <div class="meta">36 <span data-i18n="prof.alunosMatriculados">alunos matriculados</span></div>
         <div class="hbar"><i style="--w:71%"></i></div>
-        <div class="prog"><span>Conteúdo configurado</span><span>71%</span></div>
+        <div class="prog"><span data-i18n="prof.conteudoConfigurado">Conteúdo configurado</span><span>71%</span></div>
       </div>
       <div class="tcard">
-        <div class="thead"><span class="tname">Gramática Avançada</span><span class="pill p-ok">média 7,5</span></div>
-        <div class="meta">33 alunos matriculados</div>
+        <div class="thead"><span class="tname">Gramática Avançada</span><span class="pill p-ok"><span data-i18n="prof.media">média</span> 7,5</span></div>
+        <div class="meta">33 <span data-i18n="prof.alunosMatriculados">alunos matriculados</span></div>
         <div class="hbar"><i style="--w:78%"></i></div>
-        <div class="prog"><span>Conteúdo configurado</span><span>78%</span></div>
+        <div class="prog"><span data-i18n="prof.conteudoConfigurado">Conteúdo configurado</span><span>78%</span></div>
       </div>
     </div>
     <div class="cols fullcard">
       <div class="card">
-        <h2><svg class="ic"><use href="#i-users"/></svg>Português ENEM — atenção esta semana</h2>
+        <h2><svg class="ic"><use href="#i-users"/></svg><span data-i18n="prof.turmaAtencaoSemana">Português ENEM — atenção esta semana</span></h2>
         <ul class="list" style="margin-top:12px">
-          <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Carlos Eduardo Melo</b><span>3 exercícios atrasados · média 5,5</span></div><button class="btn btn-gho btn-sm">Ver perfil</button></li>
-          <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Júlia Fernandes</b><span>performance caiu 1,2 pontos</span></div><button class="btn btn-gho btn-sm">Enviar reforço</button></li>
-          <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b>Marina Souza</b><span>6 dias seguidos com tutor</span></div><button class="btn btn-gho btn-sm">Elogiar</button></li>
+          <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Carlos Eduardo Melo</b><span data-i18n="prof.atrasadoDesc">3 exercícios atrasados · média 5,5</span></div><button class="btn btn-gho btn-sm" data-i18n="prof.verPerfil">Ver perfil</button></li>
+          <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Júlia Fernandes</b><span data-i18n="prof.quedaDesc">performance caiu 1,2 pontos</span></div><button class="btn btn-gho btn-sm" data-i18n="prof.enviarReforco">Enviar reforço</button></li>
+          <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b>Marina Souza</b><span data-i18n="prof.sequenciaDesc">6 dias seguidos com tutor</span></div><button class="btn btn-gho btn-sm" data-i18n="prof.elogiar">Elogiar</button></li>
         </ul>
       </div>
       <div class="card">
-        <h2><svg class="ic"><use href="#i-chart"/></svg>Uso do tutor por turma</h2>
+        <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="prof.usoTutorTurma">Uso do tutor por turma</span></h2>
         <div style="margin-top:12px">
           <div class="hrow"><span class="hlbl">Gramática Avançada</span><span class="hbar"><i style="--w:88%"></i></span><span class="hval">88%</span></div>
           <div class="hrow"><span class="hlbl">Português ENEM</span><span class="hbar"><i style="--w:81%"></i></span><span class="hval">81%</span></div>
@@ -206,28 +218,28 @@
 
   <!-- ══ AVALIAÇÕES ══ -->
   <section class="screen" id="s-avaliacoes">
-    <div class="phead"><div class="tx"><p class="eyebrow">Avaliações</p><h1>Gerar nova prova</h1></div></div>
+    <div class="phead"><div class="tx"><p class="eyebrow" data-i18n="prof.avaliacoes">Avaliações</p><h1 data-i18n="prof.gerarNovaProva">Gerar nova prova</h1></div></div>
     <div class="cols cols-rev">
       <div class="card">
-        <h2><svg class="ic"><use href="#i-sliders"/></svg>Configuração</h2>
-        <p class="desc">Prova de Português · Turma Português ENEM</p>
-        <div class="field"><label>Conteúdo-base</label><div class="selectbox">Unidade 4 — Sintaxe do período composto<svg class="ic"><use href="#i-chev"/></svg></div></div>
-        <div class="field"><label>Formato</label><div class="selectbox">10 objetivas + 2 dissertativas<svg class="ic"><use href="#i-chev"/></svg></div></div>
-        <div class="field"><label>Dificuldade</label><div class="selectbox">Média · curva do ENEM<svg class="ic"><use href="#i-chev"/></svg></div></div>
-        <div class="togglerow"><span>Gabarito comentado</span><span class="tg"></span></div>
-        <div class="togglerow"><span>Rubrica para dissertativas</span><span class="tg"></span></div>
-        <div class="togglerow"><span>Versões A/B embaralhadas</span><span class="tg off"></span></div>
-        <div class="tfoot" style="margin-top:12px"><button class="btn btn-pri" id="prova-gerar" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg>Gerar prova · 12 créditos</button></div>
+        <h2><svg class="ic"><use href="#i-sliders"/></svg><span data-i18n="prof.configuracao">Configuração</span></h2>
+        <p class="desc" data-i18n="prof.provaContexto">Prova de Português · Turma Português ENEM</p>
+        <div class="field"><label data-i18n="prof.conteudoBase">Conteúdo-base</label><div class="selectbox"><span data-i18n="prof.unidade4Sintaxe">Unidade 4 — Sintaxe do período composto</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="field"><label data-i18n="tutor.formato">Formato</label><div class="selectbox"><span data-i18n="prof.formatoPadrao">10 objetivas + 2 dissertativas</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="field"><label data-i18n="prof.dificuldade">Dificuldade</label><div class="selectbox"><span data-i18n="prof.dificuldadeMedia">Média · curva do ENEM</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="togglerow"><span data-i18n="prof.gabaritoComentado">Gabarito comentado</span><span class="tg"></span></div>
+        <div class="togglerow"><span data-i18n="prof.rubricaDissertativas">Rubrica para dissertativas</span><span class="tg"></span></div>
+        <div class="togglerow"><span data-i18n="prof.versoesAB">Versões A/B embaralhadas</span><span class="tg off"></span></div>
+        <div class="tfoot" style="margin-top:12px"><button class="btn btn-pri" id="prova-gerar" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.gerarProvaCreditos">Gerar prova · 12 créditos</span></button></div>
       </div>
       <div class="card hero">
-        <h2><svg class="ic"><use href="#i-doc"/></svg>Prévia gerada</h2>
-        <p class="desc">Revise, edite ou peça outra versão de cada questão</p>
+        <h2><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="prof.previaGerada">Prévia gerada</span></h2>
+        <p class="desc" data-i18n="prof.previaDesc">Revise, edite ou peça outra versão de cada questão</p>
         <div class="excerpt"><b>Questão 1.</b> No verso "Quando você foi embora, fez-se noite em meu viver", a oração "Quando você foi embora" classifica-se como subordinada adverbial…<br><span style="color:var(--ink-3)">a) causal &nbsp;&nbsp;b) temporal ✓ &nbsp;&nbsp;c) concessiva &nbsp;&nbsp;d) condicional</span></div>
         <div class="excerpt"><b>Questão 11 (dissertativa).</b> Reescreva "Estudei muito, portanto passei" transformando a coordenada em subordinada adverbial, e classifique-a.<br><span style="color:var(--ink-3)">Rubrica: reescrita correta (1,0) · classificação (1,0)</span></div>
         <div class="tfoot">
-          <button class="btn btn-gho btn-sm"><svg class="ic"><use href="#i-spark"/></svg>Regenerar Q1</button>
-          <button class="btn btn-gho btn-sm"><svg class="ic"><use href="#i-pen"/></svg>Editar</button>
-          <button class="btn btn-pri btn-sm" id="prova-publicar" style="margin-left:auto">Aprovar e publicar</button>
+          <button class="btn btn-gho btn-sm"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.regenerarQ1">Regenerar Q1</span></button>
+          <button class="btn btn-gho btn-sm"><svg class="ic"><use href="#i-pen"/></svg><span data-i18n="prof.editar">Editar</span></button>
+          <button class="btn btn-pri btn-sm" id="prova-publicar" style="margin-left:auto" data-i18n="prof.aprovarPublicar">Aprovar e publicar</button>
         </div>
       </div>
     </div>
@@ -236,33 +248,33 @@
   <!-- ══ CORREÇÃO ══ -->
   <section class="screen" id="s-correcao">
     <div class="phead">
-      <div class="tx"><p class="eyebrow">Correção</p><h1>Fila de revisão — Simulado 03</h1></div>
-      <div class="actions"><button class="btn btn-gho">Regras da rubrica</button></div>
+      <div class="tx"><p class="eyebrow" data-i18n="prof.correcao">Correção</p><h1 data-i18n="prof.filaRevisao">Fila de revisão — Simulado 03</h1></div>
+      <div class="actions"><button class="btn btn-gho" data-i18n="prof.regrasRubrica">Regras da rubrica</button></div>
     </div>
     <div class="cols cols-rev">
       <div class="card">
-        <h2><svg class="ic"><use href="#i-clock"/></svg>Pendentes <span class="pill p-warn" id="correcao-pendentes-pill" style="margin-left:auto">6</span></h2>
+        <h2><svg class="ic"><use href="#i-clock"/></svg><span data-i18n="prof.pendentes">Pendentes</span> <span class="pill p-warn" id="correcao-pendentes-pill" style="margin-left:auto">6</span></h2>
         <ul class="queue" id="correcao-queue">
-          <li><button class="on"><span class="av">AB</span><span><b>Ana Beatriz Lima</b><span>redação · sugerido 7,0</span></span></button></li>
-          <li><button><span class="av">CE</span><span><b>Carlos Eduardo Melo</b><span>redação · sugerido 5,5</span></span></button></li>
-          <li><button><span class="av">JF</span><span><b>Júlia Fernandes</b><span>redação · sugerido 6,5</span></span></button></li>
-          <li><button><span class="av">LM</span><span><b>Lucas Martins</b><span>redação · sugerido 7,5</span></span></button></li>
-          <li><button><span class="av">RS</span><span><b>Rafaela Santos</b><span>redação · sugerido 6,0</span></span></button></li>
-          <li><button><span class="av">TA</span><span><b>Thiago Assis</b><span>redação · sugerido 8,0</span></span></button></li>
+          <li><button class="on"><span class="av">AB</span><span><b>Ana Beatriz Lima</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 7,0</span></span></button></li>
+          <li><button><span class="av">CE</span><span><b>Carlos Eduardo Melo</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 5,5</span></span></button></li>
+          <li><button><span class="av">JF</span><span><b>Júlia Fernandes</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 6,5</span></span></button></li>
+          <li><button><span class="av">LM</span><span><b>Lucas Martins</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 7,5</span></span></button></li>
+          <li><button><span class="av">RS</span><span><b>Rafaela Santos</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 6,0</span></span></button></li>
+          <li><button><span class="av">TA</span><span><b>Thiago Assis</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 8,0</span></span></button></li>
         </ul>
       </div>
       <div class="card hero">
-        <h2><svg class="ic"><use href="#i-pen"/></svg>Ana Beatriz Lima — Redação</h2>
-        <p class="desc">Tema: "Caminhos para reduzir a evasão escolar no Brasil"</p>
+        <h2><svg class="ic"><use href="#i-pen"/></svg>Ana Beatriz Lima — <span data-i18n="materia.redacao">Redação</span></h2>
+        <p class="desc" data-i18n="prof.temaRedacao">Tema: "Caminhos para reduzir a evasão escolar no Brasil"</p>
         <div class="excerpt">"…a evasão escolar não é apenas um problema educacional, mas um ciclo que <u>realimenta a desigualdade</u>. Quando o jovem abandona a escola, diminui suas chances de renda e <u>aumenta a chance dos filhos repetirem</u> o mesmo caminho…"</div>
-        <div class="hrow"><span class="hlbl">Argumentação</span><span class="hbar"><i style="--w:80%"></i></span><span class="hval">3,2/4</span></div>
-        <div class="hrow"><span class="hlbl">Gramática</span><span class="hbar"><i style="--w:63%"></i></span><span class="hval">1,9/3</span></div>
-        <div class="hrow"><span class="hlbl">Estrutura</span><span class="hbar"><i style="--w:63%"></i></span><span class="hval">1,9/3</span></div>
-        <div class="memo" style="margin:14px 0 16px"><svg class="ic"><use href="#i-spark"/></svg><span><b>Justificativa da IA</b> — tese clara e bom repertório; desconto por concordância (2×) e conclusão sem agente definido.</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.argumentacao">Argumentação</span><span class="hbar"><i style="--w:80%"></i></span><span class="hval">3,2/4</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.gramatica">Gramática</span><span class="hbar"><i style="--w:63%"></i></span><span class="hval">1,9/3</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.estrutura">Estrutura</span><span class="hbar"><i style="--w:63%"></i></span><span class="hval">1,9/3</span></div>
+        <div class="memo" style="margin:14px 0 16px"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n-html="prof.justificativaIA"><b>Justificativa da IA</b> — tese clara e bom repertório; desconto por concordância (2×) e conclusão sem agente definido.</span></div>
         <div class="tfoot">
-          <button class="btn btn-pri" id="correcao-confirmar"><svg class="ic"><use href="#i-check"/></svg>Confirmar 7,0</button>
-          <button class="btn btn-gho">Ajustar nota</button>
-          <button class="btn btn-gho">Redação completa</button>
+          <button class="btn btn-pri" id="correcao-confirmar"><svg class="ic"><use href="#i-check"/></svg><span data-i18n="prof.confirmar">Confirmar</span> 7,0</button>
+          <button class="btn btn-gho" data-i18n="prof.ajustarNota">Ajustar nota</button>
+          <button class="btn btn-gho" data-i18n="prof.redacaoCompleta">Redação completa</button>
         </div>
       </div>
     </div>
@@ -271,49 +283,49 @@
   <!-- ══ ACERVO ══ -->
   <section class="screen" id="s-acervo">
     <div class="phead">
-      <div class="tx"><p class="eyebrow">Acervo</p><h1>Seu material, indexado pela IA</h1></div>
-      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-download"/></svg>Enviar arquivos</button></div>
+      <div class="tx"><p class="eyebrow" data-i18n="prof.acervo">Acervo</p><h1 data-i18n="prof.acervoTitulo">Seu material, indexado pela IA</h1></div>
+      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-download"/></svg><span data-i18n="prof.enviarArquivos">Enviar arquivos</span></button></div>
     </div>
     <div class="filter">
-      <button class="chip on">Tudo · 48</button><button class="chip">Unidade 3 · 12</button><button class="chip">Unidade 4 · 9</button><button class="chip">ENEM · 14</button><button class="chip">Redação · 13</button>
+      <button class="chip on"><span data-i18n="prof.tudo">Tudo</span> · 48</button><button class="chip"><span data-i18n="prof.unidade">Unidade</span> 3 · 12</button><button class="chip"><span data-i18n="prof.unidade">Unidade</span> 4 · 9</button><button class="chip">ENEM · 14</button><button class="chip"><span data-i18n="materia.redacao">Redação</span> · 13</button>
     </div>
     <div class="cols">
       <div class="card">
-        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Apostila — Sintaxe do período composto</b><span>PDF · 42 págs · Unidade 4</span></div><div class="end"><span class="pill p-ia">indexado</span></div></div>
-        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Slides — Orações coordenadas</b><span>PPTX · aula de 23/07</span></div><div class="end"><span class="pill p-ia">indexado</span></div></div>
-        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Banco de questões ENEM 2019–2025</b><span>DOCX · 180 questões</span></div><div class="end"><span class="pill p-ia">indexado</span></div></div>
-        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-audio"/></svg></span><div><b>Aula gravada — Análise sintática</b><span>MP3 · 47 min</span></div><div class="end"><span class="pill p-warn">processando</span></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Apostila — Sintaxe do período composto</b><span>PDF · 42 págs · Unidade 4</span></div><div class="end"><span class="pill p-ia" data-i18n="prof.indexado">indexado</span></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Slides — Orações coordenadas</b><span>PPTX · aula de 23/07</span></div><div class="end"><span class="pill p-ia" data-i18n="prof.indexado">indexado</span></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Banco de questões ENEM 2019–2025</b><span>DOCX · 180 questões</span></div><div class="end"><span class="pill p-ia" data-i18n="prof.indexado">indexado</span></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-audio"/></svg></span><div><b>Aula gravada — Análise sintática</b><span>MP3 · 47 min</span></div><div class="end"><span class="pill p-warn" data-i18n="prof.processando">processando</span></div></div>
       </div>
       <div class="card">
-        <h2><svg class="ic"><use href="#i-spark"/></svg>Como a IA usa o acervo</h2>
-        <p class="desc">Últimos 30 dias</p>
-        <div class="hrow"><span class="hlbl">Tutor dos alunos</span><span class="hbar"><i style="--w:76%"></i></span><span class="hval">76%</span></div>
-        <div class="hrow"><span class="hlbl">Provas geradas</span><span class="hbar"><i style="--w:52%"></i></span><span class="hval">52%</span></div>
-        <div class="hrow"><span class="hlbl">Resumos</span><span class="hbar"><i style="--w:41%"></i></span><span class="hval">41%</span></div>
+        <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.comoIAUsaAcervo">Como a IA usa o acervo</span></h2>
+        <p class="desc" data-i18n="prof.ultimos30Dias">Últimos 30 dias</p>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.tutorDosAlunos">Tutor dos alunos</span><span class="hbar"><i style="--w:76%"></i></span><span class="hval">76%</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.provasGeradas">Provas geradas</span><span class="hbar"><i style="--w:52%"></i></span><span class="hval">52%</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.resumos">Resumos</span><span class="hbar"><i style="--w:41%"></i></span><span class="hval">41%</span></div>
       </div>
     </div>
   </section>
 
   <!-- ══ ALERTAS ══ -->
   <section class="screen" id="s-alertas">
-    <div class="phead"><div class="tx"><p class="eyebrow">Alertas da IA</p><h1>O que a IA percebeu nas suas turmas</h1></div></div>
+    <div class="phead"><div class="tx"><p class="eyebrow" data-i18n="prof.alertasIA">Alertas da IA</p><h1 data-i18n="prof.alertasTitulo">O que a IA percebeu nas suas turmas</h1></div></div>
     <div class="feed">
       <div class="alertcard"><span class="stripe" style="--c:var(--warn)"></span>
-        <div class="tx"><b>14 estudantes travaram em orações subordinadas</b>
-          <p>Erro dominante: adjetiva × adverbial (62% dos casos). O próximo simulado cobra o tema em 8 questões.</p>
-          <div class="row"><button class="btn btn-pri btn-sm"><svg class="ic"><use href="#i-spark"/></svg>Criar revisão guiada</button><button class="btn btn-gho btn-sm">Ver os 14 estudantes</button></div>
+        <div class="tx"><b data-i18n="prof.alerta14">14 estudantes travaram em orações subordinadas</b>
+          <p data-i18n="prof.alerta14Desc">Erro dominante: adjetiva × adverbial (62% dos casos). O próximo simulado cobra o tema em 8 questões.</p>
+          <div class="row"><button class="btn btn-pri btn-sm"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.criarRevisaoGuiada">Criar revisão guiada</span></button><button class="btn btn-gho btn-sm" data-i18n="prof.verOs14">Ver os 14 estudantes</button></div>
         </div>
       </div>
       <div class="alertcard"><span class="stripe" style="--c:var(--bad)"></span>
-        <div class="tx"><b>Carlos Eduardo está 3 listas atrasado e parou de usar o tutor</b>
-          <p>Última sessão há 12 dias. Média caiu de 6,8 para 5,5 em um mês. Padrão parecido com evasões do ano passado.</p>
-          <div class="row"><button class="btn btn-pri btn-sm">Plano de recuperação</button><button class="btn btn-gho btn-sm">Ver perfil</button></div>
+        <div class="tx"><b data-i18n="prof.alertaCarlos">Carlos Eduardo está 3 listas atrasado e parou de usar o tutor</b>
+          <p data-i18n="prof.alertaCarlosDesc">Última sessão há 12 dias. Média caiu de 6,8 para 5,5 em um mês. Padrão parecido com evasões do ano passado.</p>
+          <div class="row"><button class="btn btn-pri btn-sm" data-i18n="prof.planoRecuperacao">Plano de recuperação</button><button class="btn btn-gho btn-sm" data-i18n="prof.verPerfil">Ver perfil</button></div>
         </div>
       </div>
       <div class="alertcard"><span class="stripe" style="--c:var(--good)"></span>
-        <div class="tx"><b>Turma C avançou 18% em interpretação de texto</b>
-          <p>Efeito das listas adaptativas de junho. Vale replicar nas turmas A e B.</p>
-          <div class="row"><button class="btn btn-pri btn-sm">Replicar nas outras turmas</button><button class="btn btn-gho btn-sm">Ver análise</button></div>
+        <div class="tx"><b data-i18n="prof.alertaTurmaC">Turma C avançou 18% em interpretação de texto</b>
+          <p data-i18n="prof.alertaTurmaCDesc">Efeito das listas adaptativas de junho. Vale replicar nas turmas A e B.</p>
+          <div class="row"><button class="btn btn-pri btn-sm" data-i18n="prof.replicarTurmas">Replicar nas outras turmas</button><button class="btn btn-gho btn-sm" data-i18n="prof.verAnalise">Ver análise</button></div>
         </div>
       </div>
     </div>
@@ -326,8 +338,8 @@
 <div class="modal-backdrop" id="modal-backdrop"></div>
 <div class="modal" id="modal-conta">
   <div class="modal-head">
-    <h3>Minha conta</h3>
-    <button class="modal-x" data-modal-close aria-label="Fechar">✕</button>
+    <h3 data-i18n="conta.minhaConta">Minha conta</h3>
+    <button class="modal-x" data-modal-close aria-label="Fechar" data-i18n-attr="aria-label:acao.fechar">✕</button>
   </div>
   <div class="modal-body">
     <div class="acgrid">
@@ -335,38 +347,38 @@
         <div class="card acprofile">
           <span class="bigav" style="background:#2C302D">RA</span>
           <h3>Ricardo Almeida</h3>
-          <p>Professor · Língua Portuguesa</p>
-          <button class="btn btn-gho btn-sm">Alterar foto</button>
+          <p data-i18n="prof.cargoDemo">Professor · Língua Portuguesa</p>
+          <button class="btn btn-gho btn-sm" data-i18n="conta.alterarFoto">Alterar foto</button>
           <div class="acmeta" style="margin-top:18px">
-            <span><b>3</b>turmas</span>
-            <span><b>103</b>estudantes</span>
-            <span><b>310</b>créditos</span>
+            <span><b>3</b><span data-i18n="prof.turmasMin">turmas</span></span>
+            <span><b>103</b><span data-i18n="prof.estudantesMin">estudantes</span></span>
+            <span><b>310</b><span data-i18n="conta.creditos">créditos</span></span>
           </div>
         </div>
         <div class="card">
-          <h2><svg class="ic"><use href="#i-logout"/></svg>Sessão</h2>
-          <p class="desc">Conectado neste dispositivo desde 25/07.</p>
-          <a class="btn btn-danger" href="./"><svg class="ic"><use href="#i-logout"/></svg>Sair da conta</a>
+          <h2><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sessao">Sessão</span></h2>
+          <p class="desc" data-i18n="prof.conectadoDesde">Conectado neste dispositivo desde 25/07.</p>
+          <a class="btn btn-danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sairDaConta">Sair da conta</span></a>
         </div>
       </div>
       <div class="stack">
         <div class="card">
-          <h2><svg class="ic"><use href="#i-user"/></svg>Dados pessoais</h2>
+          <h2><svg class="ic"><use href="#i-user"/></svg><span data-i18n="conta.dadosPessoais">Dados pessoais</span></h2>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
-            <div class="field" style="margin:0"><label>Nome completo</label><input class="input" value="Ricardo Almeida"></div>
-            <div class="field" style="margin:0"><label>E-mail</label><input class="input" value="ricardo.almeida@estudo.com"></div>
-            <div class="field" style="margin:0"><label>Área de atuação</label><input class="input" value="Língua Portuguesa"></div>
-            <div class="field" style="margin:0"><label>Telefone</label><input class="input" value="(11) 9 7712-4483"></div>
+            <div class="field" style="margin:0"><label data-i18n="conta.nomeCompleto">Nome completo</label><input class="input" value="Ricardo Almeida"></div>
+            <div class="field" style="margin:0"><label data-i18n="conta.email">E-mail</label><input class="input" value="ricardo.almeida@estudo.com"></div>
+            <div class="field" style="margin:0"><label data-i18n="prof.areaAtuacao">Área de atuação</label><input class="input" value="Língua Portuguesa"></div>
+            <div class="field" style="margin:0"><label data-i18n="conta.telefone">Telefone</label><input class="input" value="(11) 9 7712-4483"></div>
           </div>
-          <div class="tfoot"><button class="btn btn-pri">Salvar alterações</button><button class="btn btn-gho">Trocar senha</button></div>
+          <div class="tfoot"><button class="btn btn-pri" data-i18n="conta.salvarAlteracoes">Salvar alterações</button><button class="btn btn-gho" data-i18n="conta.trocarSenha">Trocar senha</button></div>
         </div>
         <div class="card">
-          <h2><svg class="ic"><use href="#i-bell"/></svg>Preferências</h2>
+          <h2><svg class="ic"><use href="#i-bell"/></svg><span data-i18n="conta.preferencias">Preferências</span></h2>
           <div style="margin-top:8px">
-            <div class="togglerow"><span>Alertas da IA sobre estudantes<small>risco de desengajamento e padrões de erro</small></span><span class="tg"></span></div>
-            <div class="togglerow"><span>Resumo diário da correção<small>fila e sugestões pendentes</small></span><span class="tg"></span></div>
-            <div class="togglerow"><span>Novo aluno na turma<small>notificar quando a secretaria matricular um aluno</small></span><span class="tg off"></span></div>
-            <div class="togglerow"><span>Modo escuro<small>espelha o botão da barra superior</small></span><button type="button" class="tg" id="tg-tema" role="switch" aria-checked="false" aria-label="Modo escuro"></button></div>
+            <div class="togglerow"><span data-i18n-html="prof.prefAlertas">Alertas da IA sobre estudantes<small>risco de desengajamento e padrões de erro</small></span><span class="tg"></span></div>
+            <div class="togglerow"><span data-i18n-html="prof.prefResumoCorrecao">Resumo diário da correção<small>fila e sugestões pendentes</small></span><span class="tg"></span></div>
+            <div class="togglerow"><span data-i18n-html="prof.prefNovoAluno">Novo aluno na turma<small>notificar quando a secretaria matricular um aluno</small></span><span class="tg off"></span></div>
+            <div class="togglerow"><span data-i18n-html="prof.prefModoEscuro">Modo escuro<small>espelha o botão da barra superior</small></span><button type="button" class="tg" id="tg-tema" role="switch" aria-checked="false" aria-label="Modo escuro" data-i18n-attr="aria-label:conta.modoEscuro"></button></div>
           </div>
         </div>
       </div>
@@ -374,6 +386,7 @@
   </div>
 </div>
 
+<script src="assets/i18n.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/dev-reload.js"></script>
 </body>
