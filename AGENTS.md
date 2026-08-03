@@ -126,8 +126,14 @@ Ja violam a regra. Ao mexer neles, **quebre antes** em vez de aumentar -
 mas nao quebre "de passagem" numa tarefa que nao os envolve: e mudanca
 estrutural e merece commit proprio.
 
-- `IA.md` (~360 linhas) - append-only. Passando de 400, arquivar os
+- `IA.md` (~383 linhas) - append-only. Passando de 400, arquivar os
   antigos **sem editar** em `docs/ia-archive/IA-ARCHIVE-<ano>.md`.
+  Arquivado pela primeira vez em 2026-08-03: sairam os **relatos
+  retrospectivos** de trabalho ja entregue; ficaram as **decisoes e
+  convencoes em vigor**, independente da data. Use o mesmo criterio na
+  proxima vez - cortar so por data levaria embora as decisoes de
+  arquitetura de 2026-07-16, que sao justamente as que ainda regem o
+  projeto.
 
 O `start_app.py` saiu desta lista em 2026-07-29: tinha 1716 linhas e
 hoje e um gatilho de 48 que chama `scripts/hud/`. Para mexer no HUD,
