@@ -1,6 +1,6 @@
 # Frontend do Prisma
 
-Landing React com entrada autenticada conectada ao backend Django local.
+Landing React com a aplicação HTML definitiva conectada ao backend Django local.
 
 ## Desenvolvimento
 
@@ -22,8 +22,9 @@ npm run lint
 npm run build
 ```
 
-O login usa e-mail e senha, guarda o access token apenas em memoria e depende
-do cookie HttpOnly de refresh emitido pelo backend.
+O login definitivo em `/app/login.html` usa e-mail e senha, envia o access
+token somente no cabeçalho das chamadas e depende do cookie HttpOnly de refresh
+emitido pelo backend.
 
 ## Producao
 
@@ -43,7 +44,7 @@ vercel deploy --prod --yes --build-env VITE_API_URL=/api/v1
 
 A landing pública do PrismaTest, implementada em React, TypeScript, Vite,
 Tailwind CSS e Motion. O layout é mobile-first e a aplicação visual é
-servida junto com as telas HTML demonstrativas em `/app/`.
+servida junto com as telas HTML definitivas em `/app/`.
 
 ## Desenvolvimento
 
@@ -64,9 +65,10 @@ npm run lint
 npm run build
 ```
 
-As telas definitivas são mantidas em `../app/` e sincronizadas para
-`public/app/` por `python ../scripts/sincronizar-app.py`. A pasta `public/app/`
-é uma cópia derivada e não é a fonte de edição.
+As telas definitivas são mantidas em `../app/`. O `prebuild` executa
+`scripts/sincronizar-app.mjs` para copiá-las a `public/app/`, incluindo a
+publicação na Vercel quando o projeto usa `frontend/` como Root Directory.
+Também é possível sincronizar manualmente pela automação Python da raiz.
 
 O frontend não implementa autenticação, regras de negócio, chamadas ao
 OpenRouter ou persistência em servidor. Esses comportamentos dependem do
