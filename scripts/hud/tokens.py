@@ -62,6 +62,7 @@ ICONES = {
     "validar": "",     # check
     "porta": "",       # engrenagem
     "limpar": "",      # lixeira
+    "fechar_porta": "", # cadeado com x
 }
 
 RAIO = 14                  # bordas suaves, 12-16px como pedido

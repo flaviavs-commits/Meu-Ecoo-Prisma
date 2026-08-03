@@ -135,6 +135,7 @@ class LayoutMixin:
             ("validar", ICONES["validar"], "Validar", "Executa lint e build", self.acao_validar, False),
             ("porta", ICONES["porta"], "Porta", f"Atual: {self.porta}", self.acao_configurar, False),
             ("limpar", ICONES["limpar"], "Limpar console", "Esvazia a saída", self.acao_limpar, False),
+            ("fechar_porta", ICONES["fechar_porta"], "Fechar portas", "Lista e encerra portas em uso", self.acao_fechar_porta, False),
         ]
 
         for indice, (chave, icone, titulo, desc, callback, primario) in enumerate(acoes):

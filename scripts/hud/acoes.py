@@ -11,11 +11,11 @@ import threading
 import webbrowser
 from pathlib import Path
 
-from .ambiente import dependencias_instaladas, npm, porta_em_uso
+from .ambiente import dependencias_instaladas, npm, porta_em_uso, portas_em_escuta
 from .caminhos import FRONTEND, RAIZ, SINCRONIZAR_APP
 from .processos import SAIDA_SUBPROCESSO, encerrar_arvore
 from .tokens import ICONES
-from .widgets import Modal
+from .widgets import Modal, PainelPortas
 
 
 class AcoesMixin:
@@ -216,6 +216,44 @@ class AcoesMixin:
         self.cards["porta"].definir_conteudo(ICONES["porta"], "Porta", f"Atual: {self.porta}")
         self._escrever(f"Porta definida para {self.porta}.", "ok")
         self._toast_mostrar(f"Porta {self.porta}")
+
+    def acao_fechar_porta(self) -> None:
+        """Abre o painel com todas as portas em uso, para encerrar qualquer uma."""
+        if self.ocupado:
+            self._escrever("Já há uma ação em andamento.", "suave")
+            return
+
+        self._escrever("Consultando portas em uso...", "suave")
+        self.raiz.update_idletasks()
+        portas = portas_em_escuta()
+
+        meu_pid = self.servidor.pid if self.servidor and self.servidor.poll() is None else None
+        if meu_pid is not None:
+            # O servidor deste HUD tem card proprio para parar; misturar
+            # os dois caminhos de encerramento so confundiria qual botao
+            # usar.
+            portas = [item for item in portas if item.pid != meu_pid]
+
+        PainelPortas(self.raiz, self.fontes, portas, self._encerrar_porta)
+
+    def _encerrar_porta(self, item) -> None:
+        self._escrever(f"Encerrando {item.processo} (PID {item.pid}) na porta {item.porta}...", "suave")
+
+        def trabalho() -> None:
+            resultado = subprocess.run(
+                ["taskkill", "/F", "/T", "/PID", str(item.pid)],
+                capture_output=True,
+                timeout=10,
+                check=False,
+            )
+            if resultado.returncode != 0:
+                self.fila.put(("erro", f"Falha ao encerrar PID {item.pid}."))
+                self.fila.put(("toast_erro", "Falha ao encerrar processo"))
+            else:
+                self.fila.put(("ok", f"Porta {item.porta} liberada."))
+                self.fila.put(("toast_ok", f"Porta {item.porta} liberada"))
+
+        threading.Thread(target=trabalho, daemon=True).start()
 
     def ao_fechar(self) -> None:
         """Nao deixa o Vite orfao quando a janela fecha."""

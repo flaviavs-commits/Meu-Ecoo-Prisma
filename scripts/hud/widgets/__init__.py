@@ -10,5 +10,6 @@ from .botao_modal import BotaoModal
 from .card_acao import CardAcao
 from .linha_status import LinhaStatus
 from .modal import Modal
+from .painel_portas import PainelPortas
 
-__all__ = ["BarraRolagem", "BotaoModal", "CardAcao", "LinhaStatus", "Modal"]
+__all__ = ["BarraRolagem", "BotaoModal", "CardAcao", "LinhaStatus", "Modal", "PainelPortas"]
