@@ -126,6 +126,7 @@
     margin: 0;
     background-color: var(--color-fundo);
     color: var(--color-texto);
+    overflow-x: clip;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

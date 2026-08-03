@@ -1,3 +1,9 @@
+import type { Perfil } from '../types/Perfil'
+import type { Plano } from '../types/Plano'
+import type { Recurso } from '../types/Recurso'
+import type { Creditos } from '../types/Creditos'
+import type { ComparativoPlanos } from '../types/ComparativoPlanos'
+
 /**
  * Conteúdo da landing page do Prisma.
  * Texto separado da apresentação: edite a copy aqui, sem tocar em JSX.
@@ -27,49 +33,7 @@ export const hero = {
   apoio: 'Feito para quem estuda, quem ensina e quem administra o ensino.',
 }
 
-/**
- * Exemplos do demo do motor de refração.
- *
- * Cada saída declara para QUEM ela serve. É isso que define a cor
- * exibida — a cor identifica o perfil destinatário, não a posição
- * na lista (ver "REGRA DE COR" em index.css).
- */
-export const exemplosRefracao = [
-  {
-    entrada: 'Fotossíntese — 7º ano',
-    saidas: [
-      { rotulo: 'Resumo guiado', perfil: 'aluno' },
-      { rotulo: 'Quiz de 10 questões', perfil: 'aluno' },
-      { rotulo: 'Plano de aula', perfil: 'professor' },
-    ],
-  },
-  {
-    entrada: 'Revolução Francesa — Ensino Médio',
-    saidas: [
-      { rotulo: 'Linha do tempo', perfil: 'aluno' },
-      { rotulo: 'Prova dissertativa', perfil: 'professor' },
-      { rotulo: 'Relatório da turma', perfil: 'diretor' },
-    ],
-  },
-  {
-    entrada: 'Frações — 5º ano',
-    saidas: [
-      { rotulo: 'Lista progressiva', perfil: 'aluno' },
-      { rotulo: 'Exercícios resolvidos', perfil: 'aluno' },
-      { rotulo: 'Diagnóstico da turma', perfil: 'professor' },
-    ],
-  },
-  {
-    entrada: 'Ciclo da água — 4º ano',
-    saidas: [
-      { rotulo: 'Mapa visual', perfil: 'aluno' },
-      { rotulo: 'Roteiro de aula', perfil: 'professor' },
-      { rotulo: 'Indicador de engajamento', perfil: 'diretor' },
-    ],
-  },
-] as const
-
-export const perfis = [
+export const perfis: Perfil[] = [
   {
     id: 'aluno',
     nome: 'Aluno',
@@ -117,7 +81,7 @@ export const perfis = [
   },
 ]
 
-export const recursos = [
+export const recursos: Recurso[] = [
   {
     titulo: 'Motor multi-modelo',
     descricao: 'Cada tarefa vai para o modelo mais adequado em custo.',
@@ -152,7 +116,13 @@ export const recursos = [
  * Preço e volume de tokens ainda não definidos: "x" é placeholder,
  * não publique com valor real até a precificação fechar.
  */
-export const planos = {
+export const planos: {
+  etiqueta: string
+  titulo: string
+  descricao: string
+  baseComum: string
+  itens: Plano[]
+} = {
   etiqueta: 'Planos',
   titulo: 'Comece no mínimo. Suba quando quiser.',
   descricao:
@@ -209,7 +179,7 @@ export const planos = {
   ],
 } as const
 
-export const creditos = {
+export const creditos: Creditos = {
   etiqueta: 'Créditos',
   titulo: 'A instituição assina. O diretor distribui.',
   descricao:
@@ -219,21 +189,17 @@ export const creditos = {
     'Consumo monitorado em tempo real',
     'Alerta quando um perfil está perto do limite',
   ],
-  /**
-   * Comparação de valor entre os 3 planos individuais (ver `planos`).
-   * "economia" é o custo por unidade de limite de uso, medido contra
-   * o Prisma - por isso o Prisma aparece com 0%. Números derivados do
-   * preço e do limite de cada plano; não são estimativa de marketing.
-   */
-  comparativoPlanos: {
-    titulo: 'Quanto mais o plano, mais barato o limite de uso',
-    linhas: [
-      { plano: 'Prisma', preco: 'R$ 39,99', limite: '100%', economia: 'referência' },
-      { plano: 'Prisma Pro', preco: 'R$ 64,99', limite: '171%', economia: '5%' },
-      { plano: 'Prisma Ultra', preco: 'R$ 99,99', limite: '271%', economia: '7,7%' },
-    ],
-    apoio: 'Economia por unidade de limite de uso, comparada ao Prisma.',
-  },
+}
+
+/** Comparação editorial dos planos individuais, separada do saldo institucional. */
+export const comparativoPlanos: ComparativoPlanos = {
+  titulo: 'Quanto mais o plano, mais barato o limite de uso',
+  linhas: [
+    { plano: 'Prisma', preco: 'R$ 39,99', limite: 100, economia: 'referência' },
+    { plano: 'Prisma Pro', preco: 'R$ 64,99', limite: 171, economia: '5%' },
+    { plano: 'Prisma Ultra', preco: 'R$ 99,99', limite: 271, economia: '7,7%' },
+  ],
+  apoio: 'Economia por unidade de limite de uso, comparada ao Prisma.',
 }
 
 export const ctaFinal = {

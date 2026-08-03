@@ -1,7 +1,9 @@
 import { Card } from '../ui/Card'
 import { Card3D } from '../ui/Card3D'
-import { ItemAnimado, ListaAnimada } from '../ui/Animar'
-import { Secao, TituloSecao } from '../ui/Secao'
+import { ItemAnimado } from '../ui/ItemAnimado'
+import { ListaAnimada } from '../ui/ListaAnimada'
+import { Secao } from '../ui/Secao'
+import { TituloSecao } from '../ui/TituloSecao'
 import { perfis } from '../../content/landing'
 
 /** Três caminhos de uso: aluno, professor e diretor. */

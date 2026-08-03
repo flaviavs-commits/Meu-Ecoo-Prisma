@@ -37,7 +37,7 @@ export function Header() {
         logo encostar na margem, em vez de seguir o container
         centralizado que as secoes de conteudo usam.
       */}
-      <div className="relative flex w-full items-center justify-between gap-8 px-6 py-5 sm:px-8">
+      <div className="relative flex w-full items-center justify-between gap-4 px-4 py-4 sm:gap-8 sm:px-8 sm:py-5">
         <a href="#inicio" className="shrink-0 text-texto">
           <LogoComNome />
         </a>
@@ -72,7 +72,7 @@ export function Header() {
 
         <button
           type="button"
-          className="md:hidden"
+          className="grid min-h-11 min-w-11 place-items-center rounded-lg text-texto transition-colors hover:bg-superficie-alt md:hidden"
           aria-expanded={aberto}
           aria-controls="menu-mobile"
           aria-label={aberto ? 'Fechar menu' : 'Abrir menu'}
@@ -101,7 +101,7 @@ export function Header() {
       {aberto && (
         <div
           id="menu-mobile"
-          className="border-t border-borda bg-superficie px-6 py-4 md:hidden"
+          className="border-t border-borda bg-superficie px-4 py-4 sm:px-6 md:hidden"
         >
           <nav aria-label="Principal (mobile)" className="flex flex-col gap-1">
             {navegacao.map((item) => (
@@ -109,7 +109,7 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setAberto(false)}
-                className="rounded-lg px-2 py-2.5 text-texto-secundario transition-colors hover:bg-superficie-alt hover:text-texto"
+                className="flex min-h-11 items-center rounded-lg px-3 py-2.5 text-texto-secundario transition-colors hover:bg-superficie-alt hover:text-texto"
               >
                 {item.rotulo}
               </a>

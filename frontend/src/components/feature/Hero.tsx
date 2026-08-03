@@ -35,7 +35,7 @@ export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative flex min-h-svh flex-col justify-center overflow-hidden border-b border-contorno bg-superficie-alt px-6 py-24 sm:px-10"
+      className="relative flex min-h-svh flex-col justify-center overflow-hidden border-b border-contorno bg-superficie-alt px-4 py-20 sm:px-10 sm:py-24"
     >
       <div className="mx-auto w-full max-w-6xl">
         {/* Marcador de capítulo: ancora a composição à esquerda */}
@@ -67,13 +67,13 @@ export function Hero() {
         </motion.p>
 
         <motion.div
-          className="mt-12 flex flex-col gap-3 sm:flex-row"
+          className="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row"
           {...bloco(0.68)}
         >
-          <Button size="lg" href="#comecar">
+          <Button className="w-full sm:w-auto" size="lg" href="#comecar">
             {hero.ctaPrimario}
           </Button>
-          <Button size="lg" variant="secondary" href="#como-funciona">
+          <Button className="w-full sm:w-auto" size="lg" variant="secondary" href="#como-funciona">
             {hero.ctaSecundario}
           </Button>
         </motion.div>

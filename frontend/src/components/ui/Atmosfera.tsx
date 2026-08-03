@@ -1,4 +1,4 @@
-import type { ReactNode, RefObject } from 'react'
+import type { RefObject } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import type { Clima } from './clima'
 
@@ -85,45 +85,5 @@ export function Atmosfera({ alvo, clima }: AtmosferaProps) {
         }}
       />
     </>
-  )
-}
-
-interface PortalProps {
-  children: ReactNode
-  alvo: RefObject<HTMLElement | null>
-  className?: string
-}
-
-/**
- * Emergência suave do conteúdo ao entrar na seção.
- *
- * NOTA DE DESEMPENHO: a versão anterior animava `mask-image` e
- * `filter: blur` por rolagem. Máscara em gradiente é das operações
- * mais caras que existem em CSS, e animá-la a cada quadro travava em
- * GPU modesta. Aqui restaram `opacity` e `scale` - baratas e
- * suficientes para a sensação de emergir.
- */
-export function Portal({ children, alvo, className = '' }: PortalProps) {
-  const reduzido = useReducedMotion()
-
-  const { scrollYProgress } = useScroll({
-    target: alvo,
-    offset: ['start end', 'center center'],
-  })
-
-  const escala = useTransform(scrollYProgress, [0, 1], [0.975, 1])
-  const opacidade = useTransform(scrollYProgress, [0, 0.6], [0.5, 1])
-
-  if (reduzido) {
-    return <div className={className}>{children}</div>
-  }
-
-  return (
-    <motion.div
-      className={className}
-      style={{ scale: escala, opacity: opacidade, willChange: 'transform' }}
-    >
-      {children}
-    </motion.div>
   )
 }

@@ -1,7 +1,9 @@
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
-import { ItemAnimado, ListaAnimada } from '../ui/Animar'
-import { Secao, TituloSecao } from '../ui/Secao'
+import { ItemAnimado } from '../ui/ItemAnimado'
+import { ListaAnimada } from '../ui/ListaAnimada'
+import { Secao } from '../ui/Secao'
+import { TituloSecao } from '../ui/TituloSecao'
 import { planos } from '../../content/landing'
 import { ENTRADA_APP } from '../../content/destinos'
 

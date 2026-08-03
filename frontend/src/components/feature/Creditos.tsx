@@ -1,8 +1,9 @@
 import { motion } from 'motion/react'
 import { Secao } from '../ui/Secao'
-import { ItemAnimado, ListaAnimada } from '../ui/Animar'
+import { ItemAnimado } from '../ui/ItemAnimado'
+import { ListaAnimada } from '../ui/ListaAnimada'
 import { Titulo3D } from '../ui/Titulo3D'
-import { creditos } from '../../content/landing'
+import { comparativoPlanos, creditos } from '../../content/landing'
 import { SUAVE } from '../ui/movimento'
 
 /**
@@ -22,7 +23,7 @@ const corPorPlano: Record<string, string> = {
  * que alguém lembrasse de atualizar esse número em dois lugares.
  */
 const limiteMaximo = Math.max(
-  ...creditos.comparativoPlanos.linhas.map((linha) => parseFloat(linha.limite)),
+  ...comparativoPlanos.linhas.map((linha) => linha.limite),
 )
 
 /** Explica o modelo de créditos e a distribuição pelo diretor. */
@@ -74,7 +75,7 @@ export function Creditos() {
 
         {/* Comparativo animado de valor entre os planos individuais */}
         <div className="rounded-lg border border-contorno bg-superficie p-7 sm:p-8">
-          <h3 className="fonte-display text-lg">{creditos.comparativoPlanos.titulo}</h3>
+          <h3 className="fonte-display text-lg">{comparativoPlanos.titulo}</h3>
 
           {/*
             Uma barra só, repartida por plano - a largura de cada
@@ -89,13 +90,13 @@ export function Creditos() {
             viewport={{ once: true, margin: '-80px' }}
             variants={{ visivel: { transition: { staggerChildren: 0.12 } } }}
           >
-            {creditos.comparativoPlanos.linhas.map((linha) => (
+            {comparativoPlanos.linhas.map((linha) => (
               <motion.span
                 key={linha.plano}
                 style={{ backgroundColor: corPorPlano[linha.plano] }}
                 variants={{
                   oculto: { width: 0 },
-                  visivel: { width: `${(parseFloat(linha.limite) / limiteMaximo) * 100}%` },
+                  visivel: { width: `${(linha.limite / limiteMaximo) * 100}%` },
                 }}
                 transition={{ duration: 0.7, ease: SUAVE }}
               />
@@ -114,7 +115,7 @@ export function Creditos() {
                   </tr>
                 </thead>
                 <tbody>
-                  {creditos.comparativoPlanos.linhas.map((linha) => (
+                  {comparativoPlanos.linhas.map((linha) => (
                     <tr key={linha.plano} className="border-b border-borda last:border-0">
                       <td className="py-3.5 font-medium">
                         <span className="flex items-center gap-2.5">
@@ -127,7 +128,7 @@ export function Creditos() {
                         </span>
                       </td>
                       <td className="py-3.5 tabular-nums text-texto-secundario">{linha.preco}</td>
-                      <td className="py-3.5 tabular-nums text-texto-secundario">{linha.limite}</td>
+                      <td className="py-3.5 tabular-nums text-texto-secundario">{linha.limite}%</td>
                       <td className="py-3.5 tabular-nums">
                         {linha.economia === 'referência' ? (
                           <span className="text-xs tracking-wide text-texto-secundario uppercase">
@@ -147,7 +148,7 @@ export function Creditos() {
           </ListaAnimada>
 
           <p className="mt-6 border-t border-borda pt-4 text-xs text-texto-secundario">
-            {creditos.comparativoPlanos.apoio}
+            {comparativoPlanos.apoio}
           </p>
         </div>
       </div>

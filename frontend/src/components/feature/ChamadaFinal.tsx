@@ -1,5 +1,5 @@
 import { Button } from '../ui/Button'
-import { AoEntrar } from '../ui/Animar'
+import { AoEntrar } from '../ui/AoEntrar'
 import { ctaFinal } from '../../content/landing'
 
 /** Última conversão antes do rodapé. */

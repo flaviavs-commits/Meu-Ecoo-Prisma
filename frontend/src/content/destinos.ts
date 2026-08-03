@@ -1,3 +1,5 @@
+import { ROTAS } from '../app/routes'
+
 /**
  * Porta de entrada da aplicação.
  *
@@ -16,8 +18,5 @@
  * constante muda - todos os pontos de "Entrar" leem daqui.
  */
 
-/** Raiz onde as telas da aplicação são servidas. */
-const BASE_DESTINOS = '/app'
-
 /** Tela inicial da aplicação, destino de todo botão "Entrar". */
-export const ENTRADA_APP = `${BASE_DESTINOS}/index.html`
+export const ENTRADA_APP = ROTAS.app.entrada

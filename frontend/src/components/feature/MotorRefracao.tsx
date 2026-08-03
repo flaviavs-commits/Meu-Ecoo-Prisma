@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { Secao, TituloSecao } from '../ui/Secao'
-import { exemplosRefracao } from '../../content/landing'
+import { Secao } from '../ui/Secao'
+import { TituloSecao } from '../ui/TituloSecao'
+import { exemplosRefracao } from '../../mocks/exemplosRefracao'
 import { SUAVE } from '../ui/movimento'
 
 /**
