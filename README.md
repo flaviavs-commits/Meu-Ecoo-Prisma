@@ -68,13 +68,35 @@ PrismaTest/
 
 ## Backend
 
-O backend ainda nao foi escrito. O desenho esta pronto e dividido em etapas que
-podem ser tocadas **em paralelo, por pessoas ou agentes diferentes** - cada
-etapa e um arquivo que serve ao mesmo tempo de especificacao e de diario de
-trabalho.
+A fundacao (E01) esta pronta: projeto Django + DRF rodando, conectado ao
+Postgres do Railway, com `pytest` e o endpoint de saude respondendo. O restante
+do dominio esta dividido em etapas que podem ser tocadas **em paralelo, por
+pessoas ou agentes diferentes** - cada etapa e um arquivo que serve ao mesmo
+tempo de especificacao e de diario de trabalho.
 
-Comece por [`docs/backend/README.md`](docs/backend/README.md). A primeira etapa
-a ser executada e a E01 (fundacao do projeto Django); ela destrava as demais.
+Comece por [`docs/backend/README.md`](docs/backend/README.md) para ver o que
+esta livre e o que depende do que.
+
+### Como rodar o backend
+
+```bash
+cd backend
+python3.11 -m venv .venv          # Python 3.12 preferido; 3.11 usado nesta maquina por falta do 3.12
+.venv/bin/pip install -r requirements-dev.txt
+cp .env.example .env              # preencha DATABASE_URL com o Postgres do Railway
+.venv/bin/python manage.py check
+.venv/bin/pytest
+```
+
+Sem SQLite e sem Postgres local: `DATABASE_URL` aponta para o Postgres do
+Railway, em dev e producao (ver [VISAO-GERAL.md](docs/backend/VISAO-GERAL.md)).
+Fora da rede do Railway (maquina local), use o valor de `DATABASE_PUBLIC_URL`
+(`railway variables`) como `DATABASE_URL` no `.env` - o hostname interno
+(`postgres.railway.internal`) so resolve dentro da rede do Railway.
+**Nenhuma migracao foi rodada ainda** - o model de usuario customizado
+(`AUTH_USER_MODEL`) so ganha campos de dominio na E02, e so ela roda a primeira
+migracao. Detalhe completo do porque em
+[E01](docs/backend/etapas/E01-fundacao-do-projeto.md).
 
 ## Como rodar
 

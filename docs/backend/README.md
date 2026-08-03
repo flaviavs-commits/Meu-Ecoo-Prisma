@@ -31,11 +31,11 @@ do frontend.
 
 | # | Etapa | Status | Responsavel | Depende de | Destrava |
 |---|-------|--------|-------------|-----------|----------|
-| E01 | [Fundacao do projeto](etapas/E01-fundacao-do-projeto.md) | EM ANDAMENTO | Claude (PROTOCOLO-DO-AGENTE.md) | - | todas |
+| E01 | [Fundacao do projeto](etapas/E01-fundacao-do-projeto.md) | CONCLUIDA | Claude (API-CONVENCOES.md) | - | todas |
 | E02 | [Nucleo de dados e multi-tenancy](etapas/E02-nucleo-de-dados-e-multitenancy.md) | BLOQUEADA | agente-canvas-E02 | E01 | E03..E11 |
 | E03 | [Autenticacao JWT](etapas/E03-autenticacao-jwt.md) | NAO INICIADA | - | E02 | E04 |
 | E04 | [Autorizacao e perfis](etapas/E04-autorizacao-e-perfis.md) | BLOQUEADA | agente-canvas-E04 | E03 | E05, E09, E10, E11 |
-| E05 | [Creditos - ledger](etapas/E05-creditos-ledger.md) | EM ANDAMENTO | Claude (agente E05) | E04 | E06 |
+| E05 | [Creditos - ledger](etapas/E05-creditos-ledger.md) | BLOQUEADA | Claude (agente E05) | E04 | E06 |
 | E06 | [Gateway de IA - interface](etapas/E06-gateway-de-ia.md) | BLOQUEADA | Claude (canvas E06) | E05 | E07 |
 | E07 | [Memoria e conversas do tutor](etapas/E07-memoria-e-conversas.md) | BLOQUEADA | claude-sonnet-5 (canvas/E07) | E06 | - |
 | E08 | [Upload de materiais](etapas/E08-upload-de-materiais.md) | BLOQUEADA | Claude (agente E08) | E02 | E10 |

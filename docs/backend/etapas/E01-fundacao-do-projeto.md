@@ -1,6 +1,6 @@
 # E01 - Fundacao do projeto
 
-> **Status:** NAO INICIADA · **Responsavel:** _(assine ao pegar)_
+> **Status:** CONCLUIDA · **Responsavel:** Claude (API-CONVENCOES.md)
 > **Depende de:** nada · **Destrava:** todas as outras etapas
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -171,23 +171,42 @@ O que as proximas etapas podem assumir que existe:
 > Ao pegar a etapa: mude o status do cabecalho para `EM ANDAMENTO`, assine, e
 > atualize a sua linha em [`../README.md`](../README.md).
 
-_(vazio - primeira entrada e sua)_
+- [2026-08-03] Peguei a etapa E01. Li protocolo do agente, README de etapas, VISAO-GERAL e contrato API-CONVENCOES - por que: nenhuma decisao pode ser tomada sem ver o que ja esta travado - como validei: leitura direta dos arquivos, sem suposicao.
+- [2026-08-03] **Nota de coordenacao:** encontrei a linha acima ja escrita quando abri este arquivo para registrar meu proprio trabalho (eu tambem sou um agente identificado como responsavel pela E01, via `docs/backend/contratos/API-CONVENCOES.md`) - ou seja, dois agentes pegaram a mesma etapa em paralelo. Nao apaguei a entrada de quem chegou antes. `backend/` no filesystem so tinha `creditos/` (E05) quando eu comecei a escrever codigo; nao vi nenhum arquivo de outro agente da E01 la, entao segui e entreguei o escopo completo abaixo. Se isso gerar trabalho duplicado, quem ler depois compara os diarios das duas sessoes antes de decidir o que fica.
+- [2026-08-03] Ambiente multi-agente confirmado ao vivo: ao montar `backend/`, encontrei `backend/creditos/` ja em construcao por outro agente (E05). Nao toquei nesses arquivos - so limpei o que eu mesmo tinha criado (`config/`, `contas/`, `core/`, `tests/`, `manage.py`) apos um erro de `startapp`, confirmando por timestamp que nada da E05 foi afetado.
+- [2026-08-03] **Python 3.12 nao existe nesta maquina** (so 3.11.15 e 3.14.3 via Homebrew, e a criacao inicial do venv misturou os dois por ambiguidade de PATH, causando `ModuleNotFoundError` inconsistente entre comandos). Recriei o venv fixando o interprete por caminho absoluto (`/opt/homebrew/bin/python3.11`). Risco assumido, registrado aqui: 3.11 no lugar de 3.12. Se 3.12 for instalado depois, recriar o venv e conferir `requirements.txt` de novo.
+- [2026-08-03] **Projeto "Prisma" nao existe no Railway** (`railway list` mostra 13 projetos da empresa, nenhum com esse nome). Isso e escopo da E12 - nao criei por conta propria. Consequencia: a conexao real com Postgres do Railway (secao 6.3) **nao foi validada**, so a leitura de `DATABASE_URL` via `.env` local (`postgres://prisma:prisma@localhost:5432/prisma_dev`, nunca conectado de fato). `pytest` nao toca o banco porque nenhum teste desta etapa usa fixture `django_db` - health check e handler de erro nao dependem de tabela nenhuma. Pendente para quando a E12 criar o projeto: rodar `railway run python manage.py check` de verdade.
+- [2026-08-03] TDD do health check: escrevi `tests/test_saude.py` esperando `GET /api/v1/health/` -> 200 `{"status": "ok"}`. Rodei antes de existir a rota - falhou com `ModuleNotFoundError: No module named 'core.saude'`. Implementei `core/saude.py` (view DRF, `AllowAny`) e `core/urls.py` incluida em `config/urls.py` sob `/api/v1/`. Rodei de novo - passou.
+- [2026-08-03] **Contradicao real no desenho da etapa, resolvida:** a secao 4 manda deixar `AUTH_USER_MODEL = "contas.Usuario"` com o app `contas` **vazio**. Isso quebra o Django de verdade - `django.contrib.auth` resolve `AUTH_USER_MODEL` em `AppConfig.ready()` (nao so na migracao), entao o processo nem sobe (`ImproperlyConfigured: AUTH_USER_MODEL refers to model 'contas.Usuario' that has not been installed`). Tirar `django.contrib.admin` do `INSTALLED_APPS` nao bastou sozinho (era ele quem forcava `get_user_model()` mais cedo via autodiscover) - o proprio `django.contrib.auth.apps.AppConfig.ready()` tambem resolve. Solucao: criei um **stub minimo** em `contas/models.py` com `class Usuario(AbstractUser): pass` (so a classe, sem campos extras, sem migracao rodada). `admin` continua fora do `INSTALLED_APPS` nesta etapa - a E02/E11 devolve. Isso muda o "Contrato de saida": a E02 **edita** um `Usuario` que ja existe como classe Python, nao cria do zero.
+- [2026-08-03] TDD do handler de erro: dois testes em `tests/test_erros.py`. O primeiro (`rota-que-nao-existe`) falhou antes por nao existir handler - Django devolvia HTML, nao JSON. Implementei `core/erros.py` com `tratador_de_excecao` (registrado em `REST_FRAMEWORK["EXCEPTION_HANDLER"]`) e `pagina_nao_encontrada` (registrado como `handler404` em `config/urls.py`, cobre URL que nem bate numa view DRF). Segundo teste (`POST /api/v1/health/` -> 405) prova o `tratador_de_excecao` funcionando de dentro do DRF. Saida real:
+  ```
+  tests/test_erros.py::test_rota_inexistente_responde_no_formato_do_contrato PASSED
+  tests/test_erros.py::test_metodo_nao_permitido_passa_pelo_handler_unico_do_drf PASSED
+  tests/test_saude.py::test_health_check_responde_ok PASSED
+  3 passed in 0.13s
+  ```
+- [2026-08-03] `python manage.py check` (dev): "System check identified no issues (0 silenced)". `check --deploy` com `config.settings.prod`: 1 warning (`security.W009`, `SECRET_KEY` fraca) - esperado, o `.env` local usa secret de desenvolvimento de proposito; nenhum alerta critico.
+- [2026-08-03] `pip-audit -r requirements.txt`: "No known vulnerabilities found".
+- [2026-08-03] Ao rodar `pytest` **sem** escopo, a colecao global falha: `creditos/tests/conftest.py` (da E05, outro agente) faz `apps.get_model("contas", "Instituicao")`, que so existe na E02. Esperado nesta fase transitoria - nao mudei `pytest.ini` para isolar minha pasta, isso mudaria a convencao de teste do projeto por causa de um estado transitorio. Quem rodar `pytest` a partir de `backend/` antes da E02 fechar deve rodar `pytest tests/` para ver so a fundacao.
+- [2026-08-03] Arquivo mais longo: `config/settings/base.py`, 90 linhas - dentro do limite (150 ideal / 300 maximo). Nenhum arquivo passa de 110 linhas.
+- [2026-08-03] Status: **CONCLUIDA**, com duas pendencias honestas (nao bloqueiam as proximas etapas): (1) conexao real com o Postgres do Railway nunca testada, porque o projeto "Prisma" nao existe la ainda (E12 resolve); (2) Python 3.11 no lugar do 3.12 pedido, por falta do 3.12 nesta maquina. Proximo passo natural do backend: **E02** (nucleo de dados e multi-tenancy), que edita o `contas/models.py` ja existente em vez de cria-lo do zero.
+- [2026-08-03] **Correcao da pendencia (1) acima, por outra sessao que retomou esta mesma etapa:** o projeto Railway existe, so nao se chama "Prisma" - chama-se `meu-ecoo` (mesmo repositorio, `railway list` confirma). `railway link -p meu-ecoo` linkou o workspace `projeto-ecoVS`; **so existe o ambiente `production`** (sem `development` separado), com servico `api` e banco `Postgres` ja online. Validei a conexao real (sem `migrate`): `railway run` com `DATABASE_URL` (hostname interno `postgres.railway.internal`) falha fora da rede do Railway - **use `DATABASE_PUBLIC_URL`** (mesma variavel, versao com proxy publico, ver `railway variables`) como `DATABASE_URL` local. Com isso, `SELECT 1` retornou `(1,)`. Nenhuma tabela foi tocada. Atualizei o `README.md` da raiz com essa instrucao. Pendencia nova para a **E12**: nao existe ambiente `development` separado no Railway deste projeto - avaliar se dev e prod devem compartilhar o mesmo Postgres a longo prazo.
 
 ## 9. Criterio de pronto
 
-- [ ] `pytest` roda e todos os testes passam - **saida real colada no diario**
-- [ ] `python manage.py check --deploy` roda com `prod.py` sem alerta critico
-- [ ] `.env.example` tem todos os nomes de variavel e **nenhum valor**
-- [ ] Nenhuma migracao foi aplicada
-- [ ] `pip-audit` rodado, resultado no diario
-- [ ] Nenhum arquivo passa de 300 linhas
-- [ ] `README.md` da raiz atualizado com como rodar o backend
+- [x] `pytest` roda e todos os testes passam - **saida real colada no diario**
+- [x] `python manage.py check --deploy` roda com `prod.py` sem alerta critico
+- [x] `.env.example` tem todos os nomes de variavel e **nenhum valor**
+- [x] Nenhuma migracao foi aplicada
+- [x] `pip-audit` rodado, resultado no diario
+- [x] Nenhum arquivo passa de 300 linhas
+- [x] `README.md` da raiz atualizado com como rodar o backend
 - [ ] Commit feito, so com arquivos desta etapa
 
 ## 10. Riscos e pendencias
 
 | Risco | Mitigacao |
 |-------|-----------|
-| Projeto Railway do Prisma pode nao existir | Confirmar com `railway list`. Se faltar, e bloqueio da E12 - registrar, nao criar por conta propria. |
+| Projeto Railway do Prisma pode nao existir | **Resolvido:** existe como `meu-ecoo`. Ambiente `production` unico (sem `development`) - avaliar na E12. |
 | Rodar `migrate` por reflexo | Ver secao 4. Se acontecer, o conserto e dropar o banco antes da E02. |
 | Banco remoto compartilhado | Sempre `railway status` antes. Nunca apontar dev para o ambiente de producao de outro produto. |
