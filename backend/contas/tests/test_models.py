@@ -2,25 +2,28 @@ from datetime import date, timedelta
 
 import pytest
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError, transaction
 
 from contas.models import Instituicao, Perfil
 
 
 @pytest.mark.django_db
-def test_usuario_usa_email_e_isola_email_por_instituicao():
+def test_usuario_rejeita_email_duplicado_entre_instituicoes():
     primeira = Instituicao.objects.create(nome="Escola A", documento="00.000.000/0001-01")
     segunda = Instituicao.objects.create(nome="Escola B", documento="00.000.000/0001-02")
     usuario_model = get_user_model()
     aluno_a = usuario_model.objects.create_user(
         "aluno@escola.test", "senha", instituicao=primeira, perfil=Perfil.ALUNO
     )
-    aluno_b = usuario_model.objects.create_user(
-        "aluno@escola.test", "senha", instituicao=segunda, perfil=Perfil.ALUNO
-    )
+    with pytest.raises(IntegrityError):
+        with transaction.atomic():
+            usuario_model.objects.create_user(
+                "aluno@escola.test", "senha", instituicao=segunda, perfil=Perfil.ALUNO
+            )
 
-    assert aluno_a.email == aluno_b.email
+    assert aluno_a.email == "aluno@escola.test"
     assert usuario_model.objects.filter(instituicao=primeira).count() == 1
-    assert usuario_model.objects.filter(instituicao=segunda).count() == 1
+    assert usuario_model.objects.filter(instituicao=segunda).count() == 0
 
 
 @pytest.mark.django_db
