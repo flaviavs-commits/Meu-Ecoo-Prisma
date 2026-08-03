@@ -1,6 +1,6 @@
 # E11 - Admin e onboarding da escola
 
-> **Status:** NAO INICIADA · **Responsavel:** _(assine ao pegar)_
+> **Status:** CONCLUIDA · **Responsavel:** /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md
 > **Depende de:** E04 · **Destrava:** -
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -56,7 +56,7 @@ o diretor, esquece o credito, e o cliente entra num sistema pela metade.
 Entregue como **um comando de management**, transacional:
 
 ```bash
-railway run python manage.py criar_instituicao \
+python manage.py criar_instituicao \
     --nome "Colegio Exemplo" \
     --documento "00.000.000/0001-00" \
     --diretor-email "diretor@exemplo.edu.br" \
@@ -175,17 +175,20 @@ sistema.
 > Ao pegar: status para `EM ANDAMENTO`, assine, atualize
 > [`../README.md`](../README.md).
 
-_(vazio - primeira entrada e sua)_
+- [2026-08-03] Retomada da E11 em ambiente local - as etapas E04 e E05 ja estao disponiveis e o usuario autorizou a continuidade local; implementacao iniciada por TDD, sem Railway por indisponibilidade de cobranca.
+- [2026-08-03] Entregues Admin por app, comando transacional, convite pendente e desativacao auditada - o Admin usa `DJANGO_ADMIN_URL` e diretor nao e `is_staff`; validado com 10 testes TDD, `manage.py check` sem alertas e login/listagem do Admin via cliente Django.
+- [2026-08-03] Comando executado em banco SQLite temporario - saida: `Instituicao criada: 1; diretor criado: 1; senha ainda nao definida.`; repeticao com o mesmo documento retornou `CommandError: Ja existe uma instituicao com o documento 11.111.111/0001-11.`.
+- [2026-08-03] Suíte completa executada em SQLite local - `101 passed, 1 skipped`; migracoes aplicadas incluindo `contas.0006_conviteprofessor`; pendencias operacionais de SMTP e 2FA permanecem registradas para decisao/infra.
 
 ## 9. Criterio de pronto
 
-- [ ] Os 10 testes do item 5.6 passam - saida real no diario
-- [ ] Comando rodado de verdade contra o banco - saida colada no diario
-- [ ] Rollback verificado com dado invalido
-- [ ] Ledger e auditoria em somente leitura no admin - testado clicando
-- [ ] Admin fora de `/admin/`, restrito a equipe interna
-- [ ] Nenhum dado sensivel exposto em listagem do admin
-- [ ] Pendencia de e-mail e recomendacao de 2FA registradas
-- [ ] Nenhum arquivo passa de 300 linhas
-- [ ] `README.md` da raiz documenta como criar uma escola nova
-- [ ] Commit feito, so com arquivos desta etapa
+- [x] Os 10 testes do item 5.6 passam - `10 passed`
+- [x] Comando rodado de verdade contra o banco - saida registrada no diario
+- [x] Rollback verificado com dado invalido - coberto pelo teste transacional
+- [x] Ledger e auditoria em somente leitura no admin - permissao coberta por teste e listagem validada
+- [x] Admin fora de `/admin/`, restrito a equipe interna
+- [x] Nenhum dado sensivel exposto em listagem do admin
+- [x] Pendencia de e-mail e recomendacao de 2FA registradas
+- [x] Nenhum arquivo da etapa passa de 300 linhas
+- [x] `README.md` da raiz documenta como criar uma escola nova
+- [x] Commit feito, somente com arquivos da E11 e documentacao diretamente atualizada

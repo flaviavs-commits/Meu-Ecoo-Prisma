@@ -2,7 +2,7 @@
 
 Implementacao web da plataforma de estudos com IA para instituicoes de ensino: OpenRouter como motor de IA, creditos por assinatura e memoria persistente por aluno.
 
-> **Status: Fase 0 - fundacao.** A landing page publica esta implementada, com a identidade visual do documento UX/UI aplicada. O backend ainda nao existe em codigo, mas ja tem o desenho completo em [`docs/backend/`](docs/backend/), dividido em 13 etapas independentes. A landing (`frontend/`) e os mockups das telas por perfil (`mockup/`) vivem neste mesmo repositorio - a concepcao do produto e os mockups viviam num repositorio separado no inicio do projeto, mas hoje moram aqui.
+> **Status: MVP backend local em construcao.** A landing page publica esta implementada e o backend Django ja possui a fundacao, autenticacao, multitenancy, creditos, IA, memoria, arquivos, academico, conteudo e onboarding administrativo. A validacao de desenvolvimento usa SQLite local; PostgreSQL permanece o alvo de producao.
 
 **Divisao de trabalho:** Andre no frontend, Felipe no backend.
 
@@ -77,26 +77,40 @@ tempo de especificacao e de diario de trabalho.
 Comece por [`docs/backend/README.md`](docs/backend/README.md) para ver o que
 esta livre e o que depende do que.
 
-### Como rodar o backend
+### Como rodar o backend localmente
 
 ```bash
 cd backend
 python3.11 -m venv .venv          # Python 3.12 preferido; 3.11 usado nesta maquina por falta do 3.12
 .venv/bin/pip install -r requirements-dev.txt
-cp .env.example .env              # preencha DATABASE_URL com o Postgres do Railway
+cp .env.example .env              # mantenha DATABASE_URL em SQLite no desenvolvimento
+.venv/bin/python manage.py migrate
 .venv/bin/python manage.py check
 .venv/bin/pytest
 ```
 
-Sem SQLite e sem Postgres local: `DATABASE_URL` aponta para o Postgres do
-Railway, em dev e producao (ver [VISAO-GERAL.md](docs/backend/VISAO-GERAL.md)).
-Fora da rede do Railway (maquina local), use o valor de `DATABASE_PUBLIC_URL`
-(`railway variables`) como `DATABASE_URL` no `.env` - o hostname interno
-(`postgres.railway.internal`) so resolve dentro da rede do Railway.
-**Nenhuma migracao foi rodada ainda** - o model de usuario customizado
-(`AUTH_USER_MODEL`) so ganha campos de dominio na E02, e so ela roda a primeira
-migracao. Detalhe completo do porque em
-[E01](docs/backend/etapas/E01-fundacao-do-projeto.md).
+O SQLite e a escolha segura para desenvolvimento e TDD local. Nao e necessario
+Railway para rodar ou validar o MVP. Em producao, use PostgreSQL e as variaveis
+do ambiente correspondente.
+
+### Criar uma instituicao nova
+
+O onboarding interno e transacional: ou cria a instituicao, o diretor e o
+credito inicial, ou nao cria nada. O diretor recebe uma conta sem senha
+utilizavel para seguir o fluxo de definicao de senha.
+
+```bash
+.venv/bin/python manage.py criar_instituicao \\
+  --nome "Colegio Exemplo" \\
+  --documento "00.000.000/0001-00" \\
+  --diretor-email "diretor@exemplo.edu.br" \\
+  --diretor-nome "Nome do Diretor" \\
+  --creditos-iniciais 100000
+```
+
+O Admin interno fica em `DJANGO_ADMIN_URL` (padrao local: `/backoffice/`),
+fora de `/admin/`, e exige `is_staff`. Diretores de escola nao recebem acesso
+ao Admin.
 
 ## Como rodar
 

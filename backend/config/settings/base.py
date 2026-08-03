@@ -14,6 +14,7 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 INSTALLED_APPS = [
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -37,6 +38,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "contas.admin_rate_limit.AdminLoginRateLimitMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -136,3 +138,4 @@ IA_MODELOS = {
 IA_CUSTO_POR_CREDITO = Decimal(os.environ.get("IA_CUSTO_POR_CREDITO", "0.001"))
 IA_MARGEM_CREDITOS = Decimal(os.environ.get("IA_MARGEM_CREDITOS", "1.20"))
 IA_TIMEOUT_SEGUNDOS = float(os.environ.get("IA_TIMEOUT_SEGUNDOS", "10"))
+ADMIN_URL = os.environ.get("DJANGO_ADMIN_URL", "backoffice").strip("/") + "/"

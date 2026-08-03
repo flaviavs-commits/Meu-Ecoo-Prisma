@@ -78,6 +78,9 @@ class Usuario(AbstractUser):
         return idade < 18
 
 
-__all__ = ["Instituicao", "ModeloDaInstituicao", "Perfil", "Usuario"]
+from .convites import ConviteProfessor
+
+
+__all__ = ["ConviteProfessor", "Instituicao", "ModeloDaInstituicao", "Perfil", "Usuario"]
 
 from .auditoria import RegistroDeAuditoria
