@@ -2,7 +2,7 @@
 
 Implementacao web da plataforma de estudos com IA para instituicoes de ensino: OpenRouter como motor de IA, creditos por assinatura e memoria persistente por aluno.
 
-> **Status: Fase 0 - fundacao.** A landing page publica esta implementada, com a identidade visual do documento UX/UI aplicada. O backend ainda nao existe. A landing (`frontend/`) e os mockups das telas por perfil (`mockup/`) vivem neste mesmo repositorio - a concepcao do produto e os mockups viviam num repositorio separado no inicio do projeto, mas hoje moram aqui.
+> **Status: Fase 0 - fundacao.** A landing page publica esta implementada, com a identidade visual do documento UX/UI aplicada. O backend ainda nao existe em codigo, mas ja tem o desenho completo em [`docs/backend/`](docs/backend/), dividido em 13 etapas independentes. A landing (`frontend/`) e os mockups das telas por perfil (`mockup/`) vivem neste mesmo repositorio - a concepcao do produto e os mockups viviam num repositorio separado no inicio do projeto, mas hoje moram aqui.
 
 **Divisao de trabalho:** Andre no frontend, Felipe no backend.
 
@@ -56,9 +56,25 @@ PrismaTest/
 │       ├── content/        # Copy e destino da aplicacao
 │       └── index.css       # Tokens de design e regra de cor (@theme)
 ├── mockup/                 # Telas de aluno, professor e diretor (fonte da verdade, HTML estatico)
-├── docs/                   # Constituicao de modularidade e outros documentos do projeto
+├── docs/
+│   ├── CONSTITUICAO-MODULARIDADE.md
+│   └── backend/            # System design do backend, em 13 etapas independentes
+│       ├── README.md       # Painel: o que esta livre, o que depende do que
+│       ├── PROTOCOLO-DO-AGENTE.md
+│       ├── contratos/      # Regras que todas as etapas respeitam
+│       └── etapas/         # E01..E13 - uma etapa por arquivo
 └── doktor SystemDesign/    # Padroes de qualidade (copia sincronizada, nao versionada)
 ```
+
+## Backend
+
+O backend ainda nao foi escrito. O desenho esta pronto e dividido em etapas que
+podem ser tocadas **em paralelo, por pessoas ou agentes diferentes** - cada
+etapa e um arquivo que serve ao mesmo tempo de especificacao e de diario de
+trabalho.
+
+Comece por [`docs/backend/README.md`](docs/backend/README.md). A primeira etapa
+a ser executada e a E01 (fundacao do projeto Django); ela destrava as demais.
 
 ## Como rodar
 

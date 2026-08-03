@@ -16,7 +16,7 @@
   sem reler toda a linha do tempo abaixo. Reescreva-a a cada mudanca de estado.
 -->
 
-[2026-07-28] Landing page do Prisma concluida em `frontend/` (React 19 + TypeScript + Vite 8 + Tailwind 4 + Motion 12), com identidade visual do documento UX/UI aplicada e secoes de tela cheia. O "Entrar" abre a aplicacao (telas do `Estudo-com-IA`, servidas em `/app/` via `scripts/sincronizar-app.py`). Backend nao existe: e escopo do Felipe.
+[2026-08-01] Landing page concluida em `frontend/` (React 19 + TypeScript + Vite 8 + Tailwind 4 + Motion 12); telas por perfil em `mockup/`. **O backend continua sem uma linha de codigo, mas ja tem system design completo**: `docs/backend/` traz 13 etapas independentes, 4 contratos compartilhados e o protocolo de trabalho multi-agente. Proximo passo do backend e a etapa E01 (fundacao do projeto Django). Ponto de entrada para qualquer agente de backend: [`docs/backend/README.md`](docs/backend/README.md).
 
 ## Objetivo do projeto
 
@@ -28,9 +28,9 @@ O repositorio `Estudo-com-IA` mantem a documentacao de concepcao (visao, arquite
 
 ## Estado atual
 
-- **Implementado**: landing page publica em `frontend/`, `start_app.py` na raiz.
-- **Em progresso**: Fase 0 - falta o backend.
-- **Pendente**: backend Django, autenticacao dos 3 perfis, gateway de IA.
+- **Implementado**: landing page publica em `frontend/`, `start_app.py` na raiz, system design do backend em `docs/backend/`.
+- **Em progresso**: Fase 0 - o backend esta desenhado, nao construido. Nenhuma etapa iniciada.
+- **Pendente**: executar as 13 etapas de `docs/backend/etapas/`, comecando pela E01.
 
 ## Stack e dependencias
 
@@ -54,6 +54,18 @@ Herdadas da concepcao em `Estudo-com-IA/IA.md` e ainda validas:
 - [2026-07-16] **Gateway de IA no backend** - toda chamada de IA passa pelo backend; o frontend nunca fala com o OpenRouter diretamente.
 
 Apps Django planejados: `contas`, `academico`, `conteudo`, `creditos`, `ia`, `memoria`.
+
+- [2026-08-01] **System design do backend fechado e escrito em `docs/backend/`**, a partir de um questionario de alinhamento respondido pela Flavia. Entregue como 13 etapas independentes (`docs/backend/etapas/E01..E13`), 4 contratos compartilhados (`contratos/`) e um protocolo de trabalho, de forma que **um agente diferente possa tocar cada etapa** sem depender de um so. Cada arquivo de etapa tem um "Diario de execucao" que o agente responsavel preenche **enquanto** trabalha - se a sessao cair, o proximo retoma dali. Decisoes travadas nesta rodada, com o motivo:
+  - **Multi-tenancy por coluna `instituicao_id`**, nao schema nem banco por escola. Schema-por-tenant (`django-tenants`) foi considerado e recusado: o isolamento extra nao paga a complexidade de migracao e operacao na escala de partida (um cliente grande, ~5 mil alunos). Mitigacao do risco de vazamento: base abstrata + manager com escopo explicito + teste estrutural que falha se um model novo esquecer o escopo, e recurso de outra instituicao respondendo **404, nao 403** (403 confirmaria a existencia do id).
+  - **Postgres do Railway em dev e em producao.** Sem SQLite local, sem container de banco - a topologia de dev passa a ser igual a de producao. Custo aceito: depende de rede e da conta Railway para desenvolver.
+  - **Creditos: termina a tarefa em andamento, depois bloqueia a proxima.** O gate e `saldo > 0`, nao `saldo >= custo`, entao o saldo pode negativar pelo custo de uma unica chamada. Escolhido para nunca cortar uma resposta do tutor pela metade. **Isso e comportamento correto, nao bug.**
+  - **JWT (simplejwt)** com rotacao de refresh e blacklist, Argon2 e rate limit no login. Pendencia deliberada: onde a SPA guarda o token (cookie `httpOnly` vs `localStorage`) muda o trabalho do frontend e ficou para decisao conjunta.
+  - **Conversa bruta do tutor E persistida**, ao lado de uma memoria consolidada compactavel. Isto **refina** o registro de 2026-07-16 ("memoria por resumos consolidados, nao conversa crua"): hoje os dois coexistem. Prazo de retencao do bruto continua **pendencia aberta** - nada deve ser apagado ate haver decisao.
+  - **Upload em disco** (Volume do Railway), atras de adaptador de storage para migrar a nuvem por configuracao quando/se a API escalar horizontalmente.
+  - **Django Admin nesta fase**, com painel proprio adiado para etapa futura.
+  - **Ha menores de idade na base** (o produto atende fundamental e medio, nao so universidade). Isso virou contrato proprio: `docs/backend/contratos/LGPD-E-DADOS-SENSIVEIS.md`. Consequencia mais forte: professor e diretor **nao** leem a conversa crua do aluno.
+- [2026-08-01] **Resumos e geracao de audio nao serao implementados aqui**: vem de `Estudo-IA-Resumo` (flaviavs-commits) e `Audiofy-Content-AI` (Felipe-Alcantara), consumidos por API. **Achado que muda o plano**: inspecionados via `gh`, nenhum dos dois expoe API HTTP hoje - `Audiofy` tem uma ponte JSON por stdout (`bridge.py`, usada pelo app Electron) e `Estudo-IA-Resumo` tem uma CLI (`app/api/cli.py`, a pasta chama "api" mas e linha de comando). Expor essas APIs virou a etapa E13, que acontece **naqueles repositorios**, nao neste, e nao bloqueia a fundacao: o Prisma programa contra o contrato declarado, com um provedor falso no lugar do real.
+- [2026-08-01] **Residuo do modelo antigo ainda vivo na landing**: `frontend/src/content/landing.ts` anuncia tres planos individuais pagos (Prisma / Pro / Ultra, R$ 39,99 a R$ 99,99, "sem contrato, sem fidelidade"). E da era em que o produto era vendido direto ao aluno - mesma familia dos achados de `criar-conta.html` (2026-07-31) e "Workspaces" no `professor.html`. **O backend nao modela plano individual.** A limpeza da landing e trabalho do frontend; registrado aqui para nao se perder.
 
 ## Decisoes de design e convencoes
 
@@ -384,6 +396,10 @@ Nao verificado nesta sessao: FPS das animacoes, comportamento em telas pequenas 
 - [ ] Ligar o demo do motor de refracao ao gateway de IA (hoje e estatico e ilustrativo).
 - [ ] Preencher as paginas legais do rodape (privacidade, termos, seguranca). Como a plataforma trata dados de alunos, ha dever de LGPD - ver `templates/PRIVACIDADE-LGPD-template.md` no Doktor.
 - [ ] Conferir a landing em navegador real (mobile/desktop) e navegacao por teclado.
+- [ ] **Arquivar os registros antigos deste `IA.md`.** Em 2026-08-01 o arquivo passou de 400 linhas, o limite da constituicao de modularidade. Mover os registros mais antigos, **sem editar**, para `docs/ia-archive/IA-ARCHIVE-2026.md`, deixando um ponteiro datado aqui. E mudanca estrutural: merece commit proprio, e nao deve ser feita "de passagem" numa tarefa que nao a envolve.
+- [ ] Remover os tres planos individuais (Prisma / Pro / Ultra) de `frontend/src/content/landing.ts` - residuo do modelo pre-institucional, ver registro de 2026-08-01. Trabalho de frontend.
+- [ ] Decidir onde a SPA guarda o token JWT (cookie `httpOnly` vs `localStorage`) - decisao conjunta frontend/backend, ver `docs/backend/etapas/E03-autenticacao-jwt.md`.
+- [ ] Definir o prazo de retencao da conversa bruta do tutor - pendencia de LGPD, ver `docs/backend/etapas/E07-memoria-e-conversas.md`. Ate la, nao apagar nada.
 
 ## Resumos de decisao
 
