@@ -34,6 +34,7 @@ servico Railway ou duplicar banco/API.
 - [2026-08-03] Etapa aberta por Analizar o front do Prisma - o usuario escolheu tratar tier como perfil ALUNO/PROFESSOR/DIRETOR e autorizou troca irrestrita pelo superadmin; validacao: E11 e o codigo existente foram lidos antes da implementacao.
 - [2026-08-03] Criado o núcleo do painel em `painel_admin/` com dashboard, listagem/busca, detalhe e troca de perfil auditada - por que: entregar a primeira fatia sem duplicar o Django Admin; como validei: `pytest painel_admin/tests/test_painel_superadmin.py -q` retornou `4 passed` e `manage.py check` retornou `0 silenced` em SQLite local. Estado: falta ampliar registros, operações destrutivas e validação Railway.
 - [2026-08-03] Primeira fatia concluída localmente - por que: o núcleo seguro de troca de perfil está entregue; como validei: testes e check passaram. Estado final: **AGUARDANDO DECISÃO** para priorizar a próxima fatia (registros do backend, logs operacionais e ações destrutivas auditadas) e autorizar a validação/deploy Railway.
+- [2026-08-03] Deploy automático ativado no serviço Railway `api` - por que: o usuário pediu publicação por push; como validei: `railway status --json` mostrou fonte `flaviavs-commits/Meu-Ecoo-Prisma`, branch `main`, root `backend` e deployment do commit `4a5b593`. Estado: o gatilho está ativo, mas a assinatura vencida pode impedir a conclusão do deployment.
 
 ## 5. Criterio de pronto da primeira fatia
 
