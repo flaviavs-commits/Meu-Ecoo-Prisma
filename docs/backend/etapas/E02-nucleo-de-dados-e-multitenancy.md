@@ -1,6 +1,6 @@
 # E02 - Nucleo de dados e multi-tenancy
 
-> **Status:** NAO INICIADA · **Responsavel:** _(assine ao pegar)_
+> **Status:** BLOQUEADA · **Responsavel:** agente-canvas-E02
 > **Depende de:** E01 · **Destrava:** E03 a E11
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -156,7 +156,27 @@ registro no `IA.md`.
 > Ao pegar: status para `EM ANDAMENTO`, assine, atualize
 > [`../README.md`](../README.md).
 
-_(vazio - primeira entrada e sua)_
+- [2026-08-03] Peguei a etapa e conferi pre-requisitos antes de escrever qualquer
+  model - por que: o protocolo exige checar dependencia antes de comecar (secao
+  4 do PROTOCOLO-DO-AGENTE.md). Constatei que a pasta `backend/` **nao existe**
+  no repositorio: sem `manage.py`, sem `config/settings`, sem app `contas`
+  criado. E01 segue `NAO INICIADA` no README - como validei: `git status`
+  limpo, `find . -iname manage.py` sem resultado, `ls` na raiz sem `backend/`.
+  Como o contrato de saida da E02 (secao 6) exige que `contas.Instituicao` e
+  `contas.Usuario` existam **dentro** de um projeto Django ja rodando com
+  `AUTH_USER_MODEL` apontado e app `contas` vazio (contrato de saida da E01),
+  nao ha nada fisico para herdar - nao e so "risco assumido", e ausencia total
+  da fundacao. Decidi **nao** implementar E01 de passagem (proibido
+  explicitamente na secao 4 do protocolo: "Nao implemente a etapa dos outros
+  'de passagem' para se desbloquear"). Marquei o status desta etapa como
+  `BLOQUEADA` em vez de `EM ANDAMENTO`, para nao segurar a etapa livre
+  indevidamente e deixar claro para o proximo agente (ou para mim, ao
+  retomar) que o proximo passo real e: (1) algum agente concluir E01 ou (2)
+  eu mesmo pegar E01 como etapa separada, com seu proprio diario, se ninguem
+  mais estiver nela. Ja li os contratos de MODELO-DE-DADOS.md e
+  LGPD-E-DADOS-SENSIVEIS.md e o desenho de `Instituicao`/`Usuario` desta
+  etapa (secao 5) esta claro e pronto para implementar assim que a fundacao
+  existir - nao ha decisao de design pendente aqui, so a dependencia fisica.
 
 ## 9. Criterio de pronto
 

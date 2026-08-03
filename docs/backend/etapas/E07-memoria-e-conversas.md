@@ -1,6 +1,6 @@
 # E07 - Memoria e conversas do tutor
 
-> **Status:** NAO INICIADA · **Responsavel:** _(assine ao pegar)_
+> **Status:** BLOQUEADA · **Responsavel:** claude-sonnet-5 (canvas/E07)
 > **Depende de:** E06 · **Destrava:** -
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -168,7 +168,22 @@ produto; o bruto e o rastro.
 > Ao pegar: status para `EM ANDAMENTO`, assine, atualize
 > [`../README.md`](../README.md).
 
-_(vazio - primeira entrada e sua)_
+- [2026-08-03] Peguei a etapa e chequei as dependencias antes de escrever
+  codigo - regra 4 do protocolo. `docs/backend/README.md` confirma: "O backend
+  ainda nao existe em codigo". Nao ha pasta `backend/` no repositorio, e E01 a
+  E06 seguem todas `NAO INICIADA` (fundacao Django, multi-tenancy, JWT,
+  autorizacao, creditos e o gateway de IA que esta etapa consome direto). Sem
+  E06 concluida nao ha `gateway.enviar()` para a consolidacao chamar, sem E04
+  nao ha matriz de perfil para bloquear professor/diretor, sem E02 nao ha
+  `Usuario`/`Instituicao` para o `Conversa.aluno` referenciar. Implementar E07
+  "de passagem" violaria a regra 4/1 do protocolo (nao fazer a etapa dos
+  outros para se desbloquear) e produziria modelos que teriam que ser
+  refeitos assim que E02/E04/E06 fixarem o contrato real - por isso nao
+  escrevi codigo especulativo. Marquei `BLOQUEADA` em vez de `EM ANDAMENTO`.
+  Proximo passo concreto: assim que E06 (e transitivamente E01-E05) estiverem
+  `CONCLUIDA`, retomar por aqui seguindo a ordem de TDD do item 5.6. Ate la,
+  quem quiser adiantar valor real deve pegar E01 ou E02 (gargalo que destrava
+  tudo) ou E12/E13 (livres, sem dependencia pendente).
 
 ## 9. Criterio de pronto
 

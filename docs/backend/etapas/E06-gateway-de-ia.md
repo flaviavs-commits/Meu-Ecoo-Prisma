@@ -1,6 +1,6 @@
 # E06 - Gateway de IA (interface)
 
-> **Status:** NAO INICIADA · **Responsavel:** _(assine ao pegar)_
+> **Status:** BLOQUEADA · **Responsavel:** Claude (sessao canvas E06)
 > **Depende de:** E05 · **Destrava:** E07
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -188,7 +188,30 @@ sistema fala com provedor de IA.
 > Ao pegar: status para `EM ANDAMENTO`, assine, atualize
 > [`../README.md`](../README.md).
 
-_(vazio - primeira entrada e sua)_
+- [2026-08-03] Peguei E06 para iniciar o MVP e verifiquei o pre-requisito - a
+  pasta `backend/` **nao existe** no repositorio ainda; E01, E02, E03, E04 e
+  E05 seguem `NAO INICIADA` no `README.md` (nenhum tem responsavel nem
+  trabalho registrado). Nao existe projeto Django, nao existe app `creditos`
+  com ledger, nao existe `Usuario`/`Instituicao`. A interface de provedor e o
+  provedor falso de E06 nao dependem so de codigo de dominio: dependem do
+  projeto Django existir (E01), do modelo `Instituicao`/`Usuario` (E02), e
+  principalmente do servico de ledger de E05 para o gate `saldo > 0` e para o
+  debito transacional (secao 5.5 desta etapa). Construir isso agora seria
+  implementar E01-E05 "de passagem", que o protocolo proibe explicitamente
+  (`PROTOCOLO-DO-AGENTE.md`, secao 4: "Nao implemente a etapa dos outros de
+  passagem para se desbloquear") - alem de arriscar colidir com outro agente
+  que esteja com essas etapas abertas sem ainda ter comitado.
+  - Decisao: marcar esta etapa como `BLOQUEADA` em vez de simular progresso.
+  - O que destrava: E01 concluida (projeto Django + `backend/` criado) e E05
+    concluida (ledger com `pode_consumir`/debito transacional e idempotencia
+    por `referencia`). Assim que qualquer uma delas avancar, revisitar aqui.
+  - Enquanto isso, deixei pronta a leitura completa da etapa (contrato de
+    saida, criterio de pronto, riscos) para que a implementacao comece
+    imediatamente quando a dependencia cair - nenhum design novo foi
+    necessario, o desenho da secao 5 ja cobre a interface de provedor, o mapa
+    classe->modelo, a conversao custo->credito e o fluxo transacional com o
+    ledger.
+  - Nao commitei nada alem desta atualizacao de status/diario nesta etapa.
 
 ## 9. Criterio de pronto
 
