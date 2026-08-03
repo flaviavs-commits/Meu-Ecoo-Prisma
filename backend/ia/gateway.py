@@ -47,9 +47,10 @@ class GatewayIA:
         classe_tarefa,
         prompt,
         chamada=None,
+        devolver_texto=False,
     ):
         if chamada and chamada.status == StatusChamada.SUCESSO:
-            return chamada
+            return (chamada, "") if devolver_texto else chamada
         chamada = chamada or ChamadaIA.objects.create(
             instituicao=instituicao,
             usuario=usuario,
@@ -91,7 +92,7 @@ class GatewayIA:
         except TimeoutError:
             self._marcar_erro(chamada, "timeout_provedor")
             raise ProvedorIAError("Tempo limite do provedor excedido.", codigo="timeout_provedor")
-        return chamada
+        return (chamada, resultado.texto) if devolver_texto else chamada
 
     def _gerar_com_retry(self, prompt, modelo):
         for tentativa in range(3):

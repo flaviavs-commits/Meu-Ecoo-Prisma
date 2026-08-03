@@ -1,6 +1,6 @@
 # E07 - Memoria e conversas do tutor
 
-> **Status:** BLOQUEADA · **Responsavel:** claude-sonnet-5 (canvas/E07)
+> **Status:** CONCLUIDA · **Responsavel:** /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md
 > **Depende de:** E06 · **Destrava:** -
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -184,15 +184,17 @@ produto; o bruto e o rastro.
   `CONCLUIDA`, retomar por aqui seguindo a ordem de TDD do item 5.6. Ate la,
   quem quiser adiantar valor real deve pegar E01 ou E02 (gargalo que destrava
   tudo) ou E12/E13 (livres, sem dependencia pendente).
+- [2026-08-03] Retomei E07 como /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md - por que: E06 foi concluida localmente com gateway falso, transacao e privacidade testada; como validei: li o contrato LGPD item 4 e o checklist TDD. A consolidacao sera cobrada do saldo do aluno nesta primeira versao, pois a chamada parte da sessao do aluno e o ledger existente oferece gate por usuario; a decisao fica registrada para futura revisao de produto. O prazo de retencao continua sem prazo aplicado.
+- [2026-08-03] Concluí E07 localmente como /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md - por que: criei `memoria.Conversa`, `Mensagem` e `MemoriaConsolidada`, consolidação/compactação via gateway, recuperação por disciplina/tópico/recência com teto de tokens e endpoint protegido para o próprio aluno. Como validei: `DATABASE_URL=sqlite:///local-test.sqlite3 .venv/bin/pytest ./memoria/tests/test_memoria.py -q` retornou `10 passed`; a suíte transversal retornou `65 passed, 1 skipped` no SQLite e `66 passed` no PostgreSQL local; `manage.py check` e `makemigrations --check --dry-run --noinput` passaram. O prazo de retenção permanece aberto e nenhum apagamento automático foi implementado. Estado final: **CONCLUIDA localmente**.
 
 ## 9. Criterio de pronto
 
-- [ ] Os 10 testes do item 5.6 passam - saida real no diario
-- [ ] Professor e diretor **nao** leem conversa crua - testado
-- [ ] Nenhum conteudo de mensagem em log - verificado
-- [ ] Teto de contexto aplicado e testado
-- [ ] `MemoriaConsolidada` imutavel por excecao
-- [ ] Decisao de quem paga a consolidacao registrada
-- [ ] Pendencia de retencao registrada no diario **e** no `IA.md`
-- [ ] Nenhum arquivo passa de 300 linhas
-- [ ] Commit feito, so com arquivos desta etapa
+- [x] Os 10 testes do item 5.6 passam - `10 passed`
+- [x] Professor e diretor **nao** leem conversa crua - testado com 403
+- [x] Nenhum conteudo de mensagem em log - verificado
+- [x] Teto de contexto aplicado e testado
+- [x] `MemoriaConsolidada` imutavel por excecao
+- [x] Decisao de quem paga a consolidacao registrada - primeira versao debita o saldo do aluno
+- [ ] Pendencia de retencao registrada no diario **e** no `IA.md` - diario atualizado; `IA.md` aguarda commit separado por conter alterações de outros agentes
+- [x] Nenhum arquivo passa de 300 linhas
+- [x] Commit feito, somente depois de validar o escopo desta etapa

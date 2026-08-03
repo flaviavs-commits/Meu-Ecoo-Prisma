@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "ia",
     "creditos",
     "core",
+    "memoria",
 ]
 
 MIDDLEWARE = [
