@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Entrar · Prisma</title>
+<title data-i18n="entrada.tituloLogin">Entrar · Prisma</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -156,6 +156,26 @@ form{display:flex;flex-direction:column;gap:16px}
 .rodape-troca a{color:var(--texto);font-weight:600;text-decoration:none}
 .rodape-troca a:hover{text-decoration:underline}
 
+/* Seletor de idioma: estas telas nao tem topbar como o resto do app,
+   entao ele fica ancorado no canto. Precisa existir aqui porque esta e
+   a PRIMEIRA tela que alguem ve - quem chega direto no login nao teria
+   nenhum outro lugar para escolher a lingua. */
+.langbar{
+  position:fixed;top:14px;right:18px;z-index:5;display:flex;gap:2px;
+  background:color-mix(in srgb,var(--superficie) 88%,transparent);
+  border:1px solid var(--contorno);border-radius:999px;padding:3px;
+  backdrop-filter:blur(6px);
+}
+.langbar button{
+  font-family:var(--font-display);font-size:10px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--texto-secundario);
+  background:none;border:0;border-radius:999px;padding:5px 9px;cursor:pointer;
+  transition:color .15s var(--ease),background .15s var(--ease);
+}
+.langbar button:hover{color:var(--texto)}
+.langbar button.on{background:var(--graphite);color:#fff}
+@media (max-width:520px){.langbar{top:10px;right:10px;padding:2px}.langbar button{padding:4px 7px;font-size:9px}}
+
 @media (max-width:960px){
   .split{grid-template-columns:1fr}
   .dark{padding:32px 24px;min-height:70vh}
@@ -181,6 +201,14 @@ form{display:flex;flex-direction:column;gap:16px}
 <symbol id="e-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.8 9.8 0 0 1 12 4c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.16 3.19m-3.1 2.6A9.4 9.4 0 0 1 12 18c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.22-5.02"/><path d="M9.5 9.5a3 3 0 0 0 4.24 4.24"/><path d="M2 2l20 20"/></symbol>
 </defs></svg>
 
+<div class="langbar" role="group" aria-label="Idioma" data-i18n-attr="aria-label:topbar.idioma">
+  <button type="button" class="lang-opt" data-lang="pt-BR">PT</button>
+  <button type="button" class="lang-opt" data-lang="en">EN</button>
+  <button type="button" class="lang-opt" data-lang="es">ES</button>
+  <button type="button" class="lang-opt" data-lang="fr">FR</button>
+  <button type="button" class="lang-opt" data-lang="de">DE</button>
+</div>
+
 <div class="split">
 
   <aside class="dark">
@@ -188,42 +216,42 @@ form{display:flex;flex-direction:column;gap:16px}
     <div class="mid">
       <div class="perfil-marca" id="marca-perfil"><svg><use href="#e-logo"/></svg></div>
       <span class="filete-perfil" aria-hidden="true"></span>
-      <p class="etq-grande" id="regua-etq">Bem-vindo de volta</p>
+      <p class="etq-grande" id="regua-etq" data-i18n="entrada.bemVindo">Bem-vindo de volta</p>
     </div>
-    <p class="foot" id="foot-copyright">&copy; 2026 Prisma. Todos os direitos reservados.</p>
+    <p class="foot">&copy; <span id="ano">2026</span> <span data-i18n="entrada.copyright">Prisma. Todos os direitos reservados.</span></p>
   </aside>
 
   <main class="light">
     <div class="entry">
-      <div class="regua fade"><span class="filete"></span><span class="etq">Entrar</span></div>
-      <h2 class="fade d1">Acesse sua conta</h2>
-      <p class="hint fade d1">Use o e-mail e a senha cadastrados na sua instituição.</p>
+      <div class="regua fade"><span class="filete"></span><span class="etq" data-i18n="entrada.entrar">Entrar</span></div>
+      <h2 class="fade d1" data-i18n="entrada.acesseConta">Acesse sua conta</h2>
+      <p class="hint fade d1" data-i18n="entrada.useEmailSenha">Use o e-mail e a senha cadastrados na sua instituição.</p>
 
       <form class="fade d1" onsubmit="return false">
         <div class="campo">
-          <label for="email">E-mail</label>
-          <input id="email" type="email" placeholder="voce@escola.com.br" autocomplete="email">
+          <label for="email" data-i18n="conta.email">E-mail</label>
+          <input id="email" type="email" placeholder="voce@escola.com.br" data-i18n-attr="placeholder:entrada.emailPlaceholder" autocomplete="email">
         </div>
         <div class="campo campo-senha">
-          <label for="senha">Senha</label>
+          <label for="senha" data-i18n="entrada.senha">Senha</label>
           <input id="senha" type="password" placeholder="••••••••" autocomplete="current-password">
-          <button type="button" class="toggle-senha" id="toggle-senha" aria-label="Mostrar senha" aria-pressed="false">
+          <button type="button" class="toggle-senha" id="toggle-senha" aria-label="Mostrar senha" aria-pressed="false" data-i18n-attr="aria-label:entrada.mostrarSenha">
             <svg><use href="#e-eye"/></svg>
           </button>
         </div>
         <div class="linha-aux">
-          <a href="#">Esqueci minha senha</a>
+          <a href="#" data-i18n="entrada.esqueciSenha">Esqueci minha senha</a>
         </div>
-        <button class="cta" type="submit">Entrar</button>
+        <button class="cta" type="submit" data-i18n="entrada.entrar">Entrar</button>
       </form>
 
-      <div class="divider fade d2">ou continue com</div>
+      <div class="divider fade d2" data-i18n="entrada.ouContinueCom">ou continue com</div>
 
       <div class="social fade d2">
-        <button type="button"><svg><use href="#e-google"/></svg>Continuar com Google</button>
+        <button type="button"><svg><use href="#e-google"/></svg><span data-i18n="entrada.continuarGoogle">Continuar com Google</span></button>
       </div>
 
-      <p class="rodape-troca fade d3">Sua escola ainda não usa o Prisma? <a href="#">Fale com a gente</a></p>
+      <p class="rodape-troca fade d3"><span data-i18n="entrada.escolaNaoUsa">Sua escola ainda não usa o Prisma?</span> <a href="#" data-i18n="entrada.faleConosco">Fale com a gente</a></p>
     </div>
   </main>
 
@@ -234,13 +262,12 @@ form{display:flex;flex-direction:column;gap:16px}
 // escura (icone, cor de acento, titulo e texto de apoio). Nao ha
 // autenticacao real aqui - o backend fica em outro repositorio.
 (function () {
-  document.getElementById('foot-copyright').textContent =
-    '© ' + new Date().getFullYear() + ' Prisma. Todos os direitos reservados.';
+  document.getElementById('ano').textContent = new Date().getFullYear();
 
   var config = {
-    aluno: { cor: 'var(--aluno)', glow: 'rgba(123,120,200,.16)', icone: 'e-chat', etq: 'Entrando como aluno' },
-    professor: { cor: 'var(--professor)', glow: 'rgba(200,90,60,.16)', icone: 'e-pen', etq: 'Entrando como professor' },
-    diretor: { cor: 'var(--diretor)', glow: 'rgba(106,133,80,.16)', icone: 'e-building', etq: 'Entrando como diretor' },
+    aluno: { cor: 'var(--aluno)', glow: 'rgba(123,120,200,.16)', icone: 'e-chat', etq: 'entrada.entrandoAluno' },
+    professor: { cor: 'var(--professor)', glow: 'rgba(200,90,60,.16)', icone: 'e-pen', etq: 'entrada.entrandoProfessor' },
+    diretor: { cor: 'var(--diretor)', glow: 'rgba(106,133,80,.16)', icone: 'e-building', etq: 'entrada.entrandoDiretor' },
   };
 
   var params = new URLSearchParams(location.search);
@@ -252,7 +279,12 @@ form{display:flex;flex-direction:column;gap:16px}
     document.documentElement.style.setProperty('--acento', c.cor);
     document.documentElement.style.setProperty('--acento-glow', c.glow);
     document.getElementById('marca-perfil').innerHTML = '<svg><use href="#' + c.icone + '"/></svg>';
-    document.getElementById('regua-etq').textContent = c.etq;
+    // Troca a chave e deixa o motor escrever o texto: este script roda
+    // antes do DOMContentLoaded que dispara a traducao, entao a chave
+    // nova ja entra na primeira passada.
+    var etq = document.getElementById('regua-etq');
+    etq.setAttribute('data-i18n', c.etq);
+    if (window.PrismaI18n) window.PrismaI18n.aplicarEm(etq);
   }
 
   document.querySelector('button[type="submit"]').addEventListener('click', function () {
@@ -268,10 +300,21 @@ form{display:flex;flex-direction:column;gap:16px}
     var visivel = campoSenha.type === 'text';
     campoSenha.type = visivel ? 'password' : 'text';
     botaoSenha.setAttribute('aria-pressed', String(!visivel));
-    botaoSenha.setAttribute('aria-label', visivel ? 'Mostrar senha' : 'Ocultar senha');
+    botaoSenha.setAttribute('data-i18n-attr',
+      'aria-label:' + (visivel ? 'entrada.mostrarSenha' : 'entrada.ocultarSenha'));
+    window.PrismaI18n.aplicarEm(botaoSenha);
     botaoSenha.innerHTML = '<svg><use href="#' + (visivel ? 'e-eye' : 'e-eye-off') + '"/></svg>';
   });
 })();
+</script>
+<script src="assets/i18n.js"></script>
+<script>
+// O resto do app troca de idioma pelo dropdown da topbar, montado em
+// app.js - que nao roda nestas telas. Aqui o seletor e um grupo de
+// botoes simples, entao a ligacao com o motor cabe em tres linhas.
+document.querySelectorAll('.lang-opt').forEach(function (b) {
+  b.addEventListener('click', function () { window.PrismaI18n.setLang(b.dataset.lang); });
+});
 </script>
 <script src="assets/dev-reload.js"></script>
 </body>

@@ -35,6 +35,20 @@ def chaves_do_html(caminho):
     return chaves
 
 
+# Chave citada como string literal no JS - `app.js` e o script inline do
+# login trocam `data-i18n` em tempo de execucao (contador de materiais,
+# rotulo de ordenacao, "Entrando como aluno", "Ocultar senha"). Sem ler
+# o JS, o aviso de "chave sem uso" acusaria essas como orfas, e um aviso
+# que da falso positivo e um aviso que ninguem le.
+PADRAO_JS = re.compile(r"['\"]([a-z][a-zA-Z0-9]*\.[a-zA-Z0-9]+)['\"]")
+
+
+def chaves_do_js(caminho, validas):
+    with io.open(caminho, encoding='utf-8') as f:
+        texto = f.read()
+    return {c for c in PADRAO_JS.findall(texto) if c in validas}
+
+
 def main():
     dicionarios = {}
     for nome in sorted(os.listdir(DIC)):
@@ -61,6 +75,11 @@ def main():
         usadas |= chaves
         for chave in sorted(chaves - referencia):
             problemas.append(u'%s usa "%s", que nao existe no dicionario' % (nome, chave))
+        usadas |= chaves_do_js(os.path.join(MOCKUP, nome), referencia)
+
+    for nome in sorted(os.listdir(os.path.join(MOCKUP, 'assets'))):
+        if nome.endswith('.js'):
+            usadas |= chaves_do_js(os.path.join(MOCKUP, 'assets', nome), referencia)
 
     if problemas:
         for p in problemas:

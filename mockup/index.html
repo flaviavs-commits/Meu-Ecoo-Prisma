@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prisma</title>
+<title data-i18n="entrada.tituloIndex">Prisma</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/fonts.css">
 <!-- Josefin Sans: mesma fonte de titulo usada em toda a landing do
@@ -155,6 +155,26 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercas
 }
 .cta:hover{background:#000}
 
+/* Seletor de idioma: estas telas nao tem topbar como o resto do app,
+   entao ele fica ancorado no canto. Precisa existir aqui porque esta e
+   a PRIMEIRA tela que alguem ve - quem chega direto no login nao teria
+   nenhum outro lugar para escolher a lingua. */
+.langbar{
+  position:fixed;top:14px;right:18px;z-index:5;display:flex;gap:2px;
+  background:color-mix(in srgb,var(--superficie) 88%,transparent);
+  border:1px solid var(--contorno);border-radius:999px;padding:3px;
+  backdrop-filter:blur(6px);
+}
+.langbar button{
+  font-family:var(--font-display);font-size:10px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--texto-secundario);
+  background:none;border:0;border-radius:999px;padding:5px 9px;cursor:pointer;
+  transition:color .15s var(--ease),background .15s var(--ease);
+}
+.langbar button:hover{color:var(--texto)}
+.langbar button.on{background:var(--graphite);color:#fff}
+@media (max-width:520px){.langbar{top:10px;right:10px;padding:2px}.langbar button{padding:4px 7px;font-size:9px}}
+
 @media (max-width:960px){
   .split{grid-template-columns:1fr}
   .dark{min-height:42svh;padding:28px 24px 24px}
@@ -195,28 +215,36 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercas
 </symbol>
 </defs></svg>
 
+<div class="langbar" role="group" aria-label="Idioma" data-i18n-attr="aria-label:topbar.idioma">
+  <button type="button" class="lang-opt" data-lang="pt-BR">PT</button>
+  <button type="button" class="lang-opt" data-lang="en">EN</button>
+  <button type="button" class="lang-opt" data-lang="es">ES</button>
+  <button type="button" class="lang-opt" data-lang="fr">FR</button>
+  <button type="button" class="lang-opt" data-lang="de">DE</button>
+</div>
+
 <div class="split">
 
   <aside class="dark">
     <a class="brand" href="./"><svg><use href="#e-logo"/></svg><b>Prisma</b></a>
     <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="#e-logo"/></svg>
     <div class="mid">
-      <h1>Um crédito.<br>Três perfis.<br>Uma memória.</h1>
-      <p class="lead">Um tema entra. Três caminhos se abrem — com ferramentas de IA feitas para cada momento da vida escolar.</p>
+      <h1 data-i18n-html="entrada.manchete">Um crédito.<br>Três perfis.<br>Uma memória.</h1>
+      <p class="lead" data-i18n="entrada.leadIndex">Um tema entra. Três caminhos se abrem — com ferramentas de IA feitas para cada momento da vida escolar.</p>
     </div>
-    <p class="foot" id="foot-copyright">&copy; 2026 Prisma. Todos os direitos reservados.</p>
+    <p class="foot">&copy; <span id="ano">2026</span> <span data-i18n="entrada.copyright">Prisma. Todos os direitos reservados.</span></p>
   </aside>
 
   <main class="light">
     <div class="entry">
-      <div class="regua fade"><span class="num">01</span><span class="filete"></span><span class="etq">Escolha o perfil</span></div>
-      <h2 class="fade d1">Como você quer entrar?</h2>
-      <p class="hint fade d1">Escolha seu espaço no Prisma.</p>
+      <div class="regua fade"><span class="num">01</span><span class="filete"></span><span class="etq" data-i18n="entrada.escolhaPerfil">Escolha o perfil</span></div>
+      <h2 class="fade d1" data-i18n="entrada.comoEntrar">Como você quer entrar?</h2>
+      <p class="hint fade d1" data-i18n="entrada.escolhaEspaco">Escolha seu espaço no Prisma.</p>
 
-      <div class="rotas fade d2" aria-label="Três caminhos do Prisma">
-        <i style="--cor:var(--aluno)"></i><b>Aluno</b><span></span>
-        <i style="--cor:var(--professor)"></i><b>Professor</b><span></span>
-        <i style="--cor:var(--diretor)"></i><b>Diretor</b>
+      <div class="rotas fade d2" aria-label="Três caminhos do Prisma" data-i18n-attr="aria-label:entrada.tresCaminhos">
+        <i style="--cor:var(--aluno)"></i><b data-i18n="perfil.aluno">Aluno</b><span></span>
+        <i style="--cor:var(--professor)"></i><b data-i18n="perfil.professor">Professor</b><span></span>
+        <i style="--cor:var(--diretor)"></i><b data-i18n="perfil.diretor">Diretor</b>
       </div>
 
       <div class="perfis">
@@ -224,7 +252,7 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercas
           <span class="faixa"></span>
           <span class="corpo">
             <span class="ic"><svg><use href="#e-chat"/></svg></span>
-            <span class="txt" data-index="01"><b>Aluno</b><span>tutor com memória, simulados e o próprio boletim</span></span>
+            <span class="txt" data-index="01"><b data-i18n="perfil.aluno">Aluno</b><span data-i18n="entrada.cardAluno">tutor com memória, simulados e o próprio boletim</span></span>
             <span class="go"><svg><use href="#e-arrow"/></svg></span>
           </span>
         </a>
@@ -232,7 +260,7 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercas
           <span class="faixa"></span>
           <span class="corpo">
             <span class="ic"><svg><use href="#e-pen"/></svg></span>
-            <span class="txt" data-index="02"><b>Professor</b><span>provas, correção com IA e material didático</span></span>
+            <span class="txt" data-index="02"><b data-i18n="perfil.professor">Professor</b><span data-i18n="entrada.cardProfessor">provas, correção com IA e material didático</span></span>
             <span class="go"><svg><use href="#e-arrow"/></svg></span>
           </span>
         </a>
@@ -240,7 +268,7 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercas
           <span class="faixa"></span>
           <span class="corpo">
             <span class="ic"><svg><use href="#e-building"/></svg></span>
-            <span class="txt" data-index="03"><b>Diretor</b><span>gestão de créditos, turmas e desempenho da instituição</span></span>
+            <span class="txt" data-index="03"><b data-i18n="perfil.diretor">Diretor</b><span data-i18n="entrada.cardDiretor">gestão de créditos, turmas e desempenho da instituição</span></span>
             <span class="go"><svg><use href="#e-arrow"/></svg></span>
           </span>
         </a>
@@ -250,9 +278,17 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercas
 
 </div>
 
+<script src="assets/i18n.js"></script>
 <script>
-document.getElementById('foot-copyright').textContent =
-  '© ' + new Date().getFullYear() + ' Prisma. Todos os direitos reservados.';
+// O resto do app troca de idioma pelo dropdown da topbar, montado em
+// app.js - que nao roda nestas telas. Aqui o seletor e um grupo de
+// botoes simples, entao a ligacao com o motor cabe em tres linhas.
+document.querySelectorAll('.lang-opt').forEach(function (b) {
+  b.addEventListener('click', function () { window.PrismaI18n.setLang(b.dataset.lang); });
+});
+</script>
+<script>
+document.getElementById('ano').textContent = new Date().getFullYear();
 </script>
 <script src="assets/dev-reload.js"></script>
 </body>
