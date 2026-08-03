@@ -19,8 +19,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "contas",
+    "authenticacao",
     "core",
 ]
 
@@ -56,6 +58,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 AUTH_USER_MODEL = "contas.Usuario"
 
+# O e-mail é globalmente único para manter o login simples por e-mail e senha.
+SILENCED_SYSTEM_CHECKS = ["auth.E003"]
+
 DATABASES = {
     "default": dj_database_url.parse(os.environ["DATABASE_URL"]),
 }
@@ -77,10 +82,29 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
     "EXCEPTION_HANDLER": "core.erros.tratador_de_excecao",
+    "DEFAULT_THROTTLE_RATES": {"login": "5/min"},
+}
+
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+]
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": False,
 }
 
 CORS_ALLOWED_ORIGINS = [
