@@ -1,6 +1,6 @@
 # E04 - Autorizacao e perfis
 
-> **Status:** NAO INICIADA · **Responsavel:** _(assine ao pegar)_
+> **Status:** BLOQUEADA · **Responsavel:** agente-canvas-E04
 > **Depende de:** E03 · **Destrava:** E05, E09, E10, E11
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -161,7 +161,25 @@ registro do motivo no diario.
 > Ao pegar: status para `EM ANDAMENTO`, assine, atualize
 > [`../README.md`](../README.md).
 
-_(vazio - primeira entrada e sua)_
+- [2026-08-03] Peguei E04, conferi dependencias antes de escrever qualquer
+  codigo - protocolo item 4 exige isso. E03 (Autenticacao JWT) esta
+  `NAO INICIADA`, e ela depende de E02, que esta `BLOQUEADA` por ausencia de
+  E01. E01 (fundacao do projeto) esta `EM ANDAMENTO` por outro agente agora -
+  nao existe ainda pasta `backend/` em codigo, nem `Usuario` customizado, nem
+  DRF configurado. Sem isso nao ha onde pendurar `permission classes` reais
+  (elas dependem do shape de `request.user.instituicao` que E02 vai definir).
+  Verifiquei o trabalho dos outros agentes (`git log`, `git worktree list`,
+  tabela do README): E02, E06, E07, E08 e E09 ja foram marcadas `BLOQUEADA`
+  pelo mesmo motivo - so E05 optou por seguir contra o contrato assumido
+  (risco registrado no diario dela). Decidi seguir o padrao da maioria em vez
+  de inventar um formato de `Usuario`/multi-tenancy por conta propria, que
+  poderia colidir com o que E01/E02 estao definindo agora mesmo em paralelo.
+  Marquei o status desta etapa como `BLOQUEADA` e vou atualizar so a minha
+  linha no README. Proximo passo assim que E03 estiver `CONCLUIDA`: seguir a
+  secao 5 (permission classes por arquivo, mixin de escopo por instituicao,
+  mixin de acao destrutiva + `RegistroDeAuditoria`) e a ordem de TDD do item
+  5.5. Nao decidi nada sobre a pendencia de re-autenticacao do item 5.4 -
+  continua em aberto para quando a etapa for retomada.
 
 ## 9. Criterio de pronto
 
