@@ -1,32 +1,32 @@
-# React + TypeScript + Vite
+# Frontend do PrismaTest
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A landing pública do PrismaTest, implementada em React, TypeScript, Vite,
+Tailwind CSS e Motion. O layout é mobile-first e a aplicação visual é
+servida junto com as telas HTML demonstrativas em `/app/`.
 
-Currently, two official plugins are available:
+## Desenvolvimento
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Na raiz do repositório, o caminho recomendado é `python start_app.py`, que
+abre o HUD do projeto. Para trabalhar diretamente no frontend:
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Validação
+
+```bash
+cd frontend
+npm run lint
+npm run build
+```
+
+As telas demonstrativas são mantidas em `../mockup/` e sincronizadas para
+`public/app/` por `python ../scripts/sincronizar-app.py`. A pasta `public/app/`
+é uma cópia derivada e não é a fonte de edição.
+
+O frontend não implementa autenticação, regras de negócio, chamadas ao
+OpenRouter ou persistência em servidor. Esses comportamentos dependem do
+backend ainda não iniciado neste repositório.

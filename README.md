@@ -2,9 +2,9 @@
 
 Implementacao web da plataforma de estudos com IA para instituicoes de ensino: OpenRouter como motor de IA, creditos por assinatura e memoria persistente por aluno.
 
-> **Status: Fase 0 - fundacao.** A landing page publica esta implementada, com a identidade visual do documento UX/UI aplicada. O backend ainda nao existe. A landing (`frontend/`) e os mockups das telas por perfil (`mockup/`) vivem neste mesmo repositorio - a concepcao do produto e os mockups viviam num repositorio separado no inicio do projeto, mas hoje moram aqui.
+> **Estado atual: fundação visual concluída.** A landing pública, a entrada de perfis, o login demonstrativo e as áreas visuais de aluno, professor e diretor estão implementados. A interface é mobile-first, oferece cinco idiomas com preferência persistente e fecha o seletor após a escolha. O backend, a autenticação real e o gateway de IA ainda não existem neste repositório.
 
-**Divisao de trabalho:** Andre no frontend, Felipe no backend.
+**Divisão de trabalho:** o frontend visual está neste repositório; o backend ainda não foi iniciado aqui.
 
 ## Sobre
 
@@ -103,7 +103,7 @@ npm run lint     # oxlint
 npm run build    # tsc + vite build
 ```
 
-Ainda nao ha teste automatizado: a landing e UI visual sem regra de negocio, caso em que o guia minimo de qualidade aceita verificacao manual registrada. As verificacoes executadas estao em [IA.md](IA.md), secao "Testes importantes". Testes automatizados entram junto com a logica de negocio (autenticacao, creditos, gateway de IA).
+Há verificações automatizadas de qualidade visual e estrutural, embora ainda não exista uma suíte de testes de regras de negócio. O frontend usa Playwright para validar rotas, idiomas, persistência da preferência, ausência de overflow em viewports móveis e erros de console; `scripts/verificar-i18n.py` valida as chaves dos cinco dicionários. Os comandos e resultados executados ficam em [IA.md](IA.md), na seção "Testes importantes".
 
 ## Landing e aplicacao
 
@@ -129,10 +129,9 @@ Isso copia as telas para `frontend/public/app/`, que o Vite serve em
 `/app/`. **Rode de novo sempre que as telas mudarem la** - a pasta e
 uma copia derivada, ignorada pelo git.
 
-> **Nao ha autenticacao.** Qualquer pessoa acessa qualquer area: o
-> "Entrar" e navegacao, nao controle de acesso. O login real entra
-> com o backend. Quando existir, basta trocar `ENTRADA_APP` em
-> `frontend/src/content/destinos.ts` - todos os botoes leem de la.
+> **Não há autenticação real.** Qualquer pessoa acessa qualquer área: o
+> "Entrar" e o login são navegação demonstrativa, não controle de acesso.
+> A autenticação real depende do backend e ainda não foi implementada.
 
 ## Mexer no HUD
 
@@ -150,6 +149,18 @@ modulo por responsabilidade - abra so o que a mudanca exige:
 
 O mapa completo esta em `scripts/hud/__init__.py`. A regra que mantem
 assim: [docs/CONSTITUICAO-MODULARIDADE.md](docs/CONSTITUICAO-MODULARIDADE.md).
+
+## Comportamento da interface
+
+O layout é mobile-first e foi verificado em telas estreitas e largas. A
+preferência de idioma é salva em `localStorage` sob a chave `prisma-lang`;
+ela é reaplicada nas telas de entrada, login, aluno, professor e diretor até
+que o usuário escolha outro idioma. Ao selecionar uma opção, o dropdown e o
+fundo de bloqueio fecham automaticamente.
+
+O conteúdo da aplicação é uma demonstração estática. Ações como gerar
+materiais, responder ao tutor e confirmar correções alteram apenas o estado
+visual local; não há chamadas a API nem persistência em servidor.
 
 ## Personalizar a landing
 
