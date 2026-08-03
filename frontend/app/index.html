@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="entrada.tituloIndex">Prisma</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="stylesheet" href="assets/fonts.css">
+<!-- Josefin Sans: mesma fonte de titulo usada em toda a landing do
+     Prisma (frontend/index.html). Sem este import, o navegador cai
+     num fallback do sistema que quebra a renderizacao do titulo em
+     caixa alta - texto grande e pesado com esse fallback fica com
+     um artefato visivel de sombra/franja colorida no Chromium. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/*
+  Identidade herdada da landing do Prisma (frontend/src/index.css e os
+  componentes Card.tsx / Secao.tsx / Perfis.tsx). A divisoria vertical e
+  a unica coisa que sobra do layout anterior - tudo o resto (tipografia,
+  cor, cards, botao) segue o "tipao" da LP: Josefin Sans em caixa alta
+  nos titulos, contorno fino sem sombra difusa, cantos discretos (nao
+  arredondados), cards com faixa de cor cheia + corpo tint por perfil.
+*/
+:root{
+  color-scheme:light;
+  --cream:#f7f5ee; --graphite:#1a1a1a;
+  --superficie:#fffdf8; --superficie-alt:#f0ece1;
+  --texto:#1a1a1a; --texto-secundario:#5c5a55;
+  --contorno:rgb(26 26 26 / .28); --contorno-forte:rgb(26 26 26 / .45);
+  --aluno:#7b78c8; --aluno-tint:#e5e4f2;
+  --professor:#c85a3c; --professor-tint:#f0ddd4;
+  --diretor:#6a8550; --diretor-tint:#e3e8da;
+  --font-display:"Josefin Sans","Geist",-apple-system,sans-serif;
+  --font-sans:"Geist",-apple-system,"Segoe UI",sans-serif;
+  --radius:0.375rem;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;color:var(--texto);
+  font-family:var(--font-sans);
+  font-size:15px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+  min-height:100vh;background:var(--cream);
+}
+::selection{background:rgba(200,90,60,.22)}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercase;line-height:1.1;letter-spacing:.06em}
+
+/* Divisoria vertical - o unico elemento estrutural que fica do layout
+   anterior. Da esquerda pra direita: painel de identidade (grafite),
+   painel de escolha (creme, no tipao da LP). */
+.split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+
+/* Painel esquerdo: grafite, igual ao fundo escuro usado no rodape/CTA
+   da LP - nao e mais um degrade verde solto, e o proprio --graphite. */
+.dark{
+  background:var(--graphite);
+  color:#EDE9E2;display:flex;flex-direction:column;padding:44px 56px;
+  position:relative;overflow:hidden;
+}
+.dark>*{position:relative}
+
+/* Logo identica ao header da LP: triangulo (mesmo path do Logo.tsx) +
+   "PRISMA" em caixa alta com tracking largo. E link de volta pra
+   landing (mesmo comportamento do header real: clicar no logo volta
+   ao topo do site). */
+.brand{display:inline-flex;align-items:center;gap:10px;width:fit-content;text-decoration:none;transition:opacity .15s ease}
+.brand:hover{opacity:.78}
+.brand svg{width:26px;height:26px;color:#F7F5EE}
+.brand b{font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:.16em;text-transform:uppercase;color:#F7F5EE}
+
+.dark .mid{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:480px;padding:56px 0}
+
+/* Regua de capitulo: numero + filete + etiqueta, exatamente como
+   TituloSecao.tsx na LP - e o que da a assinatura tipografica. */
+.regua{display:flex;align-items:center;gap:16px;color:#A39D8F;margin-bottom:28px}
+.regua .num{font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.2em}
+.regua .filete{height:1px;width:48px;background:#4A463D}
+.regua .etq{font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+
+.dark h1{font-size:clamp(30px,3.6vw,44px);line-height:1.08;margin:0 0 22px;color:#F7F5EE;text-wrap:balance}
+.dark .lead{font-size:15px;line-height:1.65;color:#B8B2A5;max-width:38ch;margin:0}
+.dark .foot{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#5C584E;margin-top:auto}
+
+/* Painel direito: mesmo fundo creme da LP, cards no estilo Perfis.tsx. */
+.light{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px clamp(32px,6vw,88px);position:relative;overflow:hidden}
+.entry{width:100%;max-width:600px}
+.entry{position:relative;z-index:1}
+
+.fade{animation:rise .6s var(--ease) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}.d4{animation-delay:.26s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+
+.entry h2{font-size:clamp(28px,3.2vw,38px);margin:0 0 26px;color:var(--texto);text-wrap:balance}
+
+/* Escolha de perfil: tres linhas, uma decisao.
+   Sairam daqui a etiqueta de secao ("01 / escolha o perfil"), o
+   subtitulo, a fileira de bolinhas com os tres nomes, a numeracao dos
+   cards e o sufixo "/ entrar". Todos diziam, de novo, o que os proprios
+   tres cards ja dizem - com so tres opcoes, cada elemento a mais e uma
+   coisa para ler ANTES de poder clicar.
+   A cor do perfil ficou no filete lateral e no icone; o corpo do card
+   usa o creme do resto da pagina, entao o olho vai para o nome e nao
+   para o bloco colorido. O preenchimento tonal so aparece no hover,
+   confirmando a linha sob o cursor. */
+.perfis{display:grid;gap:10px}
+.perfil{
+  display:flex;align-items:center;gap:16px;
+  padding:17px 18px;text-decoration:none;color:inherit;
+  border:1px solid var(--contorno);border-left:3px solid var(--acento);
+  border-radius:var(--radius);background:var(--superficie);
+  transition:border-color .2s var(--ease),background .2s var(--ease),transform .2s var(--ease);
+}
+.perfil.aluno{--acento:var(--aluno);--tint:var(--aluno-tint)}
+.perfil.professor{--acento:var(--professor);--tint:var(--professor-tint)}
+.perfil.diretor{--acento:var(--diretor);--tint:var(--diretor-tint)}
+.perfil .ic{width:42px;height:42px;flex:none;border-radius:var(--radius);display:grid;place-items:center;background:var(--tint);color:var(--acento)}
+.perfil .ic svg{width:21px;height:21px}
+.perfil .txt{flex:1;min-width:0}
+.perfil .txt b{display:block;font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase}
+.perfil .txt span{display:block;font-size:13px;color:var(--texto-secundario);margin-top:2px}
+/* Seta fixa apontando pra direita: so indica "isso navega". */
+.perfil .go{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--texto-secundario);transition:background .2s var(--ease),color .2s var(--ease)}
+.perfil .go svg{width:16px;height:16px}
+.perfil:hover,.perfil:focus-visible{transform:translateX(3px);border-color:var(--acento);background:var(--tint)}
+.perfil:hover .go,.perfil:focus-visible .go{background:var(--acento);color:#fff}
+.perfil:focus-visible{outline:2px solid var(--acento);outline-offset:2px}
+
+.divider{display:flex;align-items:center;gap:12px;margin:28px 0 16px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--texto-secundario)}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--contorno)}
+
+/* Botao pill grafite - identico ao "Comecar gratis" do header da LP. */
+.cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:14px 22px;border-radius:999px;
+  background:var(--graphite);color:#fff;text-decoration:none;
+  font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+  transition:background .2s var(--ease);
+}
+.cta:hover{background:#000}
+
+/* Seletor de idioma: estas telas nao tem topbar como o resto do app,
+   entao ele fica ancorado no canto. Precisa existir aqui porque esta e
+   a PRIMEIRA tela que alguem ve - quem chega direto no login nao teria
+   nenhum outro lugar para escolher a lingua. */
+.langbar{
+  position:fixed;top:14px;right:18px;z-index:5;display:flex;gap:2px;
+  background:color-mix(in srgb,var(--superficie) 88%,transparent);
+  border:1px solid var(--contorno);border-radius:999px;padding:3px;
+  backdrop-filter:blur(6px);
+}
+.langbar button{
+  font-family:var(--font-display);font-size:10px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--texto-secundario);
+  background:none;border:0;border-radius:999px;padding:5px 9px;cursor:pointer;
+  transition:color .15s var(--ease),background .15s var(--ease);
+}
+.langbar button:hover{color:var(--texto)}
+.langbar button.on{background:var(--graphite);color:#fff}
+@media (max-width:520px){.langbar{top:10px;right:10px;padding:2px}.langbar button{padding:4px 7px;font-size:9px}}
+
+@media (max-width:960px){
+  .split{grid-template-columns:1fr}
+  .dark{min-height:42svh;padding:28px 24px 24px}
+  .dark .mid{padding:38px 0 18px}
+  .dark h1{font-size:clamp(28px,8vw,38px);margin-bottom:12px}
+  .dark .lead{font-size:14px;max-width:48ch}
+  .dark .foot{display:none}
+  .light{padding:40px 24px 56px}
+}
+@media (max-width:520px){
+  .light{padding:36px 18px 44px}
+  .entry h2{font-size:29px;margin-bottom:20px}
+  .perfil{padding:15px 14px;gap:12px}
+  .perfil .txt span{font-size:12px;line-height:1.35}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="e-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.3a2.6 2.6 0 0 1-2.6 2.6H9.6L5 19.7V6.8a2.6 2.6 0 0 1 2.6-2.6h9.8A2.6 2.6 0 0 1 20 6.8Z"/></symbol>
+<symbol id="e-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 5.5 4 4L8 20l-4.6.6L4 16Z"/><path d="m12.8 7.2 4 4"/></symbol>
+<symbol id="e-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20.5V6.2a1 1 0 0 1 .55-.9l5.5-2.75a1 1 0 0 1 .9 0l5.5 2.75a1 1 0 0 1 .55.9V20.5"/><path d="M3 20.5h18"/><path d="M9.5 9.5h1M13.5 9.5h1M9.5 13.2h1M13.5 13.2h1M9.5 16.9h1M13.5 16.9h1"/></symbol>
+<symbol id="e-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="m13 7 5 5-5 5"/></symbol>
+<!-- Logo oficial: mesmo path de frontend/src/components/ui/Logo.tsx,
+     viewBox recortado nos limites reais do desenho. -->
+<symbol id="e-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M16 6.38 6.35 21.56 16 25.37l9.65-3.81Z"/>
+  <path d="M16 6.38V25.37"/>
+  <path d="M6.35 21.56 16 17.51l9.65 4.05"/>
+</symbol>
+</defs></svg>
+
+<div class="langbar" role="group" aria-label="Idioma" data-i18n-attr="aria-label:topbar.idioma">
+  <button type="button" class="lang-opt" data-lang="pt-BR">PT</button>
+  <button type="button" class="lang-opt" data-lang="en">EN</button>
+  <button type="button" class="lang-opt" data-lang="es">ES</button>
+  <button type="button" class="lang-opt" data-lang="fr">FR</button>
+  <button type="button" class="lang-opt" data-lang="de">DE</button>
+</div>
+
+<div class="split">
+
+  <aside class="dark">
+    <a class="brand" href="./"><svg><use href="#e-logo"/></svg><b>Prisma</b></a>
+    <div class="mid">
+      <h1 data-i18n-html="entrada.manchete">Um crédito.<br>Três perfis.<br>Uma memória.</h1>
+      <p class="lead" data-i18n="entrada.leadIndex">Um tema entra. Três caminhos se abrem — com ferramentas de IA feitas para cada momento da vida escolar.</p>
+    </div>
+    <p class="foot">&copy; <span id="ano">2026</span> <span data-i18n="entrada.copyright">Prisma. Todos os direitos reservados.</span></p>
+  </aside>
+
+  <main class="light">
+    <div class="entry">
+      <h2 class="fade" data-i18n="entrada.entrarComo">Entrar como</h2>
+
+      <div class="perfis">
+        <a class="perfil aluno fade d1" href="login.html?perfil=aluno">
+          <span class="ic"><svg><use href="#e-chat"/></svg></span>
+          <span class="txt"><b data-i18n="perfil.aluno">Aluno</b><span data-i18n="entrada.cardAluno">tutor, simulados e boletim</span></span>
+          <span class="go"><svg><use href="#e-arrow"/></svg></span>
+        </a>
+        <a class="perfil professor fade d2" href="login.html?perfil=professor">
+          <span class="ic"><svg><use href="#e-pen"/></svg></span>
+          <span class="txt"><b data-i18n="perfil.professor">Professor</b><span data-i18n="entrada.cardProfessor">provas, correção e material</span></span>
+          <span class="go"><svg><use href="#e-arrow"/></svg></span>
+        </a>
+        <a class="perfil diretor fade d3" href="login.html?perfil=diretor">
+          <span class="ic"><svg><use href="#e-building"/></svg></span>
+          <span class="txt"><b data-i18n="perfil.diretor">Diretor</b><span data-i18n="entrada.cardDiretor">créditos, turmas e desempenho</span></span>
+          <span class="go"><svg><use href="#e-arrow"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script src="assets/i18n.js"></script>
+<script>
+// O resto do app troca de idioma pelo dropdown da topbar, montado em
+// app.js - que nao roda nestas telas. Aqui o seletor e um grupo de
+// botoes simples, entao a ligacao com o motor cabe em tres linhas.
+document.querySelectorAll('.lang-opt').forEach(function (b) {
+  b.addEventListener('click', function () { window.PrismaI18n.setLang(b.dataset.lang); });
+});
+</script>
+<script>
+document.getElementById('ano').textContent = new Date().getFullYear();
+</script>
+<script src="assets/dev-reload.js"></script>
+</body>
+</html>

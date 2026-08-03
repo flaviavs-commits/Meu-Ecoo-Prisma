@@ -10,7 +10,7 @@
 
 O **PrismaTest** e a plataforma SaaS de estudos para instituicoes de ensino, com OpenRouter como motor de IA, creditos por assinatura e memoria persistente por aluno.
 
-Este repositorio contem o **codigo real**: a landing publica (`frontend/`) e as telas definitivas de aluno, professor e diretor (`app/`). No inicio do projeto, concepcao e aplicacao viviam num repositorio separado (`Estudo-com-IA`) - hoje moram aqui, no mesmo lugar do codigo.
+Este repositorio contem o **codigo real**: a landing publica e as telas definitivas (`frontend/`). No inicio do projeto, concepcao e aplicacao viviam num repositorio separado (`Estudo-com-IA`) - hoje moram aqui, no mesmo lugar do codigo.
 
 O **backend ainda nao existe em codigo**, mas ja esta desenhado em `docs/backend/`, dividido em 13 etapas independentes para execucao paralela por agentes diferentes. Se a sua tarefa e de backend, o ponto de entrada e `docs/backend/README.md` - nao comece a escrever codigo sem passar por la.
 

@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Professor · Prisma</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<!-- Tema salvo aplicado antes do primeiro paint. O app.js roda no fim do
+     body, tarde demais: com o escuro salvo, a pagina piscava clara e so
+     depois virava escura. -->
+<script>try{var t=localStorage.getItem('prisma-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/ui.css">
+<!-- Modal de Configuracoes: motor generico + casca + estados + pecas -->
+<link rel="stylesheet" href="assets/modal/core.css">
+<link rel="stylesheet" href="assets/modal/shell.css">
+<link rel="stylesheet" href="assets/modal/states.css">
+<link rel="stylesheet" href="assets/modal/widgets.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.2c.62 4.1 2.7 6.18 6.8 6.8-4.1.62-6.18 2.7-6.8 6.8-.62-4.1-2.7-6.18-6.8-6.8 4.1-.62 6.18-2.7 6.8-6.8Z"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.2 12 4.4l8 6.8"/><path d="M6.4 10.2v9.3h11.2v-9.3"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="9.4" cy="8.4" r="3.1"/><path d="M4.4 19.2c.5-3 2.5-4.6 5-4.6s4.5 1.6 5 4.6"/><path d="M15.4 5.7a3.1 3.1 0 0 1 0 5.5"/><path d="M17.3 14.7c1.7.7 2.8 2.1 3.2 4.4"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 5.5 4 4L8 20l-4.6.6L4 16Z"/><path d="m12.8 7.2 4 4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="m8.6 12.4 2.3 2.3 4.5-4.9"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.8A1.8 1.8 0 0 1 6.8 3H19v16.4H7a2 2 0 0 0-2 2Z"/><path d="M5 19.4V4.8"/><path d="M19 15.4H7a2 2 0 0 0-2 2"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3.8 19.4h16.4"/><path d="M6.6 19.4v-6.2"/><path d="M12 19.4V8.6"/><path d="M17.4 19.4V4.8"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18.5V6"/><path d="m6.8 11 5.2-5.2L17.2 11"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 10 4 4 4-4"/></symbol>
+<symbol id="i-chev-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 14 4-4 4 4"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5V15"/><path d="m7 10.5 5 5 5-5"/><path d="M4.5 19.5h15"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3.2 2"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.8a6 6 0 0 1 12 0c0 4 1.6 5.4 1.6 5.4H4.4S6 13.8 6 9.8Z"/><path d="M10.2 18.6a2 2 0 0 0 3.6 0"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.8" y="5.6" width="16.4" height="12.8" rx="2"/><path d="m4.6 7 7.4 5.6L19.4 7"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8.4" r="3.4"/><path d="M5.6 19.6c.6-3.5 3-5.4 6.4-5.4s5.8 1.9 6.4 5.4"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.6H6.4A1.8 1.8 0 0 0 4.6 6.4v11.2a1.8 1.8 0 0 0 1.8 1.8H9"/><path d="M15.4 15.8 19.2 12l-3.8-3.8"/><path d="M9.6 12h9.6"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="6.4"/><path d="m16 16 4.4 4.4"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.6h7l4.4 4.4v11a1.4 1.4 0 0 1-1.4 1.4H7A1.4 1.4 0 0 1 5.6 19V5A1.4 1.4 0 0 1 7 3.6Z"/><path d="M14 3.6V8h4.4"/></symbol>
+<symbol id="i-audio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 17v-4.2a7.2 7.2 0 0 1 14.4 0V17"/><rect x="4" y="14.4" width="3.6" height="5.2" rx="1.6"/><rect x="16.4" y="14.4" width="3.6" height="5.2" rx="1.6"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 8h14M5 16h14"/><circle cx="9" cy="8" r="2.1" fill="var(--card)"/><circle cx="15" cy="16" r="2.1" fill="var(--card)"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3.2v2M12 18.8v2M3.2 12h2M18.8 12h2M5.7 5.7l1.4 1.4M16.9 16.9l1.4 1.4M18.3 5.7l-1.4 1.4M7.1 16.9l-1.4 1.4"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8M12 3.6c2.4 2.3 3.6 5.2 3.6 8.4s-1.2 6.1-3.6 8.4c-2.4-2.3-3.6-5.2-3.6-8.4S9.6 5.9 12 3.6Z"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.2A8 8 0 1 1 10.8 4 6.4 6.4 0 0 0 20 13.2Z"/></symbol>
+<!-- Icones do modal de Configuracoes (assets/modal/) -->
+<symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 3.4v2.3M12 18.3v2.3M20.6 12h-2.3M5.7 12H3.4M18.1 5.9l-1.6 1.6M7.5 16.5l-1.6 1.6M18.1 18.1l-1.6-1.6M7.5 7.5 5.9 5.9"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.6 21 19.4H3Z"/><path d="M12 10.2v4"/><path d="M12 16.8v.1"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6 19 6.4v5.6c0 5-3 8-7 9-4-1-7-4-7-9V6.4Z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M9.6 9.3a2.4 2.4 0 1 1 3.4 2.2c-.9.5-1.4 1-1.4 2.1"/><path d="M12 17v.1"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.3a2.6 2.6 0 0 1-2.6 2.6H9.6L5 19.7V6.8a2.6 2.6 0 0 1 2.6-2.6h9.8A2.6 2.6 0 0 1 20 6.8Z"/></symbol>
+<symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="4.8" width="16.8" height="11.2" rx="1.8"/><path d="M8.4 20h7.2M12 16v4"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 7.2h14.4"/><path d="M9.6 7.2V5.4a1.8 1.8 0 0 1 1.8-1.8h1.2a1.8 1.8 0 0 1 1.8 1.8v1.8"/><path d="M6.6 7.2 7.5 19a1.8 1.8 0 0 0 1.8 1.7h5.4a1.8 1.8 0 0 0 1.8-1.7l.9-11.8"/><path d="M10.2 11v6M13.8 11v6"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.8 9.8 0 0 1 12 4c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.16 3.19m-3.1 2.6A9.4 9.4 0 0 1 12 18c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.22-5.02"/><path d="M9.5 9.5a3 3 0 0 0 4.24 4.24"/><path d="M2 2l20 20"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3.6l2.6 5.4 5.9.7-4.3 4.1 1.1 5.9L12 16.8l-5.3 2.9 1.1-5.9-4.3-4.1 5.9-.7Z"/></symbol>
+<!-- Logo oficial do Prisma: mesmo path de frontend/src/components/ui/Logo.tsx -->
+<symbol id="i-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M16 6.38 6.35 21.56 16 25.37l9.65-3.81Z"/>
+  <path d="M16 6.38V25.37"/>
+  <path d="M6.35 21.56 16 17.51l9.65 4.05"/>
+</symbol>
+</defs></svg>
+
+<div class="shell">
+<aside class="side">
+  <a class="brand" href="./"><span class="mark"><svg><use href="#i-logo"/></svg></span>Prisma<span> · Professor</span></a>
+
+  <p class="nlabel" data-i18n="nav.principal">Principal</p>
+  <nav class="nav">
+    <a class="on" data-s="inicio"><svg class="ic"><use href="#i-home"/></svg><span data-i18n="nav.inicio">Início</span></a>
+    <a data-s="turmas"><svg class="ic"><use href="#i-users"/></svg><span data-i18n="prof.turmas">Turmas</span></a>
+  </nav>
+  <p class="nlabel" data-i18n="prof.ensino">Ensino</p>
+  <nav class="nav">
+    <a data-s="avaliacoes"><svg class="ic"><use href="#i-pen"/></svg><span data-i18n="prof.conteudos">Conteúdos</span></a>
+    <a data-s="correcao"><svg class="ic"><use href="#i-check"/></svg><span data-i18n="prof.correcao">Correção</span><span class="badge" id="correcao-badge">6</span></a>
+    <a data-s="acervo"><svg class="ic"><use href="#i-book"/></svg><span data-i18n="prof.acervo">Acervo</span></a>
+    <a data-s="alertas"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.insightsIA">Insights da IA</span></a>
+  </nav>
+  <div class="spacer"></div>
+  <div class="ddwrap sideuser-wrap">
+    <div class="sideuser">
+      <span class="av" style="background:#2C302D">RA</span>
+      <div><b>Ricardo Almeida</b><span data-i18n="perfil.professor">Professor</span></div>
+    </div>
+    <div class="dd dd-up" id="dd-sideuser">
+      <p class="ddh">Ricardo Almeida</p>
+      <a class="ddi" href="#" data-settings-open="perfil"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+      <a class="ddi" href="#" data-settings-open="ajuda"><svg class="ic"><use href="#i-help"/></svg><span><b>Central de ajuda</b></span></a>
+      <a class="ddi" href="#" data-settings-open="feedback"><svg class="ic"><use href="#i-message"/></svg><span><b>Enviar feedback</b></span></a>
+      <div class="ddsep"></div>
+      <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
+    </div>
+  </div>
+</aside>
+<div class="dd-backdrop" id="dd-backdrop"></div>
+
+<main class="main">
+  <div class="topbar">
+    <span class="topsp"></span>
+    <span class="ddwrap">
+      <button class="iconbtn" data-dd="dd-lang" aria-label="Idioma" aria-haspopup="true" data-i18n-attr="aria-label:topbar.idioma"><svg class="ic"><use href="#i-globe"/></svg></button>
+      <div class="dd" id="dd-lang" style="width:200px">
+        <p class="ddh" data-i18n="topbar.idioma">Idioma</p>
+        <button type="button" class="ddi lang-opt" data-lang="pt-BR"><span><b>Português</b><span>Brasil</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="en"><span><b>English</b><span>United States</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="es"><span><b>Español</b><span>España</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="fr"><span><b>Français</b><span>France</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="de"><span><b>Deutsch</b><span>Deutschland</span></span></button>
+      </div>
+    </span>
+    <button class="iconbtn" id="themebtn" type="button" aria-label="Alternar tema" data-i18n-attr="aria-label:topbar.alternarTema"><svg class="ic" id="theme-ic"><use href="#i-moon"/></svg></button>
+    <span class="ddwrap">
+      <button class="iconbtn" data-dd="dd-notif" aria-label="Notificações" data-i18n-attr="aria-label:topbar.notificacoes"><svg class="ic"><use href="#i-bell"/></svg><span class="ndot"></span></button>
+      <div class="dd" id="dd-notif">
+        <p class="ddh" data-i18n="topbar.notificacoes">Notificações</p>
+        <a class="ddi" data-s="correcao"><span class="dot" style="--c:var(--warn)"></span><span><b data-i18n="prof.notifRedacoes">6 redações</b><span data-i18n="prof.notifRedacoesDesc">Simulado 03 · IA já sugeriu as notas</span></span></a>
+        <a class="ddi" data-s="alertas"><span class="dot" style="--c:var(--bad)"></span><span><b data-i18n="prof.notifEvasao">Carlos Eduardo: risco de evasão</b><span data-i18n="prof.notifEvasaoDesc">sem estudar há 12 dias</span></span></a>
+      </div>
+    </span>
+    <span class="ddwrap">
+      <button class="avbtn" data-dd="dd-user" style="background:#2C302D" aria-label="Conta" data-i18n-attr="aria-label:topbar.conta">RA</button>
+      <div class="dd" id="dd-user" style="width:230px">
+        <p class="ddh">Ricardo Almeida</p>
+        <a class="ddi" href="#" data-settings-open="perfil"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+        <a class="ddi" data-s="turmas"><svg class="ic"><use href="#i-users"/></svg><span><b data-i18n="prof.minhasTurmas">Minhas turmas</b></span></a>
+        <a class="ddi" href="#" data-settings-open="ajuda"><svg class="ic"><use href="#i-help"/></svg><span><b>Central de ajuda</b></span></a>
+        <a class="ddi" href="#" data-settings-open="feedback"><svg class="ic"><use href="#i-message"/></svg><span><b>Enviar feedback</b></span></a>
+        <div class="ddsep"></div>
+        <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
+      </div>
+    </span>
+  </div>
+
+  <div class="content">
+
+  <!-- ══ INÍCIO ══ -->
+  <section class="screen on dashboard" id="s-inicio">
+    <div class="phead dashboard-header">
+      <div class="tx">
+        <p class="eyebrow" data-i18n="nav.inicio">Início</p>
+        <h1 data-i18n="prof.inicioTitulo">Correção Simulado 03 (92%)</h1>
+        <p class="sub" data-i18n="prof.inicioSub">IA corrigiu objetivas e sugeriu notas. Faltam 6 redações para revisar.</p>
+      </div>
+      <div class="actions"><button class="btn btn-gho" data-s="avaliacoes"><svg class="ic"><use href="#i-pen"/></svg><span data-i18n="prof.novaAvaliacao">Nova avaliação</span></button><button class="btn btn-pri" data-s="correcao"><svg class="ic"><use href="#i-check"/></svg><span data-i18n="prof.revisarPendentes">Revisar pendentes</span></button></div>
+    </div>
+    <div class="tiles dashboard-metrics">
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-pen"/></svg></span><div class="lbl" data-i18n="prof.redacoesNaFila">Redações na fila</div><div class="num">6</div><div class="sub warn" data-i18n="prof.aguardamRevisao">aguardam revisão</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-clock"/></svg></span><div class="lbl" data-i18n="prof.tempoDevolvido">Tempo devolvido</div><div class="num">11h</div><div class="sub up" data-i18n="prof.esteMes">este mês</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-chart"/></svg></span><div class="lbl" data-i18n="prof.mediaEstudantes">Média dos estudantes</div><div class="num">7,2</div><div class="sub up" data-i18n="prof.variacaoSemana">▲ 0,2 na semana</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-users"/></svg></span><div class="lbl" data-i18n="prof.precisaAtencao">Precisa de atenção</div><div class="num">3</div><div class="sub" data-i18n="prof.de103Ativos">de 103 ativos</div></div>
+    </div>
+    <p class="sectlbl" data-i18n="prof.acoesDia">Ações do dia</p>
+    <div class="cols dashboard-main">
+      <div class="card hero">
+        <h2><svg class="ic"><use href="#i-check"/></svg><span data-i18n="prof.simulado03">Simulado 03</span></h2>
+        <p class="desc" data-i18n="prof.rubricaResumo">Rubrica: arg (4,0) · gramática (3,0) · estrutura (3,0)</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th data-i18n="prof.colAluno">Aluno</th><th data-i18n="prof.colObjetivas">Objetivas</th><th data-i18n="prof.colRedacaoIA">Redação · IA</th><th data-i18n="prof.colStatus">Status</th></tr></thead>
+          <tbody>
+            <tr><td class="name">Ana Beatriz Lima</td><td>8,5</td><td>7,0 <span data-i18n="prof.sugerido">sugerido</span></td><td><span class="pill p-warn" data-i18n="prof.revisar">revisar</span></td></tr>
+            <tr><td class="name">Carlos Eduardo Melo</td><td>6,0</td><td>5,5 <span data-i18n="prof.sugerido">sugerido</span></td><td><span class="pill p-warn" data-i18n="prof.revisar">revisar</span></td></tr>
+            <tr><td class="name">Marina Souza</td><td>9,0</td><td>8,0 <span data-i18n="prof.confirmado">confirmado</span></td><td><span class="pill p-ok" data-i18n="prof.concluido">concluído</span></td></tr>
+            <tr><td class="name">Pedro Henrique Tavares</td><td>7,5</td><td>7,5 <span data-i18n="prof.confirmado">confirmado</span></td><td><span class="pill p-ok" data-i18n="prof.concluido">concluído</span></td></tr>
+          </tbody>
+        </table></div>
+        <div class="tfoot"><button class="btn btn-pri" data-s="correcao" data-i18n="prof.revisarPendentes">Revisar pendentes</button><button class="btn btn-gho" data-i18n="prof.exportarNotas">Exportar notas</button></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-pen"/></svg><span data-i18n="prof.criarMaterial">Criar material</span></h2>
+          <p class="desc" data-i18n="prof.criarMaterialDesc">Com seu acervo: gabarito e rubrica</p>
+          <div class="qgrid">
+            <button class="qa" data-s="avaliacoes"><span class="qic"><svg class="ic"><use href="#i-doc"/></svg></span><span><b data-i18n="prof.prova">Prova</b><span data-i18n="prof.provaDesc">com gabarito</span></span></button>
+            <button class="qa" data-s="avaliacoes"><span class="qic"><svg class="ic"><use href="#i-check"/></svg></span><span><b data-i18n="prof.lista">Lista</b><span data-i18n="prof.listaDesc">de exercícios</span></span></button>
+            <button class="qa" data-s="avaliacoes"><span class="qic"><svg class="ic"><use href="#i-book"/></svg></span><span><b data-i18n="prof.planoEstudos">Plano de estudos</b><span data-i18n="prof.planoEstudosDesc">estrutura semanas de conteúdo</span></span></button>
+            <button class="qa" data-s="turmas"><span class="qic"><svg class="ic"><use href="#i-users"/></svg></span><span><b data-i18n="prof.feedback">Feedback</b><span data-i18n="prof.feedbackDesc">individual, em escala</span></span></button>
+          </div>
+        </div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.alertasIA">Alertas da IA</span></h2>
+          <ul class="list" style="margin-top:12px">
+            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b data-i18n="prof.alerta14Curto">14 alunos travaram em subordinadas</b><span data-i18n="prof.alerta14CurtoDesc">revisão sugerida antes do simulado</span></div></li>
+            <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b data-i18n="prof.alertaGramaticaCurto">Gramática Avançada: +18% em interpretação</b><span data-i18n="prof.alertaGramaticaCurtoDesc">efeito das listas adaptativas</span></div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TURMAS ══ -->
+  <section class="screen" id="s-turmas">
+    <div class="phead">
+      <div class="tx"><p class="eyebrow" data-i18n="prof.turmas">Turmas</p><h1 data-i18n="prof.suasTurmas">Suas turmas</h1></div>
+      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-users"/></svg><span data-i18n="prof.configurarNovaTurma">Configurar nova turma</span></button></div>
+    </div>
+    <div class="tgrid">
+      <div class="tcard">
+        <div class="thead"><span class="tname">Português ENEM</span><span class="pill p-ok"><span data-i18n="prof.media">média</span> 7,2</span></div>
+        <div class="meta">34 <span data-i18n="prof.alunosMatriculados">alunos matriculados</span></div>
+        <div class="hbar"><i style="--w:74%"></i></div>
+        <div class="prog"><span data-i18n="prof.conteudoConfigurado">Conteúdo configurado</span><span>74%</span></div>
+      </div>
+      <div class="tcard">
+        <div class="thead"><span class="tname">Redação Nota 1000</span><span class="pill p-warn"><span data-i18n="prof.media">média</span> 6,9</span></div>
+        <div class="meta">36 <span data-i18n="prof.alunosMatriculados">alunos matriculados</span></div>
+        <div class="hbar"><i style="--w:71%"></i></div>
+        <div class="prog"><span data-i18n="prof.conteudoConfigurado">Conteúdo configurado</span><span>71%</span></div>
+      </div>
+      <div class="tcard">
+        <div class="thead"><span class="tname">Gramática Avançada</span><span class="pill p-ok"><span data-i18n="prof.media">média</span> 7,5</span></div>
+        <div class="meta">33 <span data-i18n="prof.alunosMatriculados">alunos matriculados</span></div>
+        <div class="hbar"><i style="--w:78%"></i></div>
+        <div class="prog"><span data-i18n="prof.conteudoConfigurado">Conteúdo configurado</span><span>78%</span></div>
+      </div>
+    </div>
+    <div class="cols fullcard">
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-users"/></svg><span data-i18n="prof.turmaAtencaoSemana">Português ENEM — atenção esta semana</span></h2>
+        <ul class="list" style="margin-top:12px">
+          <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Carlos Eduardo Melo</b><span data-i18n="prof.atrasadoDesc">3 exercícios atrasados · média 5,5</span></div><button class="btn btn-gho btn-sm" data-i18n="prof.verPerfil">Ver perfil</button></li>
+          <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Júlia Fernandes</b><span data-i18n="prof.quedaDesc">performance caiu 1,2 pontos</span></div><button class="btn btn-gho btn-sm" data-i18n="prof.enviarReforco">Enviar reforço</button></li>
+          <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b>Marina Souza</b><span data-i18n="prof.sequenciaDesc">6 dias seguidos com tutor</span></div><button class="btn btn-gho btn-sm" data-i18n="prof.elogiar">Elogiar</button></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="prof.usoTutorTurma">Uso do tutor por turma</span></h2>
+        <div style="margin-top:12px">
+          <div class="hrow"><span class="hlbl">Gramática Avançada</span><span class="hbar"><i style="--w:88%"></i></span><span class="hval">88%</span></div>
+          <div class="hrow"><span class="hlbl">Português ENEM</span><span class="hbar"><i style="--w:81%"></i></span><span class="hval">81%</span></div>
+          <div class="hrow"><span class="hlbl">Redação Nota 1000</span><span class="hbar mute"><i style="--w:64%"></i></span><span class="hval">64%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ AVALIAÇÕES ══ -->
+  <section class="screen" id="s-avaliacoes">
+    <div class="phead"><div class="tx"><p class="eyebrow" data-i18n="prof.avaliacoes">Avaliações</p><h1 data-i18n="prof.gerarNovaProva">Gerar nova prova</h1></div></div>
+    <div class="cols cols-rev">
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-sliders"/></svg><span data-i18n="prof.configuracao">Configuração</span></h2>
+        <p class="desc" data-i18n="prof.provaContexto">Prova de Português · Turma Português ENEM</p>
+        <div class="field"><label data-i18n="prof.conteudoBase">Conteúdo-base</label><div class="selectbox"><span data-i18n="prof.unidade4Sintaxe">Unidade 4 — Sintaxe do período composto</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="field"><label data-i18n="tutor.formato">Formato</label><div class="selectbox"><span data-i18n="prof.formatoPadrao">10 objetivas + 2 dissertativas</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="field"><label data-i18n="prof.dificuldade">Dificuldade</label><div class="selectbox"><span data-i18n="prof.dificuldadeMedia">Média · curva do ENEM</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="togglerow"><span data-i18n="prof.gabaritoComentado">Gabarito comentado</span><span class="tg"></span></div>
+        <div class="togglerow"><span data-i18n="prof.rubricaDissertativas">Rubrica para dissertativas</span><span class="tg"></span></div>
+        <div class="togglerow"><span data-i18n="prof.versoesAB">Versões A/B embaralhadas</span><span class="tg off"></span></div>
+        <div class="tfoot" style="margin-top:12px"><button class="btn btn-pri" id="prova-gerar" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.gerarProvaCreditos">Gerar prova · 12 créditos</span></button></div>
+      </div>
+      <div class="card hero">
+        <h2><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="prof.previaGerada">Prévia gerada</span></h2>
+        <p class="desc" data-i18n="prof.previaDesc">Revise, edite ou peça outra versão de cada questão</p>
+        <div class="excerpt"><b>Questão 1.</b> No verso "Quando você foi embora, fez-se noite em meu viver", a oração "Quando você foi embora" classifica-se como subordinada adverbial…<br><span style="color:var(--ink-3)">a) causal &nbsp;&nbsp;b) temporal ✓ &nbsp;&nbsp;c) concessiva &nbsp;&nbsp;d) condicional</span></div>
+        <div class="excerpt"><b>Questão 11 (dissertativa).</b> Reescreva "Estudei muito, portanto passei" transformando a coordenada em subordinada adverbial, e classifique-a.<br><span style="color:var(--ink-3)">Rubrica: reescrita correta (1,0) · classificação (1,0)</span></div>
+        <div class="tfoot">
+          <button class="btn btn-gho btn-sm"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.regenerarQ1">Regenerar Q1</span></button>
+          <button class="btn btn-gho btn-sm"><svg class="ic"><use href="#i-pen"/></svg><span data-i18n="prof.editar">Editar</span></button>
+          <button class="btn btn-pri btn-sm" id="prova-publicar" style="margin-left:auto" data-i18n="prof.aprovarPublicar">Aprovar e publicar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CORREÇÃO ══ -->
+  <section class="screen" id="s-correcao">
+    <div class="phead">
+      <div class="tx"><p class="eyebrow" data-i18n="prof.correcao">Correção</p><h1 data-i18n="prof.filaRevisao">Fila de revisão — Simulado 03</h1></div>
+      <div class="actions"><button class="btn btn-gho" data-i18n="prof.regrasRubrica">Regras da rubrica</button></div>
+    </div>
+    <div class="cols cols-rev">
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-clock"/></svg><span data-i18n="prof.pendentes">Pendentes</span> <span class="pill p-warn" id="correcao-pendentes-pill" style="margin-left:auto">6</span></h2>
+        <ul class="queue" id="correcao-queue">
+          <li><button class="on"><span class="av">AB</span><span><b>Ana Beatriz Lima</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 7,0</span></span></button></li>
+          <li><button><span class="av">CE</span><span><b>Carlos Eduardo Melo</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 5,5</span></span></button></li>
+          <li><button><span class="av">JF</span><span><b>Júlia Fernandes</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 6,5</span></span></button></li>
+          <li><button><span class="av">LM</span><span><b>Lucas Martins</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 7,5</span></span></button></li>
+          <li><button><span class="av">RS</span><span><b>Rafaela Santos</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 6,0</span></span></button></li>
+          <li><button><span class="av">TA</span><span><b>Thiago Assis</b><span><span data-i18n="prof.redacaoSugerido">redação · sugerido</span> 8,0</span></span></button></li>
+        </ul>
+      </div>
+      <div class="card hero">
+        <h2><svg class="ic"><use href="#i-pen"/></svg>Ana Beatriz Lima — <span data-i18n="materia.redacao">Redação</span></h2>
+        <p class="desc" data-i18n="prof.temaRedacao">Tema: "Caminhos para reduzir a evasão escolar no Brasil"</p>
+        <div class="excerpt">"…a evasão escolar não é apenas um problema educacional, mas um ciclo que <u>realimenta a desigualdade</u>. Quando o jovem abandona a escola, diminui suas chances de renda e <u>aumenta a chance dos filhos repetirem</u> o mesmo caminho…"</div>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.argumentacao">Argumentação</span><span class="hbar"><i style="--w:80%"></i></span><span class="hval">3,2/4</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.gramatica">Gramática</span><span class="hbar"><i style="--w:63%"></i></span><span class="hval">1,9/3</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.estrutura">Estrutura</span><span class="hbar"><i style="--w:63%"></i></span><span class="hval">1,9/3</span></div>
+        <div class="memo" style="margin:14px 0 16px"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n-html="prof.justificativaIA"><b>Justificativa da IA</b> — tese clara e bom repertório; desconto por concordância (2×) e conclusão sem agente definido.</span></div>
+        <div class="tfoot">
+          <button class="btn btn-pri" id="correcao-confirmar"><svg class="ic"><use href="#i-check"/></svg><span data-i18n="prof.confirmar">Confirmar</span> 7,0</button>
+          <button class="btn btn-gho" data-i18n="prof.ajustarNota">Ajustar nota</button>
+          <button class="btn btn-gho" data-i18n="prof.redacaoCompleta">Redação completa</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ACERVO ══ -->
+  <section class="screen" id="s-acervo">
+    <div class="phead">
+      <div class="tx"><p class="eyebrow" data-i18n="prof.acervo">Acervo</p><h1 data-i18n="prof.acervoTitulo">Seu material, indexado pela IA</h1></div>
+      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-download"/></svg><span data-i18n="prof.enviarArquivos">Enviar arquivos</span></button></div>
+    </div>
+    <div class="filter">
+      <button class="chip on"><span data-i18n="prof.tudo">Tudo</span> · 48</button><button class="chip"><span data-i18n="prof.unidade">Unidade</span> 3 · 12</button><button class="chip"><span data-i18n="prof.unidade">Unidade</span> 4 · 9</button><button class="chip">ENEM · 14</button><button class="chip"><span data-i18n="materia.redacao">Redação</span> · 13</button>
+    </div>
+    <div class="cols">
+      <div class="card">
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Apostila — Sintaxe do período composto</b><span>PDF · 42 págs · Unidade 4</span></div><div class="end"><span class="pill p-ia" data-i18n="prof.indexado">indexado</span></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Slides — Orações coordenadas</b><span>PPTX · aula de 23/07</span></div><div class="end"><span class="pill p-ia" data-i18n="prof.indexado">indexado</span></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b>Banco de questões ENEM 2019–2025</b><span>DOCX · 180 questões</span></div><div class="end"><span class="pill p-ia" data-i18n="prof.indexado">indexado</span></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-audio"/></svg></span><div><b>Aula gravada — Análise sintática</b><span>MP3 · 47 min</span></div><div class="end"><span class="pill p-warn" data-i18n="prof.processando">processando</span></div></div>
+      </div>
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.comoIAUsaAcervo">Como a IA usa o acervo</span></h2>
+        <p class="desc" data-i18n="prof.ultimos30Dias">Últimos 30 dias</p>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.tutorDosAlunos">Tutor dos alunos</span><span class="hbar"><i style="--w:76%"></i></span><span class="hval">76%</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.provasGeradas">Provas geradas</span><span class="hbar"><i style="--w:52%"></i></span><span class="hval">52%</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="prof.resumos">Resumos</span><span class="hbar"><i style="--w:41%"></i></span><span class="hval">41%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ALERTAS ══ -->
+  <section class="screen" id="s-alertas">
+    <div class="phead"><div class="tx"><p class="eyebrow" data-i18n="prof.alertasIA">Alertas da IA</p><h1 data-i18n="prof.alertasTitulo">O que a IA percebeu nas suas turmas</h1></div></div>
+    <div class="feed">
+      <div class="alertcard"><span class="stripe" style="--c:var(--warn)"></span>
+        <div class="tx"><b data-i18n="prof.alerta14">14 estudantes travaram em orações subordinadas</b>
+          <p data-i18n="prof.alerta14Desc">Erro dominante: adjetiva × adverbial (62% dos casos). O próximo simulado cobra o tema em 8 questões.</p>
+          <div class="row"><button class="btn btn-pri btn-sm"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="prof.criarRevisaoGuiada">Criar revisão guiada</span></button><button class="btn btn-gho btn-sm" data-i18n="prof.verOs14">Ver os 14 estudantes</button></div>
+        </div>
+      </div>
+      <div class="alertcard"><span class="stripe" style="--c:var(--bad)"></span>
+        <div class="tx"><b data-i18n="prof.alertaCarlos">Carlos Eduardo está 3 listas atrasado e parou de usar o tutor</b>
+          <p data-i18n="prof.alertaCarlosDesc">Última sessão há 12 dias. Média caiu de 6,8 para 5,5 em um mês. Padrão parecido com evasões do ano passado.</p>
+          <div class="row"><button class="btn btn-pri btn-sm" data-i18n="prof.planoRecuperacao">Plano de recuperação</button><button class="btn btn-gho btn-sm" data-i18n="prof.verPerfil">Ver perfil</button></div>
+        </div>
+      </div>
+      <div class="alertcard"><span class="stripe" style="--c:var(--good)"></span>
+        <div class="tx"><b data-i18n="prof.alertaTurmaC">Turma C avançou 18% em interpretação de texto</b>
+          <p data-i18n="prof.alertaTurmaCDesc">Efeito das listas adaptativas de junho. Vale replicar nas turmas A e B.</p>
+          <div class="row"><button class="btn btn-pri btn-sm" data-i18n="prof.replicarTurmas">Replicar nas outras turmas</button><button class="btn btn-gho btn-sm" data-i18n="prof.verAnalise">Ver análise</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </div>
+</main>
+</div>
+
+<script src="assets/i18n.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/dev-reload.js"></script>
+<!-- Modal de Configuracoes: perfil desta tela + motor (assets/modal/) -->
+<script>
+  window.PRISMA_PERFIL = {
+    tipo: 'professor',
+    nome: 'Ricardo Almeida',
+    cargo: 'Professor · Língua Portuguesa',
+    iniciais: 'RA',
+    cor: '#2C302D',
+    email: 'ricardo.almeida@estudo.com',
+    telefone: '(11) 9 7712-4483',
+    stats: [
+      { valor: '3', rotulo: 'turmas' },
+      { valor: '103', rotulo: 'estudantes' },
+      { valor: '310', rotulo: 'créditos' },
+    ],
+  };
+</script>
+<script type="module" src="assets/modal/index.js"></script>
+<script src="assets/dashboard.js"></script>
+<script src="assets/command-palette.js"></script>
+</body>
+</html>

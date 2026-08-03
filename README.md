@@ -185,7 +185,7 @@ Sao duas partes deste mesmo repositorio:
 | | Onde vive | O que e |
 |---|---|---|
 | **Landing** | `frontend/src/` | vitrine publica, em React |
-| **Aplicacao** | `app/` | telas definitivas de aluno, professor e diretor (HTML estatico) |
+| **Aplicacao** | `frontend/app/` | telas definitivas de aluno, professor e diretor (HTML estatico) |
 
 Ao clicar em "Entrar", a landing abre `/entrar`, que autentica por e-mail e
 senha contra o backend. O access token fica somente em memoria no navegador;
@@ -194,7 +194,7 @@ servida em `/app/` para o proximo ciclo de integracao.
 
 ### Sincronizar a aplicacao
 
-As telas sao mantidas em `app/`. Para trazer a versao atual para o Vite:
+As telas sao mantidas em `frontend/app/`. Para trazer a versao atual para o Vite:
 
 ```bash
 python scripts/sincronizar-app.py

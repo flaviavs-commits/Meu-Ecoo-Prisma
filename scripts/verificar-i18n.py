@@ -15,7 +15,7 @@ import re
 import sys
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-APP = os.path.join(RAIZ, 'app')
+APP = os.path.join(RAIZ, 'frontend', 'app')
 DIC = os.path.join(APP, 'assets', 'i18n')
 
 # data-i18n="k", data-i18n-html="k" e data-i18n-attr="attr:k;attr2:k2"

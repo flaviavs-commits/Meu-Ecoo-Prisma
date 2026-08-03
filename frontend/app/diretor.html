@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direção · Prisma</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<!-- Tema salvo aplicado antes do primeiro paint. O app.js roda no fim do
+     body, tarde demais: com o escuro salvo, a pagina piscava clara e so
+     depois virava escura. -->
+<script>try{var t=localStorage.getItem('prisma-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/ui.css">
+<!-- Modal de Configuracoes: motor generico + casca + estados + pecas -->
+<link rel="stylesheet" href="assets/modal/core.css">
+<link rel="stylesheet" href="assets/modal/shell.css">
+<link rel="stylesheet" href="assets/modal/states.css">
+<link rel="stylesheet" href="assets/modal/widgets.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.2c.62 4.1 2.7 6.18 6.8 6.8-4.1.62-6.18 2.7-6.8 6.8-.62-4.1-2.7-6.18-6.8-6.8 4.1-.62 6.18-2.7 6.8-6.8Z"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.2 12 4.4l8 6.8"/><path d="M6.4 10.2v9.3h11.2v-9.3"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="9.4" cy="8.4" r="3.1"/><path d="M4.4 19.2c.5-3 2.5-4.6 5-4.6s4.5 1.6 5 4.6"/><path d="M15.4 5.7a3.1 3.1 0 0 1 0 5.5"/><path d="M17.3 14.7c1.7.7 2.8 2.1 3.2 4.4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="m8.6 12.4 2.3 2.3 4.5-4.9"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3.8 19.4h16.4"/><path d="M6.6 19.4v-6.2"/><path d="M12 19.4V8.6"/><path d="M17.4 19.4V4.8"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="4.4" y="5.4" width="15.2" height="14.2" rx="2.2"/><path d="M8.2 3.4v3.2M15.8 3.4v3.2M4.4 10.2h15.2"/></symbol>
+<symbol id="i-coin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="3.6"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18.5V6"/><path d="m6.8 11 5.2-5.2L17.2 11"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 10 4 4 4-4"/></symbol>
+<symbol id="i-chev-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 14 4-4 4 4"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5V15"/><path d="m7 10.5 5 5 5-5"/><path d="M4.5 19.5h15"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3.2 2"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.8a6 6 0 0 1 12 0c0 4 1.6 5.4 1.6 5.4H4.4S6 13.8 6 9.8Z"/><path d="M10.2 18.6a2 2 0 0 0 3.6 0"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.8" y="5.6" width="16.4" height="12.8" rx="2"/><path d="m4.6 7 7.4 5.6L19.4 7"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8.4" r="3.4"/><path d="M5.6 19.6c.6-3.5 3-5.4 6.4-5.4s5.8 1.9 6.4 5.4"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.6H6.4A1.8 1.8 0 0 0 4.6 6.4v11.2a1.8 1.8 0 0 0 1.8 1.8H9"/><path d="M15.4 15.8 19.2 12l-3.8-3.8"/><path d="M9.6 12h9.6"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="6.4"/><path d="m16 16 4.4 4.4"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.6h7l4.4 4.4v11a1.4 1.4 0 0 1-1.4 1.4H7A1.4 1.4 0 0 1 5.6 19V5A1.4 1.4 0 0 1 7 3.6Z"/><path d="M14 3.6V8h4.4"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.6 21 19.4H3Z"/><path d="M12 10.2v4"/><path d="M12 16.8v.1"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 8h14M5 16h14"/><circle cx="9" cy="8" r="2.1" fill="var(--card)"/><circle cx="15" cy="16" r="2.1" fill="var(--card)"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3.2v2M12 18.8v2M3.2 12h2M18.8 12h2M5.7 5.7l1.4 1.4M16.9 16.9l1.4 1.4M18.3 5.7l-1.4 1.4M7.1 16.9l-1.4 1.4"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8M12 3.6c2.4 2.3 3.6 5.2 3.6 8.4s-1.2 6.1-3.6 8.4c-2.4-2.3-3.6-5.2-3.6-8.4S9.6 5.9 12 3.6Z"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.2A8 8 0 1 1 10.8 4 6.4 6.4 0 0 0 20 13.2Z"/></symbol>
+<!-- Icones do modal de Configuracoes (assets/modal/) -->
+<symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 3.4v2.3M12 18.3v2.3M20.6 12h-2.3M5.7 12H3.4M18.1 5.9l-1.6 1.6M7.5 16.5l-1.6 1.6M18.1 18.1l-1.6-1.6M7.5 7.5 5.9 5.9"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6 19 6.4v5.6c0 5-3 8-7 9-4-1-7-4-7-9V6.4Z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M9.6 9.3a2.4 2.4 0 1 1 3.4 2.2c-.9.5-1.4 1-1.4 2.1"/><path d="M12 17v.1"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.3a2.6 2.6 0 0 1-2.6 2.6H9.6L5 19.7V6.8a2.6 2.6 0 0 1 2.6-2.6h9.8A2.6 2.6 0 0 1 20 6.8Z"/></symbol>
+<symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="4.8" width="16.8" height="11.2" rx="1.8"/><path d="M8.4 20h7.2M12 16v4"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 7.2h14.4"/><path d="M9.6 7.2V5.4a1.8 1.8 0 0 1 1.8-1.8h1.2a1.8 1.8 0 0 1 1.8 1.8v1.8"/><path d="M6.6 7.2 7.5 19a1.8 1.8 0 0 0 1.8 1.7h5.4a1.8 1.8 0 0 0 1.8-1.7l.9-11.8"/><path d="M10.2 11v6M13.8 11v6"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.8 9.8 0 0 1 12 4c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.16 3.19m-3.1 2.6A9.4 9.4 0 0 1 12 18c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.22-5.02"/><path d="M9.5 9.5a3 3 0 0 0 4.24 4.24"/><path d="M2 2l20 20"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3.6l2.6 5.4 5.9.7-4.3 4.1 1.1 5.9L12 16.8l-5.3 2.9 1.1-5.9-4.3-4.1 5.9-.7Z"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15.5" r="3.4"/><path d="M10.4 13.1 18.6 4.9"/><path d="M15.4 8.1l2.4 2.4"/><path d="M18.2 5.3l2.4 2.4"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8.6" y="8.6" width="11.4" height="11.4" rx="2"/><path d="M15.4 8.6V6.4A1.8 1.8 0 0 0 13.6 4.6H6.4A1.8 1.8 0 0 0 4.6 6.4v7.2a1.8 1.8 0 0 0 1.8 1.8h2.2"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 4.8v14.4M4.8 12h14.4"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 12a7.4 7.4 0 0 1 12.6-5.3l1.8 1.7"/><path d="M19.4 4.8v4.2h-4.2"/><path d="M19.4 12a7.4 7.4 0 0 1-12.6 5.3l-1.8-1.7"/><path d="M4.6 19.2V15h4.2"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="7.6" width="16.8" height="11.2" rx="1.8"/><path d="M8.4 7.6V6a1.8 1.8 0 0 1 1.8-1.8h3.6A1.8 1.8 0 0 1 15.6 6v1.6"/><path d="M3.6 12.6h16.8"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5.4" y="10.4" width="13.2" height="9.6" rx="2"/><path d="M8 10.4V7.6a4 4 0 0 1 8 0v2.8"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5.4 7.2h12.8a2 2 0 0 1 2 2v8.2a2 2 0 0 1-2 2H5.8a2 2 0 0 1-2-2V6.8A2.2 2.2 0 0 1 6 4.6h10.6"/><path d="M16.2 12.2h4v3.2h-4a1.6 1.6 0 0 1 0-3.2Z"/></symbol>
+<!-- Logo oficial do Prisma: mesmo path de frontend/src/components/ui/Logo.tsx -->
+<symbol id="i-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M16 6.38 6.35 21.56 16 25.37l9.65-3.81Z"/>
+  <path d="M16 6.38V25.37"/>
+  <path d="M6.35 21.56 16 17.51l9.65 4.05"/>
+</symbol>
+</defs></svg>
+
+<div class="shell">
+<aside class="side">
+  <a class="brand" href="./"><span class="mark"><svg><use href="#i-logo"/></svg></span>Prisma<span> · Direção</span></a>
+
+  <p class="nlabel" data-i18n="nav.principal">Principal</p>
+  <nav class="nav">
+    <a class="on" data-s="visao"><svg class="ic"><use href="#i-home"/></svg><span data-i18n="dir.visaoGeral">Visão geral</span></a>
+  </nav>
+  <p class="nlabel" data-i18n="dir.analise">Análise</p>
+  <nav class="nav">
+    <a data-s="desempenho"><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="dir.desempenho">Desempenho</span></a>
+    <a data-s="frequencia"><svg class="ic"><use href="#i-cal"/></svg><span data-i18n="dir.frequencia">Frequência</span></a>
+  </nav>
+  <p class="nlabel" data-i18n="dir.gestao">Gestão</p>
+  <nav class="nav">
+    <a data-s="creditos"><svg class="ic"><use href="#i-coin"/></svg><span data-i18n="dir.creditosIA">Créditos de IA</span></a>
+    <a data-s="relatorios"><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="dir.relatorios">Relatórios</span></a>
+    <a data-s="equipe"><svg class="ic"><use href="#i-users"/></svg><span data-i18n="dir.equipe">Equipe</span></a>
+  </nav>
+  <div class="spacer"></div>
+  <div class="ddwrap sideuser-wrap">
+    <div class="sideuser">
+      <span class="av" style="background:#C79A2A">CN</span>
+      <div><b>Cláudia Nunes</b><span data-i18n="perfil.direcao">Direção</span></div>
+    </div>
+    <div class="dd dd-up" id="dd-sideuser">
+      <p class="ddh">Cláudia Nunes</p>
+      <a class="ddi" href="#" data-settings-open="perfil"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+      <a class="ddi" href="#" data-settings-open="plano"><svg class="ic"><use href="#i-briefcase"/></svg><span><b>Espaço de trabalho</b></span></a>
+      <a class="ddi" href="#" data-settings-open="ajuda"><svg class="ic"><use href="#i-help"/></svg><span><b>Central de ajuda</b></span></a>
+      <a class="ddi" href="#" data-settings-open="feedback"><svg class="ic"><use href="#i-message"/></svg><span><b>Enviar feedback</b></span></a>
+      <div class="ddsep"></div>
+      <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
+    </div>
+  </div>
+</aside>
+<div class="dd-backdrop" id="dd-backdrop"></div>
+
+<main class="main">
+  <div class="topbar">
+    <span class="topsp"></span>
+    <span class="ddwrap">
+      <button class="iconbtn" data-dd="dd-lang" aria-label="Idioma" aria-haspopup="true" data-i18n-attr="aria-label:topbar.idioma"><svg class="ic"><use href="#i-globe"/></svg></button>
+      <div class="dd" id="dd-lang" style="width:200px">
+        <p class="ddh" data-i18n="topbar.idioma">Idioma</p>
+        <button type="button" class="ddi lang-opt" data-lang="pt-BR"><span><b>Português</b><span>Brasil</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="en"><span><b>English</b><span>United States</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="es"><span><b>Español</b><span>España</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="fr"><span><b>Français</b><span>France</span></span></button>
+        <button type="button" class="ddi lang-opt" data-lang="de"><span><b>Deutsch</b><span>Deutschland</span></span></button>
+      </div>
+    </span>
+    <button class="iconbtn" id="themebtn" type="button" aria-label="Alternar tema" data-i18n-attr="aria-label:topbar.alternarTema"><svg class="ic" id="theme-ic"><use href="#i-moon"/></svg></button>
+    <span class="ddwrap">
+      <button class="iconbtn" data-dd="dd-notif" aria-label="Notificações" data-i18n-attr="aria-label:topbar.notificacoes"><svg class="ic"><use href="#i-bell"/></svg><span class="ndot"></span></button>
+      <div class="dd" id="dd-notif">
+        <p class="ddh" data-i18n="topbar.notificacoes">Notificações</p>
+        <a class="ddi" data-s="frequencia"><span class="dot" style="--c:var(--bad)"></span><span><b data-i18n="dir.notifFrequencia">9º ano: frequência em queda</b><span data-i18n="dir.notifFrequenciaDesc">2º mês seguido · 3 alunos críticos</span></span></a>
+        <a class="ddi" data-s="creditos"><span class="dot" style="--c:var(--gold)"></span><span><b data-i18n="dir.notifReserva">Reserva da direção: 500 créditos</b><span data-i18n="dir.notifReservaDesc">semana de provas à frente</span></span></a>
+        <a class="ddi" data-s="relatorios"><span class="dot" style="--c:var(--good)"></span><span><b data-i18n="dir.notifBoletins">Boletins do 2º bimestre prontos</b><span data-i18n="dir.notifBoletinsDesc">412 PDFs gerados pela IA</span></span></a>
+      </div>
+    </span>
+    <span class="ddwrap">
+      <button class="avbtn" data-dd="dd-user" style="background:#C79A2A" aria-label="Conta" data-i18n-attr="aria-label:topbar.conta">CN</button>
+      <div class="dd" id="dd-user" style="width:230px">
+        <p class="ddh">Cláudia Nunes</p>
+        <a class="ddi" href="#" data-settings-open="perfil"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+        <a class="ddi" data-s="relatorios"><svg class="ic"><use href="#i-doc"/></svg><span><b data-i18n="dir.relatorios">Relatórios</b></span></a>
+        <a class="ddi" href="#" data-settings-open="plano"><svg class="ic"><use href="#i-briefcase"/></svg><span><b>Espaço de trabalho</b></span></a>
+        <a class="ddi" href="#" data-settings-open="ajuda"><svg class="ic"><use href="#i-help"/></svg><span><b>Central de ajuda</b></span></a>
+        <a class="ddi" href="#" data-settings-open="feedback"><svg class="ic"><use href="#i-message"/></svg><span><b>Enviar feedback</b></span></a>
+        <div class="ddsep"></div>
+        <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
+      </div>
+    </span>
+  </div>
+
+  <div class="content">
+
+  <!-- ══ VISÃO GERAL ══ -->
+  <section class="screen on dashboard" id="s-visao">
+    <div class="phead dashboard-header">
+      <div class="tx">
+        <p class="eyebrow" data-i18n="dir.visaoGeral">Visão geral</p>
+        <h1 data-i18n="dir.painelDirecao">Painel da Direção</h1>
+        <p class="sub" data-i18n="dir.visaoSub">Semestre fecha 0,3 acima da meta; frequência em queda em uma turma.</p>
+      </div>
+      <div class="actions"><button class="btn btn-gho" data-s="relatorios"><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="dir.relatorioMensal">Relatório mensal</span></button><button class="btn btn-pri" data-s="creditos"><svg class="ic"><use href="#i-coin"/></svg><span data-i18n="dir.gerirCreditos">Gerir créditos</span></button></div>
+    </div>
+    <div class="tiles dashboard-metrics">
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-users"/></svg></span><div class="lbl" data-i18n="dir.alunosAtivos">Alunos ativos</div><div class="num">412</div><div class="sub up" data-i18n="dir.adesao96">96% de adesão</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-chart"/></svg></span><div class="lbl" data-i18n="dir.mediaEscola">Média da escola</div><div class="num">7,2</div><div class="sub up" data-i18n="dir.variacaoSemestre">▲ 0,3 no semestre</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-cal"/></svg></span><div class="lbl" data-i18n="dir.frequenciaMedia">Frequência média</div><div class="num">93%</div><div class="sub down" data-i18n="dir.variacaoJunho">▼ 1 p.p. vs. junho</div></div>
+      <div class="tile"><span class="tico"><svg class="ic"><use href="#i-coin"/></svg></span><div class="lbl" data-i18n="dir.creditosUsados">Créditos usados</div><div class="num">62%</div><div class="sub" data-i18n="dir.doPlanoMensal">do plano mensal</div></div>
+    </div>
+    <p class="sectlbl" data-i18n="dir.detalhamento">Detalhamento</p>
+    <div class="cols dashboard-main">
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="dir.mediaPorSerie">Média por série</span></h2>
+        <p class="desc" data-i18n="dir.bimestreAtual">Bimestre atual · destaque para o 2º ano do EM</p>
+        <div class="chart">
+          <div class="b"><b>7,1</b><i style="--h:60%"></i></div>
+          <div class="b"><b>6,8</b><i style="--h:53%"></i></div>
+          <div class="b"><b>7,0</b><i style="--h:58%"></i></div>
+          <div class="b"><b>6,5</b><i style="--h:46%"></i></div>
+          <div class="b"><b>7,4</b><i style="--h:67%"></i></div>
+          <div class="b hl"><b>7,9</b><i style="--h:79%"></i></div>
+          <div class="b"><b>7,3</b><i style="--h:65%"></i></div>
+        </div>
+        <div class="xlabels"><span data-i18n="serie.6">6º</span><span data-i18n="serie.7">7º</span><span data-i18n="serie.8">8º</span><span data-i18n="serie.9">9º</span><span data-i18n="serie.em1">1º EM</span><span data-i18n="serie.em2">2º EM</span><span data-i18n="serie.em3">3º EM</span></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-coin"/></svg><span data-i18n="dir.creditosIA">Créditos de IA</span></h2>
+          <p class="desc" data-i18n="dir.planoEscolaPlus">Plano Escola Plus · 50.000/mês</p>
+          <ul class="list">
+            <li><span class="dot" style="background:var(--green)"></span><div class="tx"><b data-i18n="dir.professores">Professores</b><span>28 <span data-i18n="dir.contas">contas</span></span></div><span class="pill p-ok">18.400 <span data-i18n="dir.usados">usados</span></span></li>
+            <li><span class="dot" style="background:var(--green)"></span><div class="tx"><b data-i18n="dir.alunos">Alunos</b><span>412 <span data-i18n="dir.contas">contas</span></span></div><span class="pill p-ok">12.100 <span data-i18n="dir.usados">usados</span></span></li>
+            <li><span class="dot" style="background:var(--gold)"></span><div class="tx"><b data-i18n="dir.reservaDirecao">Reserva da direção</b><span data-i18n="dir.usoAdministrativo">uso administrativo</span></div><span class="pill p-warn">500 <span data-i18n="dir.restantes">restantes</span></span></li>
+          </ul>
+          <div class="tfoot"><button class="btn btn-pri btn-sm" data-s="creditos" data-i18n="dir.redistribuirCotas">Redistribuir cotas</button></div>
+        </div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-alert"/></svg><span data-i18n="dir.atencaoNecessaria">Atenção necessária</span></h2>
+          <ul class="list" style="margin-top:12px">
+            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b data-i18n="dir.aviso9ano">9º ano com queda de frequência</b><span data-i18n="dir.aviso9anoDesc">3 alunos perto do limite</span></div></li>
+            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b data-i18n="dir.aviso7B">7º B abaixo da meta em Matemática</b><span data-i18n="dir.aviso7BDesc">IA sugere listas adaptativas</span></div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ DESEMPENHO ══ -->
+  <section class="screen" id="s-desempenho">
+    <div class="phead">
+      <div class="tx"><p class="eyebrow" data-i18n="dir.desempenho">Desempenho</p><h1 data-i18n="dir.desempenhoDetalhado">Desempenho detalhado</h1></div>
+      <div class="actions"><button class="btn btn-gho"><svg class="ic"><use href="#i-download"/></svg><span data-i18n="dir.exportarDados">Exportar dados</span></button></div>
+    </div>
+    <div class="cols">
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="dir.evolucaoMediaGeral">Evolução da média geral</span></h2>
+        <p class="desc" data-i18n="dir.fevAJul2026">Fevereiro a julho de 2026</p>
+        <div class="chart">
+          <div class="b"><b>6,7</b><i style="--h:50%"></i></div>
+          <div class="b"><b>6,8</b><i style="--h:53%"></i></div>
+          <div class="b"><b>6,9</b><i style="--h:55%"></i></div>
+          <div class="b"><b>7,0</b><i style="--h:58%"></i></div>
+          <div class="b"><b>7,1</b><i style="--h:61%"></i></div>
+          <div class="b hl"><b>7,2</b><i style="--h:63%"></i></div>
+        </div>
+        <div class="xlabels"><span data-i18n="mes.fev">fev</span><span data-i18n="mes.mar">mar</span><span data-i18n="mes.abr">abr</span><span data-i18n="mes.mai">mai</span><span data-i18n="mes.jun">jun</span><span data-i18n="mes.jul">jul</span></div>
+        <div class="memo" style="margin-top:16px"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n-html="dir.iaSugereMemo"><b>IA Sugere</b> — 3+ sessões semanais com tutor aumentam notas em 0,8p.</span></div>
+      </div>
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="dir.mediaPorDisciplina">Média por disciplina</span></h2>
+        <p class="desc" data-i18n="dir.todasSeries">Todas as séries · 2º bimestre</p>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.historia">História</span><span class="hbar"><i style="--w:81%"></i></span><span class="hval">8,1</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.portugues">Português</span><span class="hbar"><i style="--w:76%"></i></span><span class="hval">7,6</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.biologia">Biologia</span><span class="hbar"><i style="--w:74%"></i></span><span class="hval">7,4</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.geografia">Geografia</span><span class="hbar"><i style="--w:72%"></i></span><span class="hval">7,2</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.quimica">Química</span><span class="hbar"><i style="--w:66%"></i></span><span class="hval">6,6</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.fisica">Física</span><span class="hbar mute"><i style="--w:62%"></i></span><span class="hval">6,2</span></div>
+        <div class="hrow"><span class="hlbl" data-i18n="materia.matematica">Matemática</span><span class="hbar gold"><i style="--w:59%"></i></span><span class="hval">5,9</span></div>
+      </div>
+    </div>
+    <div class="card fullcard">
+      <h2><svg class="ic"><use href="#i-chart"/></svg><span data-i18n="dir.desempenhoPorTurma">Desempenho por turma</span></h2>
+      <div class="tablewrap" style="margin-top:8px"><table>
+        <thead><tr><th data-i18n="dir.colTurma">Turma</th><th data-i18n="dir.colMedia">Média</th><th data-i18n="dir.frequencia">Frequência</th><th data-i18n="dir.colEngajamento">Engajamento IA</th><th data-i18n="prof.colStatus">Status</th></tr></thead>
+        <tbody>
+          <tr><td class="name">2º EM — A</td><td>7,9</td><td>95%</td><td>88%</td><td><span class="pill p-ok" data-i18n="dir.acimaDaMeta">acima da meta</span></td></tr>
+          <tr><td class="name">1º EM — B</td><td>7,4</td><td>94%</td><td>81%</td><td><span class="pill p-ok" data-i18n="dir.acimaDaMeta">acima da meta</span></td></tr>
+          <tr><td class="name">8º ano — A</td><td>7,0</td><td>93%</td><td>74%</td><td><span class="pill p-ok" data-i18n="dir.naMeta">na meta</span></td></tr>
+          <tr><td class="name">7º ano — B</td><td>6,3</td><td>92%</td><td>58%</td><td><span class="pill p-warn" data-i18n="dir.atencao">atenção</span></td></tr>
+          <tr><td class="name">9º ano — A</td><td>6,1</td><td>88%</td><td>47%</td><td><span class="pill p-bad" data-i18n="dir.intervencao">intervenção</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ══ FREQUÊNCIA ══ -->
+  <section class="screen" id="s-frequencia">
+    <div class="phead"><div class="tx"><p class="eyebrow" data-i18n="dir.frequencia">Frequência</p><h1 data-i18n="dir.mapaPresenca">Mapa de presença por série</h1></div></div>
+    <div class="cols">
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-cal"/></svg><span data-i18n="dir.frequenciaMediaPeriodo">Frequência média · mar-jul</span></h2>
+        <p class="desc" data-i18n="dir.legendaMapa">Quanto mais escuro, maior a presença</p>
+        <div class="heat">
+          <span class="hl"></span><span class="hl" style="text-align:center" data-i18n="mes.mar">mar</span><span class="hl" style="text-align:center" data-i18n="mes.abr">abr</span><span class="hl" style="text-align:center" data-i18n="mes.mai">mai</span><span class="hl" style="text-align:center" data-i18n="mes.jun">jun</span><span class="hl" style="text-align:center" data-i18n="mes.jul">jul</span>
+          <span class="hl" data-i18n="serie.ano6">6º ano</span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h4"></span>
+          <span class="hl" data-i18n="serie.ano7">7º ano</span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h3"></span>
+          <span class="hl" data-i18n="serie.ano8">8º ano</span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h3"></span>
+          <span class="hl" data-i18n="serie.ano9">9º ano</span><span class="cell h3"></span><span class="cell h3"></span><span class="cell h2"></span><span class="cell h1"></span><span class="cell h1"></span>
+          <span class="hl" data-i18n="serie.em1">1º EM</span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h3"></span>
+          <span class="hl" data-i18n="serie.em2">2º EM</span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h4"></span><span class="cell h4"></span>
+          <span class="hl" data-i18n="serie.em3">3º EM</span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h4"></span>
+        </div>
+        <div class="heatlegend"><span data-i18n="dir.menor">menor</span> <i class="h0"></i><i class="h1"></i><i class="h2"></i><i class="h3"></i><i class="h4"></i> <span data-i18n="dir.maior">maior</span></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <b data-i18n="dir.riscoEvasao">Risco de evasão</b>
+          <p class="desc" data-i18n="dir.riscoEvasaoDesc">IA: Faltas + notas baixas</p>
+          <ul class="list">
+            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Diego Ramos — 9º A</b><span data-i18n="dir.evasao1Desc">11 faltas · média caiu 1,4</span></div><span class="pill p-bad" data-i18n="dir.alto">alto</span></li>
+            <li><span class="dot" style="background:var(--bad)"></span><div class="tx"><b>Larissa Pinto — 9º B</b><span data-i18n="dir.evasao2Desc">9 faltas · sem entregas</span></div><span class="pill p-bad" data-i18n="dir.alto">alto</span></li>
+            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b>Felipe Costa — 7º B</b><span data-i18n="dir.evasao3Desc">7 faltas · engajamento baixo</span></div><span class="pill p-warn" data-i18n="dir.medio">médio</span></li>
+          </ul>
+          <div class="tfoot"><button class="btn btn-pri btn-sm" data-i18n="dir.acionarCoordenacao">Acionar coordenação</button><button class="btn btn-gho btn-sm" data-i18n="dir.verTodos">Ver todos</button></div>
+        </div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-check"/></svg><span data-i18n="dir.chamadaDigital">Chamada digital — hoje</span></h2>
+          <div style="margin-top:12px">
+            <div class="hrow"><span class="hlbl" data-i18n="dir.registradas">Registradas</span><span class="hbar"><i style="--w:91%"></i></span><span class="hval">31/34</span></div>
+            <div class="hrow"><span class="hlbl" data-i18n="prof.pendentes">Pendentes</span><span class="hbar gold"><i style="--w:9%"></i></span><span class="hval">3</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CRÉDITOS ══ -->
+  <section class="screen" id="s-creditos">
+    <div class="phead">
+      <div class="tx"><p class="eyebrow" data-i18n="dir.creditosIA">Créditos de IA</p><h1 data-i18n="dir.creditosTitulo">Créditos de IA — julho</h1></div>
+      <div class="actions"><button class="btn btn-gho" data-i18n="dir.mudarPlano">Mudar plano</button><button class="btn btn-pri"><svg class="ic"><use href="#i-coin"/></svg><span data-i18n="dir.comprarExtras">Comprar créditos extras</span></button></div>
+    </div>
+    <div class="cols">
+      <div class="card hero">
+        <h2><svg class="ic"><use href="#i-coin"/></svg><span data-i18n="dir.usoDoMes">Uso do mês</span></h2>
+        <p class="desc" data-i18n="dir.renovaEm">Renova em 01/08 · 50.000 créditos</p>
+        <div class="donutwrap">
+          <div class="donut">
+            <svg viewBox="0 0 140 140">
+              <circle class="ringbg" cx="70" cy="70" r="56"></circle>
+              <circle class="ringfg" cx="70" cy="70" r="56" style="--off:133.7"></circle>
+            </svg>
+            <div class="cent"><div><b>62%</b><span>31.000 <span data-i18n="dir.usados">usados</span></span></div></div>
+          </div>
+          <div class="legend">
+            <div class="hrow" style="grid-template-columns:100px 1fr 60px"><span class="hlbl" data-i18n="dir.professores">Professores</span><span class="hbar"><i style="--w:74%"></i></span><span class="hval">18.400</span></div>
+            <div class="hrow" style="grid-template-columns:100px 1fr 60px"><span class="hlbl" data-i18n="dir.alunos">Alunos</span><span class="hbar"><i style="--w:48%"></i></span><span class="hval">12.100</span></div>
+            <div class="hrow" style="grid-template-columns:100px 1fr 60px"><span class="hlbl" data-i18n="perfil.direcao">Direção</span><span class="hbar gold"><i style="--w:17%"></i></span><span class="hval">500</span></div>
+          </div>
+        </div>
+        <div class="memo" style="margin-top:16px"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n-html="dir.projecaoMemo"><b>Projeção da IA</b> — o plano cobre o mês com folga de ~8%. A semana de provas deve elevar o uso dos alunos em 30%.</span></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-sliders"/></svg><span data-i18n="dir.cotasPorPerfil">Cotas por perfil</span></h2>
+          <div style="margin-top:12px">
+            <div class="hrow"><span class="hlbl" data-i18n="perfil.professor">Professor</span><span class="hbar"><i style="--w:66%"></i></span><span class="hval">800</span></div>
+            <div class="hrow"><span class="hlbl" data-i18n="dir.aluno">Aluno</span><span class="hbar"><i style="--w:24%"></i></span><span class="hval">120</span></div>
+            <div class="hrow"><span class="hlbl" data-i18n="dir.coordenacao">Coordenação</span><span class="hbar"><i style="--w:41%"></i></span><span class="hval">400</span></div>
+          </div>
+          <div class="tfoot"><button class="btn btn-pri btn-sm" data-i18n="dir.salvarCotas">Salvar cotas</button><button class="btn btn-gho btn-sm" data-i18n="dir.restaurarPadrao">Restaurar padrão</button></div>
+        </div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-clock"/></svg><span data-i18n="dir.movimentosRecentes">Movimentos recentes</span></h2>
+          <ul class="list" style="margin-top:12px">
+            <li><div class="tx"><b data-i18n="dir.mov1">+2.000 para professores</b><span data-i18n="dir.mov1Desc">semana de provas · 29/07</span></div><span class="pill p-ok" data-i18n="dir.aplicado">aplicado</span></li>
+            <li><div class="tx"><b data-i18n="dir.mov2">Recarga extra 5.000</b><span data-i18n="dir.mov2Desc">solicitada · 17/07</span></div><span class="pill p-ok" data-i18n="dir.aplicado">aplicado</span></li>
+            <li><div class="tx"><b data-i18n="dir.mov3">Bloqueio fim de semana</b><span data-i18n="dir.mov3Desc">política desde junho</span></div><span class="pill p-ia" data-i18n="dir.ativa">ativa</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ RELATÓRIOS ══ -->
+  <section class="screen" id="s-relatorios">
+    <div class="phead"><div class="tx"><p class="eyebrow" data-i18n="dir.relatorios">Relatórios</p><h1 data-i18n="dir.documentosIA">Documentos gerados pela IA</h1></div></div>
+    <div class="cols">
+      <div class="card" id="relatorios-lista">
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b data-i18n="dir.rel1">Relatório mensal — junho/2026</b><span data-i18n="dir.rel1Desc">desempenho + frequência + créditos · 18 págs</span></div><div class="end"><span class="pill p-ok" data-i18n="dir.enviado">enviado</span><button class="btn btn-gho btn-sm" aria-label="Baixar" data-i18n-attr="aria-label:dir.baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b data-i18n="dir.rel2">Boletins do 2º bimestre</b><span data-i18n="dir.rel2Desc">412 boletins individuais · PDF</span></div><div class="end"><span class="pill p-ok" data-i18n="dir.gerado">gerado</span><button class="btn btn-gho btn-sm" aria-label="Baixar" data-i18n-attr="aria-label:dir.baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b data-i18n="dir.rel3">Ata — conselho de classe 9º ano</b><span data-i18n="dir.rel3Desc">rascunho a partir da gravação · 20/07</span></div><div class="end"><span class="pill p-warn" data-i18n="prof.revisar">revisar</span><button class="btn btn-gho btn-sm" aria-label="Baixar" data-i18n-attr="aria-label:dir.baixar"><svg class="ic"><use href="#i-download"/></svg></button></div></div>
+        <div class="rrow"><span class="mic"><svg class="ic"><use href="#i-doc"/></svg></span><div><b data-i18n="dir.rel4">Relatório mensal — julho/2026</b><span data-i18n="dir.rel4Desc">agendado para 01/08 · automático</span></div><div class="end"><span class="pill p-ia" data-i18n="dir.agendado">agendado</span></div></div>
+      </div>
+      <div class="card">
+        <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="dir.novoRelatorio">Novo relatório</span></h2>
+        <div class="field" style="margin-top:14px"><label data-i18n="dir.tipo">Tipo</label><div class="selectbox"><span data-i18n="dir.desempenhoPorTurma">Desempenho por turma</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="field"><label data-i18n="dir.periodo">Período</label><div class="selectbox"><span data-i18n="dir.bimestre2026">2º bimestre de 2026</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="field"><label data-i18n="dir.modelo">Modelo</label><div class="selectbox"><span data-i18n="dir.padraoMantenedora">Padrão da mantenedora</span><svg class="ic"><use href="#i-chev"/></svg></div></div>
+        <div class="togglerow"><span data-i18n="dir.incluirAnaliseIA">Incluir análise da IA</span><span class="tg"></span></div>
+        <div class="tfoot" style="margin-top:10px"><button class="btn btn-pri" id="relatorio-gerar" style="width:100%;justify-content:center"><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="dir.gerarCreditos">Gerar · 6 créditos</span></button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ EQUIPE ══ -->
+  <section class="screen" id="s-equipe">
+    <div class="phead">
+      <div class="tx"><p class="eyebrow" data-i18n="dir.equipe">Equipe</p><h1 data-i18n="dir.equipeTitulo">28 professores, 4 coordenadores</h1></div>
+      <div class="actions"><button class="btn btn-pri"><svg class="ic"><use href="#i-users"/></svg><span data-i18n="dir.convidarProfessor">Convidar professor</span></button></div>
+    </div>
+    <div class="cols">
+      <div class="card">
+        <div class="tablewrap"><table>
+          <thead><tr><th data-i18n="perfil.professor">Professor</th><th data-i18n="dir.colDisciplina">Disciplina</th><th data-i18n="dir.colCreditosMes">Créditos/mês</th><th data-i18n="dir.colAdocao">Adoção</th></tr></thead>
+          <tbody>
+            <tr><td class="name">Ricardo Almeida</td><td data-i18n="materia.portugues">Português</td><td>310 <span data-i18n="dir.de800">de 800</span></td><td><span class="pill p-ok" data-i18n="dir.alta">alta</span></td></tr>
+            <tr><td class="name">Helena Castro</td><td data-i18n="materia.quimica">Química</td><td>520 <span data-i18n="dir.de800">de 800</span></td><td><span class="pill p-ok" data-i18n="dir.alta">alta</span></td></tr>
+            <tr><td class="name">Marcos Vieira</td><td data-i18n="materia.matematica">Matemática</td><td>140 <span data-i18n="dir.de800">de 800</span></td><td><span class="pill p-warn" data-i18n="dir.mediaAdocao">média</span></td></tr>
+            <tr><td class="name">Paula Duarte</td><td data-i18n="materia.historia">História</td><td>460 <span data-i18n="dir.de800">de 800</span></td><td><span class="pill p-ok" data-i18n="dir.alta">alta</span></td></tr>
+            <tr><td class="name">João Pereira</td><td data-i18n="materia.fisica">Física</td><td>30 <span data-i18n="dir.de800">de 800</span></td><td><span class="pill p-bad" data-i18n="dir.baixa">baixa</span></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="progresso.sugestaoIA">Sugestão da IA</span></h2>
+          <ul class="list" style="margin-top:12px">
+            <li><span class="dot" style="background:var(--warn)"></span><div class="tx"><b data-i18n="dir.sugestaoOficina">Oficina para Física e Matemática</b><span data-i18n="dir.sugestaoOficinaDesc">professores com menor uso · 40 min</span></div></li>
+            <li><span class="dot" style="background:var(--good)"></span><div class="tx"><b data-i18n="dir.sugestaoHelena">Profa. Helena como multiplicadora</b><span data-i18n="dir.sugestaoHelenaDesc">maior domínio da correção assistida</span></div></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2><svg class="ic"><use href="#i-users"/></svg><span data-i18n="dir.convitePendente">Convite pendente</span></h2>
+          <ul class="list" style="margin-top:12px">
+            <li><div class="tx"><b>bio.fernanda@horizonte.edu</b><span data-i18n="dir.enviadoHa2Dias">enviado há 2 dias</span></div><button class="btn btn-gho btn-sm" data-i18n="dir.reenviar">Reenviar</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </div>
+</main>
+</div>
+
+<script src="assets/i18n.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/dev-reload.js"></script>
+<!-- Modal de Configuracoes: perfil desta tela + motor (assets/modal/) -->
+<script>
+  window.PRISMA_PERFIL = {
+    tipo: 'diretor',
+    nome: 'Cláudia Nunes',
+    cargo: 'Diretora',
+    cargoCompleto: 'Diretora geral',
+    iniciais: 'CN',
+    cor: '#C79A2A',
+    email: 'claudia.nunes@horizonte.edu',
+    telefone: '(11) 9 6644-1029',
+    stats: [
+      { valor: '412', rotulo: 'alunos' },
+      { valor: '32', rotulo: 'equipe' },
+      { valor: '14', rotulo: 'turmas' },
+    ],
+  };
+</script>
+<script type="module" src="assets/modal/index.js"></script>
+<script src="assets/dashboard.js"></script>
+<script src="assets/command-palette.js"></script>
+</body>
+</html>

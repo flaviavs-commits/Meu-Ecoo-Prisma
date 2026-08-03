@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const frontend = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const origem = resolve(frontend, '..', 'app')
+const origem = resolve(frontend, 'app')
 const destino = resolve(frontend, 'public', 'app')
 
 await mkdir(resolve(frontend, 'public'), { recursive: true })

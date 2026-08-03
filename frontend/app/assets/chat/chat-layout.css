@@ -1,0 +1,75 @@
+/* ══ Layout de 3 colunas do Tutor: barra lateral | chat | contexto ══
+   Depende dos tokens `--tut-*` de tutor.css (precisa carregar antes).
+   O painel de contexto (`.tut-ctx`) ja existia e se mantem igual -
+   aqui so entra a coluna nova, `.chat-side`, a esquerda do chat. */
+
+.tut-body { position: relative; }
+
+.chat-side {
+  flex: none; width: 0; overflow: hidden; display: flex; flex-direction: column;
+  border-right: 1px solid var(--tut-line); background: var(--tut-bg-2);
+  transition: width .24s cubic-bezier(.5,0,.2,1);
+}
+.tut-body[data-side="aberta"] .chat-side { width: 272px; }
+
+.chat-side-topo { flex: none; padding: 14px 12px 10px; display: flex; flex-direction: column; gap: 10px; }
+.chat-side-nova {
+  display: flex; align-items: center; gap: 8px; width: 100%; cursor: pointer;
+  border: 1px solid var(--tut-line-2); background: var(--tut-panel); color: var(--tut-ink);
+  border-radius: 11px; padding: 9px 12px; font-size: 13px; font-weight: 620; transition: .15s;
+}
+.chat-side-nova:hover { border-color: var(--tut-accent); color: var(--tut-accent-ink); }
+.chat-side-nova .ic { width: 15px; height: 15px; }
+.chat-side-busca {
+  display: flex; align-items: center; gap: 8px; border: 1px solid var(--tut-line); border-radius: 10px;
+  background: var(--tut-bg); padding: 7px 10px; transition: border-color .15s;
+}
+.chat-side-busca:focus-within { border-color: var(--tut-accent); }
+.chat-side-busca .ic { width: 14px; height: 14px; color: var(--tut-ink-3); flex: none; }
+.chat-side-busca input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 12.5px; outline: none; color: var(--tut-ink); min-width: 0; }
+
+.chat-side-lista { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 8px 8px; }
+.chat-side-lista::-webkit-scrollbar { width: 8px; }
+.chat-side-lista::-webkit-scrollbar-thumb { background: var(--tut-line-2); border-radius: 99px; border: 2px solid transparent; background-clip: padding-box; }
+
+.chat-side-rotulo {
+  font-size: 10px; font-weight: 750; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--tut-ink-3); margin: 14px 6px 4px;
+}
+.chat-side-rotulo:first-child { margin-top: 6px; }
+
+.chat-side-pastas-nova { flex: none; border-top: 1px solid var(--tut-line); padding: 8px; }
+.chat-side-pastas-nova button {
+  display: flex; align-items: center; gap: 8px; width: 100%; cursor: pointer;
+  border: 0; background: transparent; color: var(--tut-ink-3); border-radius: 9px; padding: 8px 8px;
+  font-size: 12px; font-weight: 560; transition: .15s;
+}
+.chat-side-pastas-nova button:hover { background: var(--tut-panel); color: var(--tut-ink); }
+.chat-side-pastas-nova .ic { width: 14px; height: 14px; }
+
+/* Botao que abre/fecha a barra lateral - reaproveita `.tut-hist` do cabecalho */
+.tut-hist[aria-pressed="true"] { color: var(--tut-accent-ink); border-color: var(--tut-accent); background: var(--tut-accent-soft); }
+
+/* ── Telas medias: a barra lateral vira overlay, como o painel de contexto ── */
+@media (max-width: 1100px) {
+  .tut-body[data-side="aberta"] .chat-side {
+    position: absolute; top: 0; left: 0; bottom: 0; z-index: 20; width: min(272px, 84vw);
+    box-shadow: var(--sh-lg); animation: chatSideSlide .26s cubic-bezier(.5,0,.2,1);
+  }
+  @keyframes chatSideSlide { from { transform: translateX(-101%); } }
+  .tut-body[data-side="aberta"]::before {
+    content: ""; position: absolute; inset: 0; z-index: 15;
+    background: color-mix(in srgb, var(--ink) 32%, transparent); animation: bdin .26s ease;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-side, .tut-body[data-side="aberta"] .chat-side { transition-duration: .01ms !important; animation: none !important; }
+}
+
+/* Mesmo corte de `tutor.css` para `.tut-hist` neste tamanho: os botoes
+   novos sao atalhos de teclado avancados, dispensaveis com a barra ja
+   compacta no celular (o essencial - enviar mensagem - continua). */
+@media (max-width: 720px) {
+  .chat-status, .tut-cmdk-btn, .tut-ajuda-btn { display: none; }
+}
+

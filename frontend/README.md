@@ -65,7 +65,7 @@ npm run lint
 npm run build
 ```
 
-As telas definitivas são mantidas em `../app/`. O `prebuild` executa
+As telas definitivas são mantidas em `app/`. O `prebuild` executa
 `scripts/sincronizar-app.mjs` para copiá-las a `public/app/`, incluindo a
 publicação na Vercel quando o projeto usa `frontend/` como Root Directory.
 Também é possível sincronizar manualmente pela automação Python da raiz.

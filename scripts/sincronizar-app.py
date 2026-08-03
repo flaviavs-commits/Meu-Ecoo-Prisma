@@ -64,7 +64,7 @@ def origem_padrao() -> Path:
 
 def validar(origem: Path) -> Path | None:
     """Confere que a origem existe e tem o que precisamos."""
-    app = origem / "app"
+    app = origem / "frontend" / "app"
 
     if not origem.is_dir():
         print(f"  Repositorio de origem nao encontrado: {origem}")
@@ -72,7 +72,7 @@ def validar(origem: Path) -> Path | None:
         return None
 
     if not app.is_dir():
-        print(f"  Pasta 'app/' nao encontrada em {origem}")
+        print(f"  Pasta 'frontend/app/' nao encontrada em {origem}")
         return None
 
     faltando = [t for t in TELAS if not (app / t).is_file()]

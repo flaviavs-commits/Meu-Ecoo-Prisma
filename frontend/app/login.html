@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="entrada.tituloLogin">Entrar · Prisma</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/*
+  Tela definitiva de login da aplicacao, integrada ao backend real.
+  Mesma identidade de index.html (split grafite/creme, Josefin Sans
+  nos titulos, cards e botao pill do restante do produto). O backend
+  de autenticacao fica fora deste repositorio.
+*/
+:root{
+  color-scheme:light;
+  --cream:#f7f5ee; --graphite:#1a1a1a;
+  --superficie:#fffdf8; --superficie-alt:#f0ece1;
+  --texto:#1a1a1a; --texto-secundario:#5c5a55;
+  --contorno:rgb(26 26 26 / .28); --contorno-forte:rgb(26 26 26 / .45);
+  --aluno:#7b78c8; --aluno-tint:#e5e4f2;
+  --professor:#c85a3c; --professor-tint:#f0ddd4;
+  --diretor:#6a8550; --diretor-tint:#e3e8da;
+  --font-display:"Josefin Sans","Geist",-apple-system,sans-serif;
+  --font-sans:"Geist",-apple-system,"Segoe UI",sans-serif;
+  --radius:0.375rem;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --acento:var(--aluno); --acento-tint:var(--aluno-tint);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;color:var(--texto);
+  font-family:var(--font-sans);
+  font-size:15px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+  min-height:100vh;background:var(--cream);
+}
+::selection{background:rgba(200,90,60,.22)}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercase;line-height:1.1;letter-spacing:.06em}
+
+.split{display:grid;grid-template-columns:1fr 1.15fr;min-height:100vh}
+
+.dark{
+  background:var(--graphite);
+  color:#EDE9E2;display:flex;flex-direction:column;align-items:center;padding:44px 56px;
+  position:relative;overflow:hidden;
+}
+.dark>.brand,.dark>.foot{align-self:flex-start}
+.dark::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(760px 460px at 90% -8%, var(--acento-glow, rgba(200,90,60,.14)), transparent 60%);transition:background .4s var(--ease)}
+.dark>*{position:relative}
+
+.brand{display:inline-flex;align-items:center;gap:10px;width:fit-content;text-decoration:none;transition:opacity .15s ease}
+.brand:hover{opacity:.78}
+.brand svg{width:26px;height:26px;color:#F7F5EE}
+.brand b{font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:.16em;text-transform:uppercase;color:#F7F5EE}
+
+.dark .mid{flex:1;display:flex;flex-direction:column;justify-content:flex-start;max-width:460px;padding:130px 0 0}
+
+/* Marca do perfil: icone num medalhao com glow na cor do acento,
+   mesma linguagem visual dos cards de Perfis.tsx na LP. Preenchido
+   via query string (?perfil=aluno|professor|diretor). */
+.perfil-marca{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:var(--radius);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--acento);margin-bottom:22px;transition:color .4s var(--ease)}
+.perfil-marca svg{width:24px;height:24px}
+
+/* Filete curto acima do titulo - a mesma assinatura de "regua" do
+   resto do produto, só que aqui sem etiqueta ao lado: a cor sozinha
+   já identifica o perfil, o peso vai todo para o titulo abaixo. */
+.filete-perfil{height:3px;width:36px;border-radius:2px;background:var(--acento);margin-bottom:16px;transition:background .4s var(--ease)}
+
+/* Mensagem de contexto do perfil - titulo grande em branco (mais
+   legivel que acento em corpo grande sobre grafite), com o glow e o
+   filete acima carregando a cor. */
+.etq-grande{
+  font-family:var(--font-display);font-weight:700;text-transform:uppercase;
+  font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:.03em;
+  color:#F7F5EE;margin:0;text-wrap:balance;
+}
+
+.dark h1{font-size:clamp(30px,3.4vw,42px);line-height:1.08;margin:0 0 18px;color:#F7F5EE;text-wrap:balance}
+.dark .lead{font-size:15px;line-height:1.65;color:#B8B2A5;max-width:38ch;margin:0}
+.dark .foot{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#5C584E;margin-top:auto}
+
+.light{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 64px}
+.entry{width:100%;max-width:400px}
+
+.fade{animation:rise .6s var(--ease) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+
+.entry .regua{display:flex;align-items:center;gap:16px;color:var(--texto-secundario);margin-bottom:20px}
+.entry .regua .filete{height:1px;width:48px;background:var(--contorno-forte)}
+.entry .regua .etq{font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+
+.entry h2{font-size:clamp(26px,3vw,34px);margin:0 0 10px;color:var(--texto);text-wrap:balance}
+.entry .hint{font-size:14px;line-height:1.6;color:var(--texto-secundario);margin:0 0 32px}
+
+form{display:flex;flex-direction:column;gap:16px}
+.campo{display:flex;flex-direction:column;gap:7px}
+.campo label{font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--texto)}
+.campo input{
+  font:inherit;font-size:14.5px;color:var(--texto);
+  border:1px solid var(--contorno);border-radius:var(--radius);
+  background:var(--superficie);padding:12px 14px;
+  transition:border-color .15s var(--ease);
+}
+.campo input:focus{outline:none;border-color:var(--acento)}
+.campo input::placeholder{color:#A39D8F}
+
+/* Campo de senha com botao de mostrar/ocultar embutido - o input ganha
+   padding-right extra pra o texto nao passar por baixo do botao. */
+.campo-senha{position:relative}
+.campo-senha input{padding-right:44px}
+.campo-senha .toggle-senha{
+  position:absolute;top:50%;right:6px;transform:translateY(-50%);
+  display:flex;align-items:center;justify-content:center;
+  width:32px;height:32px;padding:0;border:0;border-radius:calc(var(--radius) - 2px);
+  background:transparent;color:var(--texto-secundario);cursor:pointer;
+  transition:color .15s var(--ease),background .15s var(--ease);
+}
+.campo-senha .toggle-senha:hover{color:var(--texto);background:var(--superficie-alt)}
+.campo-senha .toggle-senha svg{width:18px;height:18px}
+
+.linha-aux{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-top:-4px}
+.linha-aux a{color:var(--texto-secundario);text-decoration:none}
+.linha-aux a:hover{color:var(--texto);text-decoration:underline}
+.erro-login{display:none;margin-top:-4px;border:1px solid rgba(174,47,47,.35);border-radius:var(--radius);background:#fff0ed;color:#8c2d25;padding:10px 12px;font-size:13px;line-height:1.45}
+.erro-login.visivel{display:block}
+.cta:disabled{cursor:wait;opacity:.65}
+
+.cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:14px 22px;border-radius:999px;border:none;cursor:pointer;
+  background:var(--graphite);color:#fff;text-decoration:none;
+  font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+  transition:background .2s var(--ease);margin-top:6px;
+}
+.cta:hover{background:#000}
+
+.divider{display:flex;align-items:center;gap:12px;margin:26px 0;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--texto-secundario)}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--contorno)}
+
+.social{display:flex;flex-direction:column;gap:10px}
+.social button{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:12px 16px;border-radius:999px;
+  border:1px solid var(--contorno);background:var(--superficie);color:var(--texto);
+  font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;
+  transition:border-color .15s var(--ease);
+}
+.social button:hover{border-color:var(--contorno-forte)}
+.social svg{width:18px;height:18px}
+
+.rodape-troca{margin-top:28px;font-size:13.5px;color:var(--texto-secundario);text-align:center}
+.rodape-troca a{color:var(--texto);font-weight:600;text-decoration:none}
+.rodape-troca a:hover{text-decoration:underline}
+
+/* Seletor de idioma: estas telas nao tem topbar como o resto do app,
+   entao ele fica ancorado no canto. Precisa existir aqui porque esta e
+   a PRIMEIRA tela que alguem ve - quem chega direto no login nao teria
+   nenhum outro lugar para escolher a lingua. */
+.langbar{
+  position:fixed;top:14px;right:18px;z-index:5;display:flex;gap:2px;
+  background:color-mix(in srgb,var(--superficie) 88%,transparent);
+  border:1px solid var(--contorno);border-radius:999px;padding:3px;
+  backdrop-filter:blur(6px);
+}
+.langbar button{
+  font-family:var(--font-display);font-size:10px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--texto-secundario);
+  background:none;border:0;border-radius:999px;padding:5px 9px;cursor:pointer;
+  transition:color .15s var(--ease),background .15s var(--ease);
+}
+.langbar button:hover{color:var(--texto)}
+.langbar button.on{background:var(--graphite);color:#fff}
+@media (max-width:520px){.langbar{top:10px;right:10px;padding:2px}.langbar button{padding:4px 7px;font-size:9px}}
+
+@media (max-width:960px){
+  .split{grid-template-columns:1fr}
+  .dark{padding:32px 24px;min-height:70vh}
+  .dark .mid{padding:36px 0}
+  .light{padding:40px 24px 56px}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="e-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M16 6.38 6.35 21.56 16 25.37l9.65-3.81Z"/>
+  <path d="M16 6.38V25.37"/>
+  <path d="M6.35 21.56 16 17.51l9.65 4.05"/>
+</symbol>
+<symbol id="e-google" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.66-2.25 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.84 14.09A6.6 6.6 0 0 1 5.5 12c0-.73.13-1.44.34-2.09V7.07H2.18A11 11 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1a11 11 0 0 0-9.82 6.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></symbol>
+<symbol id="e-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.3a2.6 2.6 0 0 1-2.6 2.6H9.6L5 19.7V6.8a2.6 2.6 0 0 1 2.6-2.6h9.8A2.6 2.6 0 0 1 20 6.8Z"/></symbol>
+<symbol id="e-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 5.5 4 4L8 20l-4.6.6L4 16Z"/><path d="m12.8 7.2 4 4"/></symbol>
+<symbol id="e-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20.5V6.2a1 1 0 0 1 .55-.9l5.5-2.75a1 1 0 0 1 .9 0l5.5 2.75a1 1 0 0 1 .55.9V20.5"/><path d="M3 20.5h18"/><path d="M9.5 9.5h1M13.5 9.5h1M9.5 13.2h1M13.5 13.2h1M9.5 16.9h1M13.5 16.9h1"/></symbol>
+<symbol id="e-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="e-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.8 9.8 0 0 1 12 4c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.16 3.19m-3.1 2.6A9.4 9.4 0 0 1 12 18c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.22-5.02"/><path d="M9.5 9.5a3 3 0 0 0 4.24 4.24"/><path d="M2 2l20 20"/></symbol>
+</defs></svg>
+
+<div class="langbar" role="group" aria-label="Idioma" data-i18n-attr="aria-label:topbar.idioma">
+  <button type="button" class="lang-opt" data-lang="pt-BR">PT</button>
+  <button type="button" class="lang-opt" data-lang="en">EN</button>
+  <button type="button" class="lang-opt" data-lang="es">ES</button>
+  <button type="button" class="lang-opt" data-lang="fr">FR</button>
+  <button type="button" class="lang-opt" data-lang="de">DE</button>
+</div>
+
+<div class="split">
+
+  <aside class="dark">
+    <a class="brand" href="/"><svg><use href="#e-logo"/></svg><b>Prisma</b></a>
+    <div class="mid">
+      <div class="perfil-marca" id="marca-perfil"><svg><use href="#e-logo"/></svg></div>
+      <span class="filete-perfil" aria-hidden="true"></span>
+      <p class="etq-grande" id="regua-etq" data-i18n="entrada.bemVindo">Bem-vindo de volta</p>
+    </div>
+    <p class="foot">&copy; <span id="ano">2026</span> <span data-i18n="entrada.copyright">Prisma. Todos os direitos reservados.</span></p>
+  </aside>
+
+  <main class="light">
+    <div class="entry">
+      <div class="regua fade"><span class="filete"></span><span class="etq" data-i18n="entrada.entrar">Entrar</span></div>
+      <h2 class="fade d1" data-i18n="entrada.acesseConta">Acesse sua conta</h2>
+      <p class="hint fade d1" data-i18n="entrada.useEmailSenha">Use o e-mail e a senha cadastrados na sua instituição.</p>
+
+      <form class="fade d1" id="form-login">
+        <div class="campo">
+          <label for="email" data-i18n="conta.email">E-mail</label>
+          <input id="email" type="email" placeholder="voce@escola.com.br" data-i18n-attr="placeholder:entrada.emailPlaceholder" autocomplete="email">
+        </div>
+        <div class="campo campo-senha">
+          <label for="senha" data-i18n="entrada.senha">Senha</label>
+          <input id="senha" type="password" placeholder="••••••••" autocomplete="current-password">
+          <button type="button" class="toggle-senha" id="toggle-senha" aria-label="Mostrar senha" aria-pressed="false" data-i18n-attr="aria-label:entrada.mostrarSenha">
+            <svg><use href="#e-eye"/></svg>
+          </button>
+        </div>
+        <div class="linha-aux">
+          <a href="#" data-i18n="entrada.esqueciSenha">Esqueci minha senha</a>
+        </div>
+        <p class="erro-login" id="erro-login" role="alert"></p>
+        <button class="cta" type="submit" data-i18n="entrada.entrar">Entrar</button>
+      </form>
+
+      <div class="divider fade d2" data-i18n="entrada.ouContinueCom">ou continue com</div>
+
+      <div class="social fade d2">
+        <button type="button"><svg><use href="#e-google"/></svg><span data-i18n="entrada.continuarGoogle">Continuar com Google</span></button>
+      </div>
+
+      <p class="rodape-troca fade d3"><span data-i18n="entrada.escolaNaoUsa">Sua escola ainda não usa o Prisma?</span> <a href="#" data-i18n="entrada.faleConosco">Fale com a gente</a></p>
+    </div>
+  </main>
+
+</div>
+
+<script>
+// Le o perfil da query string e conecta o formulario ao backend real.
+(function () {
+  document.getElementById('ano').textContent = new Date().getFullYear();
+
+  var config = {
+    aluno: { cor: 'var(--aluno)', glow: 'rgba(123,120,200,.16)', icone: 'e-chat', etq: 'entrada.entrandoAluno' },
+    professor: { cor: 'var(--professor)', glow: 'rgba(200,90,60,.16)', icone: 'e-pen', etq: 'entrada.entrandoProfessor' },
+    diretor: { cor: 'var(--diretor)', glow: 'rgba(106,133,80,.16)', icone: 'e-building', etq: 'entrada.entrandoDiretor' },
+  };
+
+  var params = new URLSearchParams(location.search);
+  var perfil = config[params.get('perfil')] ? params.get('perfil') : null;
+
+  if (perfil) {
+    var c = config[perfil];
+    document.documentElement.style.setProperty('--acento', c.cor);
+    document.documentElement.style.setProperty('--acento-glow', c.glow);
+    document.getElementById('marca-perfil').innerHTML = '<svg><use href="#' + c.icone + '"/></svg>';
+    // Troca a chave e deixa o motor escrever o texto: este script roda
+    // antes do DOMContentLoaded que dispara a traducao, entao a chave
+    // nova ja entra na primeira passada.
+    var etq = document.getElementById('regua-etq');
+    etq.setAttribute('data-i18n', c.etq);
+    if (window.PrismaI18n) window.PrismaI18n.aplicarEm(etq);
+  }
+
+  var apiBase = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://127.0.0.1:8000/api/v1' : '/api/v1';
+  var formulario = document.getElementById('form-login');
+  var botaoEntrar = formulario.querySelector('button[type="submit"]');
+  var erroLogin = document.getElementById('erro-login');
+  function mostrarErro(mensagem) { erroLogin.textContent = mensagem; erroLogin.classList.add('visivel'); }
+  formulario.addEventListener('submit', async function (evento) {
+    evento.preventDefault();
+    erroLogin.classList.remove('visivel');
+    botaoEntrar.disabled = true;
+    try {
+      var resposta = await fetch(apiBase + '/auth/login/', {method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include', body: JSON.stringify({email: document.getElementById('email').value.trim(), password: document.getElementById('senha').value})});
+      var corpo = await resposta.json().catch(function () { return {}; });
+      if (!resposta.ok) { mostrarErro(corpo.erro && corpo.erro.mensagem || 'Nao foi possivel entrar. Confira seus dados e tente novamente.'); return; }
+      var identidade = await fetch(apiBase + '/auth/eu/', {headers: {Authorization: 'Bearer ' + corpo.access}, credentials: 'include'});
+      if (!identidade.ok) throw new Error('Falha ao carregar a identidade.');
+      var usuario = await identidade.json();
+      var destinos = {ALUNO: 'aluno.html', PROFESSOR: 'professor.html', DIRETOR: 'diretor.html'};
+      location.href = destinos[usuario.perfil] || 'index.html';
+    } catch (causa) {
+      mostrarErro(causa.message === 'Failed to fetch' ? 'Nao foi possivel conectar ao servidor. Tente novamente.' : 'Nao foi possivel concluir o login. Tente novamente.');
+    } finally { botaoEntrar.disabled = false; }
+  });
+
+  // Mostrar/ocultar senha: alterna o type do input e o icone/aria do
+  // botao. Sem libs aqui (HTML puro) - equivalente ao Eye/EyeOff do
+  // lucide-react usado no login do Contas-flow.
+  var campoSenha = document.getElementById('senha');
+  var botaoSenha = document.getElementById('toggle-senha');
+  botaoSenha.addEventListener('click', function () {
+    var visivel = campoSenha.type === 'text';
+    campoSenha.type = visivel ? 'password' : 'text';
+    botaoSenha.setAttribute('aria-pressed', String(!visivel));
+    botaoSenha.setAttribute('data-i18n-attr',
+      'aria-label:' + (visivel ? 'entrada.mostrarSenha' : 'entrada.ocultarSenha'));
+    window.PrismaI18n.aplicarEm(botaoSenha);
+    botaoSenha.innerHTML = '<svg><use href="#' + (visivel ? 'e-eye' : 'e-eye-off') + '"/></svg>';
+  });
+})();
+</script>
+<script src="assets/i18n.js"></script>
+<script>
+// O resto do app troca de idioma pelo dropdown da topbar, montado em
+// app.js - que nao roda nestas telas. Aqui o seletor e um grupo de
+// botoes simples, entao a ligacao com o motor cabe em tres linhas.
+document.querySelectorAll('.lang-opt').forEach(function (b) {
+  b.addEventListener('click', function () { window.PrismaI18n.setLang(b.dataset.lang); });
+});
+</script>
+<script src="assets/dev-reload.js"></script>
+</body>
+</html>
