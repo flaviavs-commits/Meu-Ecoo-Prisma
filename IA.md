@@ -241,6 +241,8 @@ Pendente de verificacao manual: renderizacao em navegador real (mobile e desktop
 
 [2026-08-03] **Integracao local por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** conectei `/entrar` ao backend Django usando somente e-mail e senha. O cliente separa transporte (`frontend/src/api/cliente.ts`), sessao (`frontend/src/auth/`) e UI (`frontend/src/components/auth/PaginaLogin.tsx`); nao usa `localStorage` nem expoe segredo. O HUD foi ajustado em `scripts/hud/` para preparar SQLite, iniciar backend e frontend em sequencia, reconhecer listeners no macOS/Linux e encerrar grupos de processos sem deixar Vite/Django orfaos. Validacao: tabela acima, backend 101 passed/1 skipped, frontend 2 testes, lint/build/check/migracoes e login/CORS reais.
 
+[2026-08-03] **Tentativa de deploy por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** o Railway recebeu o upload do commit `1ca9dc7` para o servico `api`, mas o deployment `bb0ab355-773d-4004-a7db-0d69b1f08fdb` ficou `INITIALIZING`, parado e sem build associado; o acompanhamento tambem sofreu timeout do GraphQL. A API publica permaneceu saudavel (`/api/v1/health/` HTTP 200) pelo deployment anterior. Nenhuma variavel ou banco foi alterado. Estado final: atualizacao remota nao concluida; MVP local continua sendo a fonte executavel.
+
 [2026-07-28, segunda rodada] Apos identidade visual, animacoes e reestruturacao:
 
 | Verificacao | Comando | Resultado |
