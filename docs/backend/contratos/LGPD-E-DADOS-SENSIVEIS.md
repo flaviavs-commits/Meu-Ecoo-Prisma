@@ -6,6 +6,11 @@
 >
 > Toda etapa que toca dado de pessoa respeita este contrato.
 
+**Estado do contrato (2026-08-03):** vigente para desenvolvimento; a
+validacao juridica da base legal, do fluxo de consentimento e dos prazos de
+retencao continua pendente antes de producao. Estado pendente e bloqueio de
+capacidade, nao autorizacao implicita para processar o dado.
+
 ## 1. O que a lei exige aqui, em uma frase
 
 A LGPD (Lei 13.709/2018) trata dado de crianca e adolescente em artigo proprio
@@ -109,3 +114,8 @@ obrigacao de agora.
 - [ ] Se o dado e de menor, ha registro de consentimento (ou estado pendente visivel)
 - [ ] Senha nunca sai, nunca e logada, nunca e comparada em texto puro
 - [ ] O dado consegue ser localizado e anonimizado a partir do `Usuario`
+
+Ao concluir uma etapa, o agente deve registrar no diario dela quais itens foram
+validados, quais nao se aplicam e quais ficaram pendentes, com o comando e a
+saida observada. Nenhuma etapa pode marcar este contrato como cumprido se a
+validacao juridica ou a retencao aplicavel ainda estiverem abertas.

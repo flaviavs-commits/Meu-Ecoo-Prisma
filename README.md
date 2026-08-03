@@ -121,10 +121,12 @@ python start_app.py
 ```
 
 Isso abre uma **janela** (o HUD) com o estado do ambiente ao vivo -
-servidor, dependencias, telas, npm - e as acoes em botoes: **Rodar o
-site**, **Abrir no navegador**, **Instalar dependencias**, **Sincronizar
-aplicacao**, **Gerar build**, **Validar**, **Configurar porta** e **Parar
-servidor**. A saida dos comandos aparece no painel de baixo.
+frontend, backend, dependencias, telas, npm - e as acoes em botoes: **Rodar
+aplicacao**, **Abrir no navegador**, **Rodar backend**, **Instalar
+dependencias**, **Sincronizar aplicacao**, **Gerar build**, **Validar**,
+**Configurar porta** e **Fechar portas**. A saida dos comandos aparece no
+painel de baixo. Ao rodar a aplicacao, o HUD prepara as migracoes em SQLite
+local e sobe o Django e o Vite em conjunto.
 
 O painel de baixo e um **console funcional**: digite qualquer comando de
 terminal e tecle Enter. Comeca em `frontend/`, entao `npm run dev` e
@@ -143,7 +145,12 @@ npm install
 npm run dev
 ```
 
-O site fica em `http://localhost:5173`.
+O site fica em `http://localhost:5173` (ou na porta exibida pelo Vite se a
+porta padrao estiver ocupada).
+
+O login da landing fica em `/entrar` e usa `VITE_API_URL` (padrao:
+`http://127.0.0.1:8000/api/v1`) para conversar com o backend Django. O token de
+acesso permanece somente em memoria; o refresh usa cookie HttpOnly.
 
 ## Como validar
 
@@ -151,11 +158,14 @@ Pelo botao **Validar** do HUD, ou direto:
 
 ```bash
 cd frontend
+npm test       # Vitest
 npm run lint     # oxlint
 npm run build    # tsc + vite build
+cd ../backend
+.venv/bin/pytest -q
 ```
 
-Ainda nao ha teste automatizado: a landing e UI visual sem regra de negocio, caso em que o guia minimo de qualidade aceita verificacao manual registrada. As verificacoes executadas estao em [IA.md](IA.md), secao "Testes importantes". Testes automatizados entram junto com a logica de negocio (autenticacao, creditos, gateway de IA).
+As verificacoes executadas estao em [IA.md](IA.md), secao "Testes importantes".
 
 ## Landing e aplicacao
 
@@ -166,8 +176,10 @@ Sao duas partes deste mesmo repositorio:
 | **Landing** | `frontend/src/` | vitrine publica, em React |
 | **Aplicacao** | `mockup/` | telas de aluno, professor e diretor (HTML estatico) |
 
-Ao clicar em "Entrar", a landing abre a tela inicial da aplicacao,
-que faz a escolha de perfil.
+Ao clicar em "Entrar", a landing abre `/entrar`, que autentica por e-mail e
+senha contra o backend. O access token fica somente em memoria no navegador;
+o refresh usa cookie HttpOnly. A tela de perfil da aplicacao continua sendo
+servida em `/app/` para o proximo ciclo de integracao.
 
 ### Sincronizar a aplicacao
 
@@ -181,10 +193,9 @@ Isso copia as telas para `frontend/public/app/`, que o Vite serve em
 `/app/`. **Rode de novo sempre que as telas mudarem la** - a pasta e
 uma copia derivada, ignorada pelo git.
 
-> **Nao ha autenticacao.** Qualquer pessoa acessa qualquer area: o
-> "Entrar" e navegacao, nao controle de acesso. O login real entra
-> com o backend. Quando existir, basta trocar `ENTRADA_APP` em
-> `frontend/src/content/destinos.ts` - todos os botoes leem de la.
+O controle de acesso da API ja existe. As telas estaticas de `/app/` ainda
+precisam receber a identidade autenticada e as protecoes de rota no proximo
+ciclo; nao devem ser tratadas como uma area protegida concluida.
 
 ## Mexer no HUD
 

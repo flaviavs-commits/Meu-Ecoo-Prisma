@@ -11,13 +11,12 @@
  * começar?"), que faz a escolha de perfil. Por isso a landing aponta
  * direto para ela, sem perguntar a mesma coisa antes.
  *
- * QUANDO O BACKEND EXISTIR: trocar por uma rota autenticada (o
- * Django servindo a aplicação, ou uma URL de deploy). Só esta
- * constante muda - todos os pontos de "Entrar" leem daqui.
+ * A entrada autenticada vive no frontend e conversa com a API Django local
+ * por meio do cliente em `src/api/cliente.ts`.
  */
 
 /** Raiz onde as telas da aplicação são servidas. */
-const BASE_DESTINOS = '/app'
+const BASE_DESTINOS = '/entrar'
 
 /** Tela inicial da aplicação, destino de todo botão "Entrar". */
-export const ENTRADA_APP = `${BASE_DESTINOS}/index.html`
+export const ENTRADA_APP = BASE_DESTINOS

@@ -1,4 +1,31 @@
-# React + TypeScript + Vite
+# Frontend do Prisma
+
+Landing React com entrada autenticada conectada ao backend Django local.
+
+## Desenvolvimento
+
+```bash
+npm install
+cp .env.example .env.local
+npm run dev
+```
+
+O Vite fica em `http://localhost:5173` quando a porta esta livre. A API
+padrao e `http://127.0.0.1:8000/api/v1`; altere `VITE_API_URL` em `.env.local`
+se necessario.
+
+Comandos de validacao:
+
+```bash
+npm test
+npm run lint
+npm run build
+```
+
+O login usa e-mail e senha, guarda o access token apenas em memoria e depende
+do cookie HttpOnly de refresh emitido pelo backend.
+
+## Template original
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 

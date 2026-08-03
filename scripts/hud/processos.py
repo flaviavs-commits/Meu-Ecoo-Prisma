@@ -7,6 +7,8 @@ de janela e encerramento por arvore de processos.
 from __future__ import annotations
 
 import re
+import os
+import signal
 import subprocess
 import sys
 
@@ -33,6 +35,8 @@ SAIDA_SUBPROCESSO: dict[str, object] = {
     "errors": "replace",
     "creationflags": getattr(subprocess, "CREATE_NO_WINDOW", 0),
 }
+if sys.platform != "win32":
+    SAIDA_SUBPROCESSO["start_new_session"] = True
 
 # O mesmo, mas em bytes: o console interativo decodifica por conta.
 # Ferramentas modernas (npm, git, node) escrevem UTF-8, mas o proprio
@@ -43,6 +47,8 @@ SAIDA_BYTES: dict[str, object] = {
     "stderr": subprocess.STDOUT,
     "creationflags": getattr(subprocess, "CREATE_NO_WINDOW", 0),
 }
+if sys.platform != "win32":
+    SAIDA_BYTES["start_new_session"] = True
 
 
 # Codepage que o shell usa nas mensagens dele. `getpreferredencoding`
@@ -96,9 +102,35 @@ def encerrar_arvore(processo: subprocess.Popen) -> None:
         except (OSError, subprocess.SubprocessError):
             processo.kill()
     else:
-        processo.terminate()
+        try:
+            os.killpg(processo.pid, signal.SIGTERM)
+        except (ProcessLookupError, OSError):
+            processo.terminate()
 
     try:
         processo.wait(timeout=5)
     except subprocess.TimeoutExpired:
-        processo.kill()
+        if sys.platform != "win32":
+            try:
+                os.killpg(processo.pid, signal.SIGKILL)
+            except (ProcessLookupError, OSError):
+                processo.kill()
+        else:
+            processo.kill()
+
+
+def encerrar_pid(pid: int) -> bool:
+    """Encerra um PID listado pelo painel usando a API do sistema atual."""
+    try:
+        if sys.platform == "win32":
+            resultado = subprocess.run(
+                ["taskkill", "/F", "/T", "/PID", str(pid)],
+                capture_output=True,
+                timeout=10,
+                check=False,
+            )
+            return resultado.returncode == 0
+        os.kill(pid, signal.SIGTERM)
+        return True
+    except (OSError, subprocess.SubprocessError):
+        return False

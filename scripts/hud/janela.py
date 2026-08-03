@@ -12,7 +12,8 @@ import subprocess
 import tkinter as tk
 
 from .acoes import AcoesMixin
-from .caminhos import PORTA_PADRAO
+from .backend import BackendMixin
+from .caminhos import PORTA_BACKEND_PADRAO, PORTA_PADRAO
 from .console import ConsoleMixin
 from .fontes import preparar_fontes
 from .layout import LayoutMixin
@@ -22,13 +23,15 @@ from .tokens import ERRO, ERRO_FUNDO, SUCESSO, SUCESSO_FUNDO
 from .widgets import CardAcao
 
 
-class Hud(LayoutMixin, StatusMixin, ConsoleMixin, AcoesMixin):
+class Hud(LayoutMixin, StatusMixin, ConsoleMixin, BackendMixin, AcoesMixin):
     """Janela de entrada: estado do ambiente e acoes."""
 
     def __init__(self, raiz: tk.Tk) -> None:
         self.raiz = raiz
         self.porta = PORTA_PADRAO
+        self.porta_backend = PORTA_BACKEND_PADRAO
         self.servidor: subprocess.Popen[str] | None = None
+        self.backend: subprocess.Popen[str] | None = None
 
         # As acoes rodam em thread para nao congelar a janela; a saida
         # volta por esta fila, lida pelo laco do Tkinter.
@@ -97,8 +100,12 @@ class Hud(LayoutMixin, StatusMixin, ConsoleMixin, AcoesMixin):
                 tipo, texto = self.fila.get_nowait()
                 if tipo == "fim":
                     self._travar_cards(False)
+                elif tipo == "backend_pronto":
+                    if not self._subir_servidor():
+                        self._parar_backend()
+                        self._travar_cards(False)
                 elif tipo == "status":
-                    self._pintar_status(bool(texto))
+                    self._pintar_status(texto)
                 elif tipo == "toast_ok":
                     self._toast_mostrar(texto, True)
                 elif tipo == "toast_erro":

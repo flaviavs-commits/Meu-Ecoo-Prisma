@@ -139,3 +139,4 @@ IA_CUSTO_POR_CREDITO = Decimal(os.environ.get("IA_CUSTO_POR_CREDITO", "0.001"))
 IA_MARGEM_CREDITOS = Decimal(os.environ.get("IA_MARGEM_CREDITOS", "1.20"))
 IA_TIMEOUT_SEGUNDOS = float(os.environ.get("IA_TIMEOUT_SEGUNDOS", "10"))
 ADMIN_URL = os.environ.get("DJANGO_ADMIN_URL", "backoffice").strip("/") + "/"
+REFRESH_COOKIE_SECURE = os.environ.get("DJANGO_REFRESH_COOKIE_SECURE", "false").lower() == "true"

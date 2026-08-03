@@ -1,6 +1,6 @@
 # E13 - API HTTP nos repositorios satelites
 
-> **Status:** NAO INICIADA · **Responsavel:** _(assine ao pegar)_
+> **Status:** AGUARDANDO DECISAO · **Responsavel:** Claude (sessao 2026-08-03)
 > **Depende de:** nada neste repositorio · **Destrava:** a integracao real de E06
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -75,6 +75,19 @@ de decidir** e registre o tempo observado - nao escolha por intuicao.
 Isso e uma decisao de arquitetura com consequencia no Prisma: sincrono e
 assincrono geram integracoes diferentes em E06. Registre a escolha aqui.
 
+**Decisao registrada (2026-08-03):**
+
+- `Estudo-IA-Resumo`: **assincrono (`POST /jobs`) para tudo**, apesar de
+  texto curto poder ser rapido. Motivo: a mesma rota tambem aceita audio
+  (Whisper local, minutos), imagem, PDF e URL - variando o tempo de resposta
+  por tipo de entrada obrigaria E06 a tratar dois contratos para o mesmo
+  endpoint. Um unico padrao assincrono e mais simples de integrar e nao tem
+  timeout escondido. Tempo sera medido e registrado aqui quando os testes do
+  item 5.8 rodarem (endpoint `POST /jobs` -> 202 mede o tempo de entrada na
+  fila, nao o de processamento).
+- `Audiofy-Content-AI`: **assincrono**, ja e o padrao do `bridge.py`
+  (`generate` + `status`). A API HTTP so expoe o que ja existe.
+
 ### 5.3 Autenticacao entre servicos
 
 Nao e usuario final chamando: e o backend do Prisma.
@@ -85,6 +98,26 @@ Nao e usuario final chamando: e o backend do Prisma.
   de verdade;
 - rate limit, para um bug no Prisma nao torrar a conta do OpenRouter;
 - se possivel, restrinja a origem.
+
+### 5.4-pre Reconfirmacao do estado (2026-08-03)
+
+Clonados os dois repositorios via `gh repo clone` para leitura direta:
+
+- `Estudo-IA-Resumo`: confirmado como no item 3. `app/api/cli.py` (Typer) e
+  camada fina sobre `app/services/resumo_service.py`. `openrouter_client.py`
+  **descarta** o campo `usage` da resposta da OpenRouter - hoje nao ha custo
+  disponivel para expor. OpenRouter aceita `"usage": {"include": true}` no
+  payload para devolver `usage.cost`; captar isso e extensao minima e
+  necessaria para cumprir o item 5.4 (custo obrigatorio), nao regra de
+  negocio nova.
+- `Audiofy-Content-AI`: `bridge.py` **ja implementa o padrao assincrono**
+  pedido no item 5.2 - `generate` inicia um worker destacado
+  (`launch_detached`) e retorna imediatamente; `status`/`status <item-id>`
+  consulta o estado (`pendente/rodando/concluido/erro` via
+  `GenerationTracker`); custo real ja e rastreado em
+  `_episode_summary` (`cost_usd`, `cost_exact`). A API HTTP aqui e
+  essencialmente mapear comandos existentes do bridge para rotas - baixo
+  risco de mexer no nucleo.
 
 ### 5.4 Contrato
 
@@ -116,6 +149,16 @@ Duas topologias, e a escolha muda o desenho:
 
 **Nao decida sozinho.** Registre a recomendacao (a segunda opcao preserva o
 principio de gateway unico) e marque `AGUARDANDO DECISAO`.
+
+**Recomendacao registrada (2026-08-03), aguardando decisao humana:** opcao 2
+(satelite recebe chave/orcamento do Prisma). Para nao bloquear o MVP tecnico
+enquanto se decide, a implementacao inicial usa a chave propria de cada
+satelite (opcao 1) **por tras de uma variavel de ambiente separada e clara**
+(`RESUMO_IA_OPENROUTER_API_KEY` / a chave ja existente do Audiofy), para que
+trocar para "chave vinda do Prisma" no futuro seja so mudar de onde a
+variavel e alimentada, sem tocar no formato do contrato HTTP. O campo
+`custo_usd` na resposta ja existe independente dessa escolha, entao o ledger
+de E05 pode ser ligado assim que a decisao 5.5 sair.
 
 ### 5.6 Onde roda
 
@@ -179,7 +222,8 @@ Nos repositorios de destino, seguindo o padrao de teste de cada um:
 > Ao pegar: status para `EM ANDAMENTO`, assine, atualize
 > [`../README.md`](../README.md).
 
-_(vazio - primeira entrada e sua)_
+- [2026-08-03] Peguei a etapa, status para EM ANDAMENTO, assinei - reconfirmando o estado dos dois repositorios satelites antes de desenhar a API, conforme item 3 pede ("reconfirme antes de comecar") - validando via `gh repo view` e clone dos dois repos para leitura direta do codigo atual.
+- [2026-08-03] Suspendi a implementacao nesta sessao - o escopo do usuario agora e continuar localmente no Meu-Ecoo-Prisma, enquanto E13 exige alteracoes e commits em dois repositorios externos; sem decisao de contrato de custo/retencao e sem coordenacao dos responsaveis daqueles repositorios, nao alterei codigo fora deste repositorio. O contrato e as decisoes ja registradas permanecem disponiveis para retomada segura.
 
 ## 9. Criterio de pronto
 

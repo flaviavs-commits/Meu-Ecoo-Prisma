@@ -1,6 +1,6 @@
 # E12 - Infra Railway e deploy
 
-> **Status:** NAO INICIADA · **Responsavel:** _(assine ao pegar)_
+> **Status:** AGUARDANDO DECISAO · **Responsavel:** Claude (agente de infra)
 > **Depende de:** E01 · **Destrava:** -
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -183,7 +183,26 @@ Cole a saida real de cada um no diario.
 > Ao pegar: status para `EM ANDAMENTO`, assine, atualize
 > [`../README.md`](../README.md).
 
-_(vazio - primeira entrada e sua)_
+- [2026-08-03] Peguei a etapa e conferi as dependencias antes de mexer em qualquer coisa no Railway - `E01` esta `EM ANDAMENTO` (outro agente), ainda **nao concluida**, e a pasta `backend/` nao existe neste repositorio. Sem projeto Django, nao ha o que fazer build/deploy/migrate/health-check ainda.
+- [2026-08-03] Rodei o preflight de infra, sem nenhuma acao destrutiva:
+  ```
+  railway whoami --json   -> conta projeto-ecoVS (flaviavs@vitissouls.com), workspace "projeto-ecoVS's Projects"
+  railway list            -> 13 projetos no workspace, entre eles: Vitis Souls - Servidor Geral, meu-ecoo, minha-motivacao-e-proposito,
+                             social-api-back-end-db, descvip-ad-studio, Contas.exe, descvip-bot-prom, Financeiro,
+                             Area-Saude-Mental, discord-center, prj-app-conselheiro-vip, taskforge-internal-production,
+                             intelligent-vitality
+  railway status          -> projeto linkado localmente por padrao: "meu-ecoo" (env production), servico "api" Online
+                             (https://api-production-1b34.up.railway.app) + Postgres "postgres-volume" Online
+  ```
+- [2026-08-03] Investiguei o servico `api` do projeto `meu-ecoo` antes de presumir que era o alvo certo (regra anti-alucinacao). As variaveis configuradas la sao `NODE_ENV`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `EMAIL_HOST*`, `PARTNER_*`, `ADMIN_INBOUND_SERVICE_TOKEN` - perfil de app **Node.js**, nao Django. Nao ha `DJANGO_SECRET_KEY`, `DJANGO_SETTINGS_MODULE` nem nada compativel com o `.env.example` que E01 vai gerar. **Nao e o projeto do Prisma** apesar do nome parecido ("meu-ecoo") - e outro produto da empresa, ja em producao. Nenhum valor de variavel foi exposto (usei `railway variables --kv` e mascarei tudo antes de registrar aqui).
+  - Nao encontrei, em `railway list`, nenhum projeto com nome obvio para "Prisma"/"ecoo-prisma"/"backend-prisma".
+- [2026-08-03] Conclusao: nao ha nem projeto Railway do Prisma nem codigo Django para deployar. Duas coisas bloqueiam esta etapa ao mesmo tempo:
+  1. `E01` precisa concluir (gera `backend/`, `.env.example`, `requirements.txt`) antes de haver o que buildar.
+  2. Falta decisao humana sobre criar um projeto Railway novo para o Prisma (custo, conforme a secao 3 desta etapa manda perguntar antes de criar).
+  Marquei o status como `AGUARDANDO DECISAO` em vez de `BLOQUEADA` porque o bloqueio de E01 e temporario (ela esta em andamento), mas a criacao de projeto novo exige resposta humana antes que eu prossiga - nao vou criar projeto Railway sem confirmacao.
+- [2026-08-03] Nao linkei nada, nao criei nada, nao rodei `railway variables --set` nem qualquer comando de escrita. O link local em `meu-ecoo`/`production` que o CLI mostrou ja existia antes desta sessao (nao fui eu quem linkou) - registrando para quem ler depois nao presumir que essa e a infra do Prisma.
+- [2026-08-03] Proximo passo assim que houver resposta: se a decisao for criar projeto novo, rodar `railway init` com nome explicito (ex.: `meu-ecoo-prisma-backend` ou equivalente definido com o time) e criar os dois ambientes (`production` + `development`) com bancos Postgres separados (secao 5.1), so entao passar para variaveis/build quando `backend/` existir (E01 concluida).
+- [2026-08-03] Revisao apos a separacao dos projetos Meu Ecoo e Meu Ecoo Prisma - a conta Railway informa assinatura vencida; nao executei deploy, migracao, alteracao de variavel ou outro comando de escrita. O MVP segue validado localmente com SQLite, e esta etapa permanece AGUARDANDO DECISAO ate a regularizacao da cobranca e autorizacao de infraestrutura.
 
 ## 9. Criterio de pronto
 

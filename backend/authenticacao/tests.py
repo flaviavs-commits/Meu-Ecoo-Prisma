@@ -30,6 +30,7 @@ def test_login_devolve_access_e_refresh_em_cookie():
     assert "access" in resposta.data
     assert "refresh" not in resposta.data
     assert resposta.cookies["refresh_token"]["httponly"] is True
+    assert resposta.cookies["refresh_token"]["secure"] == ""
 
 
 def test_login_invalido_tem_mensagem_generica():
@@ -65,6 +66,19 @@ def test_refresh_usa_cookie_e_rotaciona_token():
     assert resposta.status_code == 200
     assert "access" in resposta.data
     assert resposta.cookies["refresh_token"].value != refresh
+
+
+def test_logout_invalida_cookie_de_refresh():
+    pessoa = usuario()
+    cliente = APIClient()
+    login = cliente.post("/api/v1/auth/login/", {"email": pessoa.email, "password": "senha-segura-123"})
+    cliente.credentials(HTTP_AUTHORIZATION=f"Bearer {login.data['access']}")
+    cliente.cookies["refresh_token"] = login.cookies["refresh_token"].value
+
+    resposta = cliente.post("/api/v1/auth/logout/", {})
+
+    assert resposta.status_code == 204
+    assert resposta.cookies["refresh_token"]["max-age"] == 0
 
 
 def test_usuario_inativo_nao_entra():

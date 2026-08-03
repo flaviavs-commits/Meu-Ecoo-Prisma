@@ -3,6 +3,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.conf import settings
 
 from .serializers import LoginSerializer, EuSerializer
 from .throttles import LoginRateThrottle
@@ -17,7 +19,10 @@ class LoginView(TokenObtainPairView):
         response = super().post(request, *args, **kwargs)
         refresh = response.data.pop("refresh", None)
         if refresh:
-            response.set_cookie("refresh_token", refresh, httponly=True, secure=True, samesite="Lax", max_age=604800)
+            response.set_cookie(
+                "refresh_token", refresh, httponly=True,
+                secure=settings.REFRESH_COOKIE_SECURE, samesite="Lax", max_age=604800,
+            )
         return response
 
 
@@ -31,7 +36,25 @@ class RefreshView(TokenRefreshView):
         response = super().post(request, *args, **kwargs)
         refresh = response.data.pop("refresh", None)
         if refresh:
-            response.set_cookie("refresh_token", refresh, httponly=True, secure=True, samesite="Lax", max_age=604800)
+            response.set_cookie(
+                "refresh_token", refresh, httponly=True,
+                secure=settings.REFRESH_COOKIE_SECURE, samesite="Lax", max_age=604800,
+            )
+        return response
+
+
+class LogoutView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        refresh = request.COOKIES.get("refresh_token")
+        if refresh:
+            try:
+                RefreshToken(refresh).blacklist()
+            except Exception:  # token ausente ou expirado ja nao pode ser reutilizado
+                pass
+        response = Response(status=status.HTTP_204_NO_CONTENT)
+        response.delete_cookie("refresh_token", samesite="Lax")
         return response
 
 

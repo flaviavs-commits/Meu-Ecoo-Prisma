@@ -162,3 +162,7 @@ Documentos que **todas** as etapas respeitam. Leia o que a sua etapa tocar:
 | [`MODELO-DE-DADOS.md`](contratos/MODELO-DE-DADOS.md) | Ao criar ou alterar model |
 | [`LGPD-E-DADOS-SENSIVEIS.md`](contratos/LGPD-E-DADOS-SENSIVEIS.md) | Ao tocar em dado de pessoa |
 | [`GLOSSARIO.md`](contratos/GLOSSARIO.md) | Ao nomear qualquer coisa |
+
+## 7. Coordenação do canvas
+
+- [2026-08-03] **/Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/VISAO-GERAL.md** iniciou a retomada do MVP e auditou o painel de etapas, o protocolo do agente e a árvore de trabalho. Estado desta retomada: **BLOQUEADO para nova implementação**; E02 está atribuída a `agente-canvas-E02` e marcada `BLOQUEADA`, enquanto E05, E08, E12 e E13 têm trabalho paralelo registrado. A auditoria confirmou que o projeto Railway correto agora existe como `Meu-Ecoo-Prisma`, com Postgres e serviço `api` online; porém os testes locais ainda apontam para um Postgres local inexistente (`role "prisma" does not exist`). Não apliquei migrações porque a E02 pertence a outro agente e a operação altera estado compartilhado. Próximo passo concreto: o responsável da E02 deve configurar a conexão pública do Railway, revisar/aplicar a migração e registrar a validação, ou o painel deve atribuir uma etapa livre. Validação: `manage.py check` passou; `pytest backend/tests backend/contas -q` resultou em `3 passed, 2 errors` por conexão local; `railway status` confirmou o projeto e os serviços online.

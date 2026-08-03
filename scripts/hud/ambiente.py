@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import csv
 import io
+import re
 import shutil
 import socket
 import subprocess
@@ -177,13 +178,11 @@ def _projeto_da_linha_de_comando(linha_de_comando: str) -> str:
 def portas_em_escuta() -> list[PortaEmUso]:
     """Lista as portas TCP em LISTENING nesta maquina, com dono e projeto.
 
-    So Windows: usa `netstat -ano` para achar porta+PID, `tasklist` para
-    o nome do processo e PowerShell/CIM para a linha de comando (de onde
-    se deduz o projeto). Sem libs externas porque o projeto nao depende
-    de nenhuma (nem psutil) so para isto.
+    No Windows usa `netstat`/PowerShell. No macOS/Linux usa `lsof` quando
+    disponivel, mantendo o painel funcional sem depender de psutil.
     """
     if sys.platform != "win32":
-        return []
+        return _portas_posix()
 
     try:
         saida = subprocess.run(
@@ -223,3 +222,37 @@ def portas_em_escuta() -> list[PortaEmUso]:
         projeto = _projeto_da_linha_de_comando(linhas_de_comando.get(pid, ""))
         resultado.append(PortaEmUso(porta, pid, processo, projeto))
     return resultado
+
+
+def _portas_posix() -> list[PortaEmUso]:
+    """Lista listeners POSIX com lsof, sem presumir nomes de processos."""
+    try:
+        saida = subprocess.run(
+            ["lsof", "-nP", "-iTCP", "-sTCP:LISTEN", "-F", "pcn"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=5,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return []
+
+    processo = "desconhecido"
+    pid = None
+    resultado: dict[tuple[int, int], PortaEmUso] = {}
+    porta_re = re.compile(r":(\d+)$")
+    for linha in saida.stdout.splitlines():
+        if linha.startswith("p"):
+            pid = int(linha[1:]) if linha[1:].isdigit() else None
+        elif linha.startswith("c"):
+            processo = linha[1:] or "desconhecido"
+        elif linha.startswith("n") and pid is not None:
+            encontrado = porta_re.search(linha[1:])
+            if encontrado:
+                porta = int(encontrado.group(1))
+                resultado[(porta, pid)] = PortaEmUso(
+                    porta, pid, processo, _projeto_da_linha_de_comando(linha[1:])
+                )
+    return sorted(resultado.values(), key=lambda item: (item.porta, item.pid))

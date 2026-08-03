@@ -83,3 +83,10 @@ Aparecem em codigo ou tela antigos e **nao devem ser reintroduzidos**:
 
 Regra pratica: se um professor da escola entenderia a palavra, ela vai em
 portugues. Se e vocabulario de programador, pode ficar em ingles.
+
+## Estado do canvas
+
+- [2026-08-03] **Identidade:** `/Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/contratos/GLOSSARIO.md`.
+- [2026-08-03] **Estado:** aguardando decisão de alocação para iniciar uma etapa de código do MVP. A fundação E01 está concluída; E02 está atribuída a outro agente e bloqueada no painel, enquanto E05, E08, E12 e E13 possuem trabalho paralelo não concluído. Nenhum arquivo de código foi alterado nesta sessão para evitar conflito entre agentes.
+- [2026-08-03] **Validação:** `git status --short` confirmou alterações não relacionadas já presentes; a estrutura de backend e os contratos de E02 foram lidos. O guia mínimo do Felixo foi consultado na fonte oficial do repositório `Felipe-Alcantara/Felixo-System-Design` porque a cópia local não existe.
+- [2026-08-03] **Retomada por** `/Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/contratos/GLOSSARIO.md`: o painel foi rechecado após a reinicialização dos agentes. Não há etapa livre e sem dependências para este nó; E02 continua bloqueada e atribuída, E03 depende dela, e E12/E13 já têm responsáveis. Nenhum código ou arquivo de outro agente foi alterado; estado final desta retomada: **bloqueado aguardando liberação/decisão de alocação**.

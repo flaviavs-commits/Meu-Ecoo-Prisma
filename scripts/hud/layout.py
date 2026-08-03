@@ -109,7 +109,10 @@ class LayoutMixin:
         cartao.grid(row=1, column=0, sticky="ew")
 
         self.linhas: dict[str, LinhaStatus] = {}
-        rotulos = ("Servidor", "Dependências", "Telas da aplicação", "npm", "Porta")
+        rotulos = (
+            "Frontend", "Backend", "Dependências", "Telas da aplicação", "npm",
+            "Porta frontend", "Porta backend",
+        )
         for indice, rotulo in enumerate(rotulos):
             if indice:
                 # Divisoria suave, nunca linha de tabela.
@@ -127,13 +130,14 @@ class LayoutMixin:
 
         # (chave, icone, titulo, descricao, callback, primario)
         acoes = [
-            ("servidor", ICONES["rodar"], "Rodar servidor", "Inicia o Vite", self.acao_servidor, True),
+            ("servidor", ICONES["rodar"], "Rodar aplicação", "Inicia frontend e backend", self.acao_servidor, True),
             ("abrir", ICONES["navegador"], "Abrir navegador", "Abre a landing page", self.acao_abrir, False),
+            ("backend", ICONES["backend"], "Rodar backend", "Inicia a API Django", self.acao_backend, False),
             ("instalar", ICONES["pacote"], "Instalar dependências", "Executa npm install", self.acao_instalar, False),
             ("sincronizar", ICONES["sincronizar"], "Sincronizar", "Atualiza as telas", self.acao_sincronizar, False),
             ("build", ICONES["build"], "Build", "Compila produção", self.acao_build, False),
-            ("validar", ICONES["validar"], "Validar", "Executa lint e build", self.acao_validar, False),
-            ("porta", ICONES["porta"], "Porta", f"Atual: {self.porta}", self.acao_configurar, False),
+            ("validar", ICONES["validar"], "Validar", "Executa o lint", self.acao_validar, False),
+            ("porta", ICONES["porta"], "Porta frontend", f"Atual: {self.porta}", self.acao_configurar, False),
             ("limpar", ICONES["limpar"], "Limpar console", "Esvazia a saída", self.acao_limpar, False),
             ("fechar_porta", ICONES["fechar_porta"], "Fechar portas", "Lista e encerra portas em uso", self.acao_fechar_porta, False),
         ]

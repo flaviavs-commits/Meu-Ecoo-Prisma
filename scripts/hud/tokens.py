@@ -55,6 +55,7 @@ FAMILIA_ICONE = "Segoe Fluent Icons"
 ICONES = {
     "rodar": "",       # play
     "parar": "",       # stop
+    "backend": "",     # servidor
     "navegador": "",   # globo
     "pacote": "",      # caixa
     "sincronizar": "", # sync

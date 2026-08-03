@@ -40,29 +40,36 @@ class StatusMixin:
         """
 
         def medir() -> None:
-            self.fila.put(("status", "1" if porta_em_uso(self.porta) else ""))
+            frontend = "1" if porta_em_uso(self.porta) else ""
+            backend = "1" if porta_em_uso(self.porta_backend) else ""
+            self.fila.put(("status", f"{frontend}:{backend}"))
 
         threading.Thread(target=medir, daemon=True).start()
         self.raiz.after(3000, self._agendar_status)
 
-    def _pintar_status(self, porta_ocupada: bool) -> None:
+    def _pintar_status(self, estado: str) -> None:
         """Repinta o card de status. So roda na thread da interface."""
-        meu = self.servidor is not None and self.servidor.poll() is None
+        frontend_ocupado, backend_ocupado = estado.split(":")
+        frontend_ocupado = frontend_ocupado == "1"
+        backend_ocupado = backend_ocupado == "1"
+        meu_frontend = self.servidor is not None and self.servidor.poll() is None
+        meu_backend = self.backend is not None and self.backend.poll() is None
+        meu = meu_frontend or meu_backend
         self.rodando = meu
 
-        if porta_ocupada and meu:
-            servidor = ("Rodando", SUCESSO, SUCESSO_FUNDO)
-        elif porta_ocupada:
-            # A porta responde, mas quem subiu nao foi este HUD.
-            servidor = ("Externo", ALERTA, ALERTA_FUNDO)
-        else:
-            servidor = ("Parado", TEXTO_TENUE, FUNDO)
+        def estado_porta(ocupada: bool, proprio: bool):
+            if ocupada and proprio:
+                return ("Rodando", SUCESSO, SUCESSO_FUNDO)
+            if ocupada:
+                return ("Externo", ALERTA, ALERTA_FUNDO)
+            return ("Parado", TEXTO_TENUE, FUNDO)
 
         deps = dependencias_instaladas()
         telas = app_sincronizada()
         tem_npm = npm() is not None
 
-        self.linhas["Servidor"].atualizar(*servidor)
+        self.linhas["Frontend"].atualizar(*estado_porta(frontend_ocupado, meu_frontend))
+        self.linhas["Backend"].atualizar(*estado_porta(backend_ocupado, meu_backend))
         self.linhas["Dependências"].atualizar(
             *(("Instaladas", SUCESSO, SUCESSO_FUNDO) if deps else ("Ausentes", ALERTA, ALERTA_FUNDO))
         )
@@ -72,7 +79,8 @@ class StatusMixin:
         self.linhas["npm"].atualizar(
             *(("Encontrado", SUCESSO, SUCESSO_FUNDO) if tem_npm else ("Ausente", ERRO, ERRO_FUNDO))
         )
-        self.linhas["Porta"].atualizar(str(self.porta), INFO, INFO_FUNDO)
+        self.linhas["Porta frontend"].atualizar(str(self.porta), INFO, INFO_FUNDO)
+        self.linhas["Porta backend"].atualizar(str(self.porta_backend), INFO, INFO_FUNDO)
 
         # O card principal alterna entre subir e parar o servidor.
         if meu:
@@ -82,18 +90,19 @@ class StatusMixin:
 
         # "Abrir navegador" so faz sentido com algo respondendo.
         if not self.ocupado:
-            self.cards["abrir"].definir_estado(porta_ocupada)
+            self.cards["abrir"].definir_estado(frontend_ocupado)
+            self.cards["backend"].definir_estado(True)
 
     def _card_servidor_para(self) -> None:
         """Poe o card principal no modo 'parar'."""
         self.cards["servidor"].definir_conteudo(
-            ICONES["parar"], "Parar servidor", "Finaliza o processo"
+            ICONES["parar"], "Parar aplicação", "Finaliza frontend e backend"
         )
 
     def _card_servidor_roda(self) -> None:
         """Poe o card principal no modo 'rodar'."""
         self.cards["servidor"].definir_conteudo(
-            ICONES["rodar"], "Rodar servidor", "Inicia o Vite"
+            ICONES["rodar"], "Rodar aplicação", "Inicia frontend e backend"
         )
 
     def _travar_cards(self, travar: bool) -> None:
@@ -104,7 +113,7 @@ class StatusMixin:
         """
         self.ocupado = travar
         for chave, card in self.cards.items():
-            if chave == "servidor":
+            if chave in ("servidor", "backend"):
                 continue
             if chave == "abrir" and not travar:
                 # Quem manda no estado deste e o _pintar_status.

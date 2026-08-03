@@ -1,12 +1,24 @@
 # IA.md - Contexto Operacional
 
+[2026-08-03] **Projeto Railway do Prisma identificado** por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/CONSTITUICAO-MODULARIDADE.md: `Meu-Ecoo-Prisma`, ambiente `production`, com Postgres e API online. A URL disponível para o serviço Postgres é privada (`postgres.railway.internal`) e não resolve na máquina local; `DATABASE_PUBLIC_URL` não está configurada. A E02 segue bloqueada para validação remota até existir uma URL pública/encaminhamento autorizado ou execução de comandos no ambiente Railway. Validação local estrutural com SQLite temporário: 5 testes passaram; `manage.py check` ainda acusa referências da E05 a apps `ia` e `academico` ainda não instalados.
+
 [2026-08-03] **Decoração da tela de escolha removida por Codex gpt-5.6-luna yolo  Estudo-com-IA**: retiradas as linhas diagonais, gradientes, pontilhado, losango e prisma decorativo de `mockup/index.html`; permanecem o logo, a divisão dos painéis e os elementos funcionais de escolha. Validação: screenshot Playwright em 390x844 e 1920x1080, sem overflow horizontal.
+
+[2026-08-03] **Retomada do canvas por `/Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/README.md`**: não havia etapa de backend livre para assumir com segurança; E02 está atribuída, E05/E08/E13 têm trabalho paralelo e as demais dependem de etapas bloqueadas. Validação do estado atual: `cd backend && .venv/bin/pytest -q` falhou na coleta em 3 arquivos de testes da E05 porque `creditos.models` não está associado a um app em `INSTALLED_APPS` (`RuntimeError: Model class creditos.models.Lancamento ... isn't in an application in INSTALLED_APPS`). Correção deve ser feita pelo responsável da E05, sem sobrescrever os arquivos não versionados dele. Estado desta retomada: **bloqueado por trabalho paralelo/dependências; próxima ação concreta é o agente E05 registrar o app `creditos` e repetir os testes**.
+
+[2026-08-03] **Integração mínima da E05 registrada por `/Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/README.md`**: `creditos` foi adicionado a `INSTALLED_APPS` em `backend/config/settings/base.py`, sem alterar a implementação do agente E05. Após a correção, a coleta passou e a suíte chegou a `3 passed, 14 errors`; os erros restantes são conexão ao PostgreSQL local (`FATAL: role "prisma" does not exist`), coerente com a decisão do projeto de usar PostgreSQL do Railway e com a ausência de banco local. Estado: **bloqueado por infraestrutura de banco; código de registro do app validado até a etapa de conexão**.
 
 [2026-08-03] **Mobile-first concluído por Codex gpt-5.6-luna yolo  Estudo-com-IA**: landing React e telas HTML de entrada, login, aluno, professor e diretor receberam ajustes de responsividade, áreas de toque, CTAs fluidos, contenção de overflow, tabelas móveis e compressão do Tutor em telefones estreitos. Validação concluída: `npm run lint`, `npm run build`, varredura UTF-8 em 54 arquivos e Playwright nas 6 rotas visuais em 390x844, sem overflow horizontal nem erros de console; landing também verificada em 1280x800. Estado desta rodada: **concluído**. Limite conhecido: backend e autenticação continuam fora do código existente e não foram implementados nesta rodada.
 
 [2026-08-03] Segunda passada visual na tela de escolha: ambientação geométrica sutil, prisma ampliado no painel escuro, indicador das três rotas, copy reduzida, cards com microinterações e responsividade mobile refinada. Validação: cópia sincronizada no PrismaTest e lint/build do frontend passaram.
 
 [2026-08-03] Tela de escolha de perfil refinada em `mockup/index.html`: divisão entre identidade e entrada agora é exatamente 50/50; cards de aluno, professor e diretor ficaram mais compactos, numerados e tecnológicos, com estados de foco/hover acessíveis. A tela continua sendo a fonte de verdade sincronizada pelo PrismaTest.
+
+[2026-08-03] **E01 (fundacao do projeto Django) concluida** por Claude, agente identificado no canvas como `docs/backend/contratos/API-CONVENCOES.md`. Primeira linha de codigo do backend: `backend/` com Django 5.2 + DRF, settings por ambiente (`config/settings/base.py`/`dev.py`/`prod.py`), `GET /api/v1/health/`, exception handler unico no formato do contrato (`core/erros.py`), `pytest` com 3 testes passando via TDD e `pip-audit` sem vulnerabilidades. Commit `92c915c`. Duas decisoes de projeto (nao so de etapa) que valem registrar aqui:
+  - **Nao existe projeto "Prisma" no Railway ainda** (`railway list` mostrou 13 projetos da empresa, nenhum com esse nome). Isso bloqueia a validacao real de `DATABASE_URL` contra o Postgres do Railway - a E01 rodou so contra um `.env` local nunca conectado de fato. Escopo de destravar isso e da **E12**; ate la, qualquer etapa que precise de banco real fica com essa mesma limitacao.
+  - **Python 3.12 nao esta instalado nesta maquina** (so 3.11.15 e 3.14.3 via Homebrew) - o venv do backend usa 3.11 por decisao pratica, registrada tambem no diario da E01. Se 3.12 for instalado depois, recriar `backend/.venv`.
+  - **Contradicao de desenho corrigida**: a E01 original mandava deixar o app `contas` vazio com `AUTH_USER_MODEL = "contas.Usuario"` ja apontado - isso quebra o Django de verdade (`django.contrib.auth` resolve o model em `AppConfig.ready()`, nao so na migracao). A correcao foi criar um stub minimo (`class Usuario(AbstractUser): pass`) em `contas/models.py`. Consequencia para quem pegar a **E02**: o model ja existe como classe Python, o trabalho e editar/estender, nao criar do zero.
+  - Confirmado ao vivo que o ambiente multi-agente esta em uso real: `backend/creditos/` (E05) e trabalho paralelo de outro agente ja estavam la quando a E01 comecou a escrever codigo.
 
 ## Estado atual (resumo vivo)
 
@@ -16,7 +28,7 @@
   sem reler toda a linha do tempo abaixo. Reescreva-a a cada mudanca de estado.
 -->
 
-[2026-08-01] Landing page concluida em `frontend/` (React 19 + TypeScript + Vite 8 + Tailwind 4 + Motion 12); telas por perfil em `mockup/`. **O backend continua sem uma linha de codigo, mas ja tem system design completo**: `docs/backend/` traz 13 etapas independentes, 4 contratos compartilhados e o protocolo de trabalho multi-agente. Proximo passo do backend e a etapa E01 (fundacao do projeto Django). Ponto de entrada para qualquer agente de backend: [`docs/backend/README.md`](docs/backend/README.md).
+[2026-08-03] Landing page concluida em `frontend/` (React 19 + TypeScript + Vite 8 + Tailwind 4 + Motion 12); telas por perfil em `mockup/`. **O MVP backend local esta implementado**: E01, E03-E11 entregues em Django/DRF, com SQLite para desenvolvimento e TDD; E02 permanece bloqueada somente quanto a validacao remota de multi-tenancy. A integracao inicial esta em `/entrar`: e-mail e senha, access token apenas em memoria, refresh em cookie HttpOnly e CORS local. O HUD agora prepara SQLite, sobe Django e Vite em sequencia e encerra as arvores de processos em Windows/macOS/Linux. Railway fica fora do ciclo local enquanto a assinatura estiver pendente. Ponto de entrada: [`docs/backend/README.md`](docs/backend/README.md).
 
 ## Objetivo do projeto
 
@@ -28,19 +40,19 @@ O repositorio `Estudo-com-IA` mantem a documentacao de concepcao (visao, arquite
 
 ## Estado atual
 
-- **Implementado**: landing page publica em `frontend/`, `start_app.py` na raiz, system design do backend em `docs/backend/`.
-- **Em progresso**: Fase 0 - o backend esta desenhado, nao construido. Nenhuma etapa iniciada.
-- **Pendente**: executar as 13 etapas de `docs/backend/etapas/`, comecando pela E01.
+- **Implementado**: landing, login em `/entrar`, cliente API, contexto de sessao, backend Django/DRF das etapas E01 e E03-E11, SQLite local, e HUD modular em `scripts/hud/` para subir os dois servidores.
+- **Validado**: backend com `pytest`, frontend com Vitest/lint/build, CORS e login real contra `127.0.0.1:8000`.
+- **Pendente**: protecao das telas estaticas de `/app/`, integracao das telas por perfil com a identidade autenticada, validacao remota final da E02 e a decisao de infraestrutura E12/E13.
 
 ## Stack e dependencias
 
 - Frontend: React 19 + TypeScript + Vite 8 + Tailwind 4 (instalado, em `frontend/`)
 - Playwright (devDependency, `frontend/`): instalado em 2026-07-29 para permitir screenshot real da landing renderizada. Sem ele, mudancas visuais (logo, layout) so eram validadas por lint/build/inspecao de codigo - nunca por olhar a pagina de fato. Chromium baixado localmente via `npx playwright install chromium`.
-- Backend: Django + Django REST Framework (monolito modular) - ainda nao iniciado
-- Banco: PostgreSQL
+- Backend: Django 5.2.16 + DRF 3.17.1 (monolito modular), em `backend/`. Fundacao (E01) concluida em 2026-08-03. Python 3.11.15 (3.12 pedido pelo desenho, indisponivel nesta maquina - ver diario da E01).
+- Banco: PostgreSQL (Railway) - projeto "Prisma" ainda nao existe la, entao nenhuma conexao real foi validada ainda
 - IA: OpenRouter (API unificada multi-modelo)
 - Deploy: Railway
-- Testes: a definir junto com o backend
+- Testes: `pytest` + `pytest-django` no backend e Vitest no frontend, com TDD nos fluxos de autenticacao e contrato API (ver `backend/` e `frontend/src/api/`)
 
 ## Decisoes de arquitetura
 
@@ -176,7 +188,28 @@ VALIDACAO: `npm run build` compilou (tsc + vite, 31 modulos, 0 erro); `npm run l
 
 ## Testes importantes
 
-[2026-07-28] Sem teste automatizado ainda. A landing e UI puramente visual e sem regra de negocio, caso em que o `GUIA_MINIMO_QUALIDADE.md` (item 7, "regua unica de testes") aceita verificacao manual registrada. Testes automatizados passam a ser obrigatorios quando entrar logica de negocio (autenticacao, creditos, gateway de IA).
+[2026-08-03] A landing continua visual, mas a entrada autenticada agora tem regra de negocio e contrato API. Por isso o frontend ganhou Vitest para o cliente HTTP; o backend continua com `pytest`/`pytest-django` e TDD. A validacao manual do HUD permanece necessaria porque Tkinter depende de display.
+
+Validacao da integracao frontend/backend em 2026-08-03:
+
+| Verificacao | Comando | Resultado |
+|-------------|---------|-----------|
+| Cliente API | `cd frontend && npm test` | 2 testes passaram: payload de e-mail/senha, cookie de refresh e erro padronizado |
+| Frontend estatico | `npm run lint` e `npm run build` | ambos passaram; TypeScript e bundle Vite sem erro |
+| Backend completo | `cd backend && .venv/bin/pytest -q` | 101 passaram, 1 ignorado |
+| Configuracao Django | `.venv/bin/python manage.py check` e `makemigrations --check --dry-run` | sem problemas e sem migracoes pendentes |
+| Dependencias frontend | `npm audit --audit-level=high` | 0 vulnerabilidades encontradas |
+| Health local | `curl http://127.0.0.1:8000/api/v1/health/` | HTTP 200, `{"status":"ok"}` |
+| Login/CORS local | `curl` com Origin `http://127.0.0.1:5174` e cookie | login retornou access token, cookie HttpOnly e `Access-Control-Allow-Credentials: true` |
+
+Validacao estrutural do HUD apos a integracao:
+
+| Verificacao | Comando | Resultado |
+|-------------|---------|-----------|
+| Sintaxe e importacao | `python3 -m compileall -q scripts/hud start_app.py` | OK |
+| Portas POSIX | script local contra `lsof` | listeners encontrados; frontend 5174 identificado |
+| Arvore de processos | inspecao de `SAIDA_SUBPROCESSO` e `encerrar_arvore` | nova sessao no macOS/Linux e encerramento por grupo; `taskkill /T` preservado no Windows |
+| Fluxo principal | leitura dirigida de `acao_servidor` e `BackendMixin` | migrate SQLite conclui antes do Vite; falha do backend nao inicia frontend |
 
 Verificacao da quebra do `start_app.py` em 2026-07-29 (saida observada,
 nao presumida):
@@ -205,6 +238,8 @@ Verificacao manual executada em 2026-07-28:
 Observacao: `--color-erro` nao aparece no CSS compilado porque o Tailwind 4 so emite token efetivamente usado, e a landing nao tem estado de erro. O token segue definido em `index.css` e sera emitido quando um formulario usar. Nao e defeito.
 
 Pendente de verificacao manual: renderizacao em navegador real (mobile e desktop) e navegacao por teclado ponta a ponta. O HTML foi construido com foco visivel, `aria-label` no menu, `aria-pressed` nas abas do demo e skip link, mas isso ainda nao foi conferido com leitor de tela.
+
+[2026-08-03] **Integracao local por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** conectei `/entrar` ao backend Django usando somente e-mail e senha. O cliente separa transporte (`frontend/src/api/cliente.ts`), sessao (`frontend/src/auth/`) e UI (`frontend/src/components/auth/PaginaLogin.tsx`); nao usa `localStorage` nem expoe segredo. O HUD foi ajustado em `scripts/hud/` para preparar SQLite, iniciar backend e frontend em sequencia, reconhecer listeners no macOS/Linux e encerrar grupos de processos sem deixar Vite/Django orfaos. Validacao: tabela acima, backend 101 passed/1 skipped, frontend 2 testes, lint/build/check/migracoes e login/CORS reais.
 
 [2026-07-28, segunda rodada] Apos identidade visual, animacoes e reestruturacao:
 
@@ -386,11 +421,11 @@ Nao verificado nesta sessao: FPS das animacoes, comportamento em telas pequenas 
 - [ ] Definir se `Estudo-com-IA` continua como repositorio de concepcao ou se a documentacao migra para ca.
 - [x] ~~Fase 0: frontend React com `start_app.py`~~ - landing entregue em 2026-07-28.
 - [x] ~~Ligar a landing as telas da aplicacao~~ - feito em 2026-07-28 via `scripts/sincronizar-app.py`.
-- [ ] Fase 0: backend Django + login dos 3 perfis (**escopo do Felipe**). Contrato sugerido: `POST /api/auth/login` devolvendo token e perfil; o frontend passa a rotear pelo perfil autenticado em vez de abrir a tela inicial da aplicacao direto. Ponto de troca: `ENTRADA_APP` em `frontend/src/content/destinos.ts`.
-- [ ] Definir como a sessao sobrevive a troca landing -> aplicacao: hoje e navegacao de pagina inteira, e o estado do React se perde. Sem login isso nao importa; com login, importa.
+- [x] Fase 0: backend Django + login por e-mail e senha entregue localmente em `/api/v1/auth/`; o frontend usa `/entrar`, recebe a identidade e mantem o access token somente em memoria.
+- [x] Sessao inicial integrada: refresh em cookie HttpOnly, logout com blacklist e CORS com credenciais para Vite local. Falta conectar a identidade as telas estaticas de `/app/`.
 - [ ] Conferir FPS real das animacoes em navegador, sobretudo em maquina modesta.
 - [ ] Fase 1: gateway OpenRouter + modulo de creditos + primeira ferramenta de IA.
-- [ ] Definir estrategia de testes e comando de validacao objetiva.
+- [x] Definir estrategia de testes e comando de validacao objetiva: Vitest no cliente API, `pytest` no backend, mais lint/build.
 - [ ] Substituir os depoimentos placeholder por relatos reais coletados na instituicao.
 - [ ] Ligar os CTAs (`#comecar`, `#entrar`) as telas reais quando a autenticacao existir.
 - [ ] Ligar o demo do motor de refracao ao gateway de IA (hoje e estatico e ilustrativo).
@@ -398,7 +433,7 @@ Nao verificado nesta sessao: FPS das animacoes, comportamento em telas pequenas 
 - [ ] Conferir a landing em navegador real (mobile/desktop) e navegacao por teclado.
 - [ ] **Arquivar os registros antigos deste `IA.md`.** Em 2026-08-01 o arquivo passou de 400 linhas, o limite da constituicao de modularidade. Mover os registros mais antigos, **sem editar**, para `docs/ia-archive/IA-ARCHIVE-2026.md`, deixando um ponteiro datado aqui. E mudanca estrutural: merece commit proprio, e nao deve ser feita "de passagem" numa tarefa que nao a envolve.
 - [ ] Remover os tres planos individuais (Prisma / Pro / Ultra) de `frontend/src/content/landing.ts` - residuo do modelo pre-institucional, ver registro de 2026-08-01. Trabalho de frontend.
-- [ ] Decidir onde a SPA guarda o token JWT (cookie `httpOnly` vs `localStorage`) - decisao conjunta frontend/backend, ver `docs/backend/etapas/E03-autenticacao-jwt.md`.
+- [x] Decidir onde a SPA guarda o token JWT: access token somente em memoria; refresh em cookie `HttpOnly`, com CORS por credenciais no desenvolvimento local. Validado por testes do backend e do cliente API.
 - [ ] Definir o prazo de retencao da conversa bruta do tutor - pendencia de LGPD, ver `docs/backend/etapas/E07-memoria-e-conversas.md`. Ate la, nao apagar nada.
 
 ## Resumos de decisao

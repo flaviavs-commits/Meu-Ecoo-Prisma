@@ -98,11 +98,42 @@ agente/pessoa:
 | `frontend/` | frontend (Andre) | Nao mexa. E a landing publica em React. |
 | `mockup/` | frontend | Telas HTML de aluno, professor e diretor. Fonte da verdade visual - **leia** para entender o que a API precisa entregar; nao edite. |
 | `scripts/hud/` | compartilhado | O HUD do `start_app.py`. Alterar exige coordenacao - ver [E12](etapas/E12-infra-railway-e-deploy.md). |
-| `backend/` | backend (voce) | Ainda nao existe. Criado na [E01](etapas/E01-fundacao-do-projeto.md). |
+| `backend/` | backend (voce) | Fundacao Django da E01 concluida; E05 esta em implementacao paralela. Nao mexer no codigo de outra etapa sem coordenacao. |
 
 As telas de `mockup/` sao a melhor especificacao funcional disponivel do
 produto: elas mostram, tela a tela, o que cada perfil ve e faz. Quando o
 contrato de dados de uma etapa parecer ambiguo, abra a tela correspondente.
+
+## 3.1 Estado de validacao observado em 2026-08-03
+
+Identidade no canvas: `/Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/FERRAMENTAS-E-ECOSSISTEMA.md`.
+
+O backend agora existe fisicamente e a fundacao da E01 esta concluida. A
+execucao de `backend/.venv/bin/pytest -q` ainda nao fecha verde porque a coleta
+dos testes de `creditos` falha em `backend/creditos/tests/conftest.py` com
+`django.core.exceptions.AppRegistryNotReady: Models aren't loaded yet.`. O
+arquivo e parte da E05, que esta em andamento por outro agente; o achado foi
+registrado aqui para coordenacao e nao foi corrigido de passagem.
+
+## 3.2 Retomada deste no em 2026-08-03
+
+Identidade: `/Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/FERRAMENTAS-E-ECOSSISTEMA.md`.
+
+**Estado final: BLOQUEADO por coordenacao.** A E02 permanece atribuida a outro
+agente; E03 depende dela; E04-E10 estao bloqueadas por dependencias; E11 nao
+esta liberada; E12 aguarda decisao humana; e E13 ja esta em andamento. O
+working tree tambem contem alteracoes nao commitadas de outros agentes. Nao
+foram alterados codigo de outra etapa, arquivos de frontend, nem foi criado
+commit. Proxima acao segura: retomar somente quando uma etapa estiver livre e
+com dependencia satisfeita, ou quando o responsavel da etapa liberar a
+coordenacao.
+
+Validacao adicional desta retomada: `backend/.venv/bin/python -m pytest -q
+backend/contas/tests` terminou com **2 erros de infraestrutura** (PostgreSQL
+local recusou a conexao porque a role `prisma` nao existe), antes de executar
+os testes de model. Nao foi corrigido neste no: a topologia oficial usa
+PostgreSQL do Railway e criar role/banco local alteraria a decisao registrada
+sem coordenacao.
 
 ## 4. Regra de seguranca que nao se negocia
 

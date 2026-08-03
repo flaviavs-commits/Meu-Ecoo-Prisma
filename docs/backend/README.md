@@ -9,10 +9,17 @@ Sao 5 minutos e evitam retrabalho.
 
 ## Estado do backend
 
-O backend **ainda nao existe em codigo**. A pasta `backend/` sera criada na
-etapa E01. O que existe hoje neste repositorio e a landing em React
-(`frontend/`) e as telas HTML por perfil (`mockup/`), ambas de responsabilidade
-do frontend.
+O backend ja existe em codigo e as etapas E01, E03-E11 foram implementadas e
+validadas localmente com SQLite. A E02 continua marcada como bloqueada por sua
+validacao remota/multi-tenant pendente; nao altere seus arquivos sem registrar
+a decisao no diario. A integracao atual do frontend usa `/api/v1/auth/` e o
+endpoint de saude; o Railway nao participa do ciclo local enquanto a conta
+estiver com cobranca pendente.
+
+**Estado deste no:** as etapas de backend necessarias ao MVP local estao
+entregues. O trabalho corrente e a integracao frontend/backend e a validacao
+do HUD em `scripts/hud/`; novas etapas de dominio devem ser abertas somente
+quando houver escopo definido no painel.
 
 ## Como escolher uma etapa
 
@@ -32,18 +39,18 @@ do frontend.
 | # | Etapa | Status | Responsavel | Depende de | Destrava |
 |---|-------|--------|-------------|-----------|----------|
 | E01 | [Fundacao do projeto](etapas/E01-fundacao-do-projeto.md) | CONCLUIDA | Claude (API-CONVENCOES.md) | - | todas |
-| E02 | [Nucleo de dados e multi-tenancy](etapas/E02-nucleo-de-dados-e-multitenancy.md) | BLOQUEADA | agente-canvas-E02 | E01 | E03..E11 |
-| E03 | [Autenticacao JWT](etapas/E03-autenticacao-jwt.md) | NAO INICIADA | - | E02 | E04 |
-| E04 | [Autorizacao e perfis](etapas/E04-autorizacao-e-perfis.md) | BLOQUEADA | agente-canvas-E04 | E03 | E05, E09, E10, E11 |
-| E05 | [Creditos - ledger](etapas/E05-creditos-ledger.md) | BLOQUEADA | Claude (agente E05) | E04 | E06 |
-| E06 | [Gateway de IA - interface](etapas/E06-gateway-de-ia.md) | BLOQUEADA | Claude (canvas E06) | E05 | E07 |
-| E07 | [Memoria e conversas do tutor](etapas/E07-memoria-e-conversas.md) | BLOQUEADA | claude-sonnet-5 (canvas/E07) | E06 | - |
-| E08 | [Upload de materiais](etapas/E08-upload-de-materiais.md) | BLOQUEADA | Claude (agente E08) | E02 | E10 |
-| E09 | [Academico - turmas, notas, faltas](etapas/E09-academico.md) | BLOQUEADA | agente E09 | E04 | - |
-| E10 | [Conteudo e rascunhos](etapas/E10-conteudo-e-rascunhos.md) | BLOQUEADA | Claude | E04, E08 | - |
-| E11 | [Admin e onboarding da escola](etapas/E11-admin-e-onboarding.md) | NAO INICIADA | - | E04 | - |
+| E02 | [Nucleo de dados e multi-tenancy](etapas/E02-nucleo-de-dados-e-multitenancy.md) | BLOQUEADA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/Responsavel por todas as etapas | E01 | E03..E11 |
+| E03 | [Autenticacao JWT](etapas/E03-autenticacao-jwt.md) | CONCLUIDA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md | E02 | E04 |
+| E04 | [Autorizacao e perfis](etapas/E04-autorizacao-e-perfis.md) | CONCLUIDA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md | E03 | E05, E09, E10, E11 |
+| E05 | [Creditos - ledger](etapas/E05-creditos-ledger.md) | CONCLUIDA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md | E04 | E06 |
+| E06 | [Gateway de IA - interface](etapas/E06-gateway-de-ia.md) | CONCLUIDA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md | E05 | E07 |
+| E07 | [Memoria e conversas do tutor](etapas/E07-memoria-e-conversas.md) | CONCLUIDA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md | E06 | - |
+| E08 | [Upload de materiais](etapas/E08-upload-de-materiais.md) | CONCLUIDA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md | E02 | E10 |
+| E09 | [Academico - turmas, notas, faltas](etapas/E09-academico.md) | CONCLUIDA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md | E04 | - |
+| E10 | [Conteudo e rascunhos](etapas/E10-conteudo-e-rascunhos.md) | CONCLUIDA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md | E04, E08 | - |
+| E11 | [Admin e onboarding da escola](etapas/E11-admin-e-onboarding.md) | CONCLUIDA | /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md | E04 | - |
 | E12 | [Infra Railway e deploy](etapas/E12-infra-railway-e-deploy.md) | AGUARDANDO DECISAO | Claude (agente de infra) | E01 | - |
-| E13 | [API nos repos satelites](etapas/E13-api-nos-repos-satelites.md) | EM ANDAMENTO | Claude (sessao 2026-08-03) | - | integracao real de E06 |
+| E13 | [API nos repos satelites](etapas/E13-api-nos-repos-satelites.md) | AGUARDANDO DECISAO | Claude (sessao 2026-08-03) | - | integracao real de E06 |
 
 ## Ordem e paralelismo
 

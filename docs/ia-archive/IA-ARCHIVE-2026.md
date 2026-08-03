@@ -41,3 +41,139 @@
   - **Verificado via Playwright** (nao so lint/build): Vite dev server numa porta livre (5187), screenshots de tela cheia em light/dark, dos dois paineis laterais (Contexto com upload/arquivos/audio-revisao, Configuracoes com segmented controls e toggles), do quiz respondido (certo/errado) e de mobile 390px - confirmando os tres bugs corrigidos e nenhum residuo visual do roxo-ciano antigo (checagem programada por regex de cor, `sobrouCiano:false` nos dois temas). Zero erros de console/pagina. Servidor de verificacao encerrado ao final (processo desta sessao, seguro de parar); scripts `qa-*.mjs` descartaveis, nao commitados.
   - Sincronizado para `frontend/public/app/` via `scripts/sincronizar-app.py` (18 arquivos, dois a mais que antes pelos dois CSS novos).
 - [2026-07-31] **Corrigido flash de tema claro (FOUC) em `aluno.html`/`professor.html`/`diretor.html`**. O `app.js` que le `prisma-theme` do `localStorage` e aplica `data-theme` roda no fim do `<body>` - com o escuro salvo, a pagina pintava clara por um instante e so depois trocava, visivel a cada carregamento/reload. Corrigido com um `<script>` inline no `<head>`, antes do `link` do `ui.css`, que aplica `data-theme` cedo (mesma tecnica padrao de anti-flash, ja que o CSS de tema so existe depois desse `<link>`). **Verificado via Playwright**: apos salvar `dark` e recarregar, o fundo computado do `<body>` ja sai escuro (`rgb(21,20,18)`) nas tres telas.
+
+## Registros de 2026-07-29 (bugs e fixes do HUD, `start_app.py`/`scripts/hud/`)
+
+> Movidos de `IA.md` em 2026-08-03, mesmo motivo do bloco acima: passou do teto
+> de 400 linhas. Todos sao do mesmo dia, sobre o HUD Tkinter, ja resolvidos e
+> sem decisao viva pendente.
+
+- **[2026-07-29] Acentos quebrados na saida do `start_app.py`.** O console do
+  Windows abre em `cp1252` e o arquivo e UTF-8: "instituicoes" saia como
+  `institui??es`. O arquivo sempre esteve correto - quem quebrava era a saida.
+  Corrigido na origem com `sys.stdout.reconfigure(encoding="utf-8")`, sem tirar
+  acento do texto. Mesma preocupacao do commit `7f0da4f`, uma camada abaixo.
+  (O HUD grafico que veio depois nao tem esse problema, mas a causa vale
+  registro: qualquer script Python deste projeto que imprima acento no Windows
+  precisa do mesmo cuidado.)
+
+- **[2026-07-29] Logo oficial adotada em landing, favicon e HUD.** O André
+  trouxe `prisma-logo-minimal.svg` (triângulo com aresta central e "V" da
+  base) como ícone definitivo do projeto. Antes disso o favicon era um SVG
+  roxo/azul solto em `frontend/public/`, sem relação com a paleta creme
+  atual - provavelmente sobra de uma fase anterior da identidade.
+
+  Aplicado nos três lugares a partir do mesmo conjunto de coordenadas
+  (viewBox original 1254x1254, convertido para 32x32):
+    - `frontend/src/components/ui/Logo.tsx` - o componente React que o
+      Header e o Rodapé já usavam, então a landing herda sem mudar
+      chamada nenhuma.
+    - `frontend/public/favicon.svg` - substituído pelo mesmo path.
+    - `start_app.py`, `desenhar_logo_prisma()` - o Tk não importa SVG,
+      então os 3 traços são redesenhados com `create_line` nas mesmas
+      coordenadas. Validado numericamente: os pontos usados no HUD batem
+      com a conversão do SVG original (topo, esq, dir, base, meio - todos
+      a menos de 0.05px de diferença).
+
+  Ajustes finos feitos depois, todos a pedido do André e verificados com
+  captura real via Playwright (não só lint/build):
+    - **Cor**: terracota tentado primeiro (mesma regra de `text-marca` da
+      landing), depois revertido para grafite (`#1a1a1a`/`text-texto`) em
+      tudo - decisão final do André.
+    - **Tamanho do ícone**: 20px→30px na landing, 30px→42px no HUD.
+    - **ViewBox recortado**: de `0 0 32 32` para `5.15 5.18 21.8 21.39`
+      (os limites reais do desenho, com margem simétrica de 1.2). O
+      viewBox original tinha folga maior embaixo que em cima, o que fazia
+      o triângulo "flutuar" acima da linha de base do texto.
+    - **Alinhamento vertical**: tentei compensar com `-translate-y-1` no
+      ícone pra bater com a base óptica das letras (medida via
+      `Canvas.measureText`) - ficou pior, com o ícone flutuando pra cima.
+      Revertido para `items-center` puro (sem deslocamento extra), que o
+      André confirmou como mais equilibrado.
+    - **Tamanho do texto**: `text-lg` (18px) → `text-xl` (20px) em
+      `LogoComNome`, pra reequilibrar a proporção com o ícone maior -
+      confirmado pelo André como a versão final ("assim maior ficou
+      melhor"). O Rodapé herda automaticamente por usar o mesmo
+      componente; não precisou editar `Rodape.tsx`.
+
+  Lição: medição de pixel (bounding box, centro geométrico, base óptica)
+  nem sempre prediz o que o olho julga alinhado - o ajuste "matematicamente
+  correto" do deslocamento vertical ficou pior na prática. Testar
+  visualmente com captura real, não só a métrica, é o que decide.
+
+  Motivo do redesenho em vez de embutir o SVG cru no HUD: Tkinter não tem
+  parser de SVG. A alternativa seria uma dependência de imagem (Pillow +
+  rasterizar o SVG), que o guia mínimo de qualidade não justificaria para
+  um ícone de 30px.
+
+- **[2026-07-29] Diálogos do sistema (simpledialog/messagebox) destoavam do HUD.**
+  A janela de "Configurar porta" e a de confirmação ao fechar saíam com a
+  aparência crua do Windows - cinza, fonte do sistema, sem nenhuma relação
+  com a identidade do Prisma. Substituídas por `Modal`, uma janela própria
+  (Canvas com cantos arredondados, mesma paleta e tipografia dos cards).
+  Dois bugs surgiram ao construir e só apareceram testando de verdade:
+
+  1. **Foco perdido na segunda abertura.** `focus_set()` só agenda o foco;
+     se o SO ainda segurava o foco em outro widget (ex.: o console, após um
+     modal anterior fechar), o pedido não tinha efeito e Enter/Esc paravam
+     de responder. Reproduzido abrindo o modal de porta duas vezes seguidas
+     - a segunda vinha com `focus_get() is None`. Corrigido com
+     `focus_force()`.
+  2. **Modal nascia em (0,0), no canto da tela, por uma corrida.** Com
+     `overrideredirect(True)` (sem decoração), o Windows só reflete a
+     posição real depois de um ciclo do laço principal -
+     `update_idletasks()` não bastava. `_centralizar()` agora chama
+     `update()` ao final.
+
+  Ambos confirmados com um teste programático que abre o modal 5 vezes
+  seguidas e verifica foco e posição a cada rodada.
+
+- **[2026-07-29] Console do HUD virou terminal, e o codepage quebrava acento.**
+  As mensagens do proprio `cmd.exe` saem no codepage OEM (cp437/cp850 aqui),
+  nao em UTF-8: decodificar tudo como UTF-8 transformava "operável" em
+  "oper?vel". As ferramentas do projeto (npm, git, node) escrevem UTF-8, entao
+  a leitura tenta UTF-8 e cai no OEM detectado em runtime (`GetOEMCP`) quando a
+  linha nao e UTF-8 valido. Ver `decodificar()`.
+
+- **[2026-07-29] Codigo de saida aparecia sem sinal.** `npm` falhando com -4058
+  era mostrado como `4294963238`. No Windows o valor vem como unsigned de 32
+  bits; agora e convertido antes de exibir.
+
+- **[2026-07-29] Console espremido a 4 linhas.** Duas causas somadas: a area de
+  saida era empacotada antes da linha de comando e ficava com `expand=True`,
+  deixando a entrada com 1px; e a coluna pedia 1213px numa janela de 1020, com
+  o grid tirando a diferenca da unica linha elastica (a do console). Corrigido
+  empacotando a entrada primeiro, movendo a coluna de `pack` para `grid` com
+  peso so na linha do console, e dimensionando a janela pelo `reqheight` real
+  (`_ajustar_altura`). Cards passaram de 78px para 66px para liberar altura.
+  Resultado medido: console de 61px (4 linhas) para 239px (14 linhas).
+
+- **[2026-07-29] `tk.Scrollbar` nao aceita estilo no Windows.** Saia sempre com
+  o bloco cinza do widget de sistema, com setas. Substituida por `BarraRolagem`,
+  um Canvas com polegar arredondado que some quando nao ha o que rolar e respeita
+  um minimo de 24px (senao vira um risco impossivel de pegar com o mouse).
+
+- **[2026-07-29] "Parar servidor" deixava o Vite vivo.** `npm run dev` e um
+  wrapper: quem abre a porta e um `node` neto. `Popen.terminate()` matava so o
+  wrapper e o neto ficava orfao segurando a 5173 - o HUD dizia "parado" com o
+  site no ar. Confirmado por `Win32_Process`: o `node` sobrevivente tinha como
+  pai um pid que ja nao existia. Corrigido com `encerrar_arvore()`, que usa
+  `taskkill /F /T` no Windows (arvore inteira) e `terminate()` fora dele.
+
+- **[2026-07-29] Status parava de atualizar em silencio.** A medicao de porta
+  foi para uma thread (para nao travar a janela), mas a thread chamava
+  `raiz.after()` - o Tkinter so aceita chamada da thread principal e levantava
+  `RuntimeError: main thread is not in main loop`. Como a excecao morria dentro
+  da thread daemon, nada aparecia: o painel simplesmente congelava. A thread
+  agora so publica na fila; quem repinta e o `_drenar_fila`, ja na thread da
+  interface. Achado ao dirigir o HUD por script, nao pelo uso normal.
+
+- **[2026-07-29] Codigos ANSI apareciam crus no painel de saida.** O Vite
+  colore a saida; no widget de texto do Tk isso vira `<-[32m` visivel. Removidos
+  na entrada do log (`limpar_ansi`), ja que o painel tem cor propria por tag.
+
+- **[2026-07-29] Checagem de porta dava falso negativo.** Testar so
+  `127.0.0.1` dizia "porta livre" com o Vite rodando e respondendo HTTP 200:
+  o Vite escuta em `::1` (IPv6), confirmado com `Get-NetTCPConnection`
+  (`LocalAddress ::1`). `porta_em_uso()` testa as duas familias. Sem isso o
+  status do HUD mentiria - e o guia exige que status cheque de verdade.
