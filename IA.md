@@ -1,5 +1,49 @@
 # IA.md - Contexto Operacional
 
+[2026-08-03] **Rota experimental `/app-react` removida por solicitação do usuário**: a rota, a página React de entrada, o shell, o conteúdo específico e o teste foram excluídos porque a aplicação demonstrativa HTML em `/app/index.html` já é a fonte completa e funcional desta etapa. Estado: **concluído**. Validação: `npm run lint`, `npm run build` e `git diff --check` passaram; nenhuma referência operacional à rota permanece.
+
+[2026-08-03] **Sistema de modal premium (Configurações) criado por Claude sonnet yolo · Estudo-com-IA**: o antigo `#modal-conta` (um card fixo por tela, sem foco preso, sem ESC funcional, sem estados) foi substituído por um motor de dialogos reusavel + um modal de Configurações no padrao Linear/Notion/Stripe - barra lateral com grupos "Pessoal" e "Espaço de trabalho", secoes trocando por dentro do mesmo dialogo em vez de abrir um modal por assunto. Vive em `mockup/assets/modal/` (25 arquivos ES module + 4 CSS, cada um com uma responsabilidade so, seguindo a `docs/CONSTITUICAO-MODULARIDADE.md`): `core.js`/`core.css` (abrir/fechar, empilhar, foco preso, ESC, scroll travado, backdrop com blur, animacao, bottom-sheet no mobile), `settings.js`/`shell.css` (a casca com navegacao), `confirm.js` (confirmacao neutra/perigosa, com portao de "digite EXCLUIR para confirmar" em acoes destrutivas), `states.css` (skeleton, vazio, banner de sucesso/erro, zona de perigo), `widgets.css` (chave de API mascarada, segmentado de tema, medidor de uso, linha de log) e 15 modulos em `sections/`. Secoes pessoais (Perfil, Notificações, Preferências, Segurança, Ajuda, Feedback) aparecem nos tres perfis; as de espaço de trabalho (Plano e assinatura, Faturamento, Chaves de API, Equipe, Permissões, Convites, Instituição, Histórico, Logs) so no diretor - decisao de produto, nao limitacao tecnica: so a direcao administra a instituicao no modelo B2B ja registrado neste arquivo. Estado: **concluído**.
+  - **Reuso deliberado em vez de sistema paralelo**: o botao "ocupado" (`comCarregando`/`.tut-file-spin`) e o toast (`toast()`) ja existiam em `app.js` para o Tutor; em vez de criar um segundo padrao de loading dentro do modal, `app.js` passou a expor `window.PrismaToast`, `window.PrismaCarregando` e `window.PrismaTheme` (tres linhas cada, perto de onde `toast`/`comCarregando`/o IIFE de tema ja existiam) para o modulo ES do modal reusar exatamente a mesma logica. A secao Preferências tambem nao reinventa tema/idioma - chama os mesmos dois motores que a topbar ja usava.
+  - **Bug pego no smoke test, nao no code review**: a casca de Configuracoes (`.pm-tam-shell`) so tinha `max-height`, nao `height` - com o pai sem altura definida, `height:100%` do layout de duas colunas colapsava, e no mobile o botao "Voltar" ficava fora da area clicavel (`element is outside of the viewport` no Playwright). Corrigido dando altura fixa (nao so maxima) a variante `shell`, em `core.css`.
+  - **Limpeza do que a remocao do `#modal-conta` deixou orfao**: `.modal`/`.modal-backdrop`/`.modal-head`/`.modal-x`/`.modal-body` e `.acgrid`/`.acprofile`/`.acmeta` saíram de `ui.css` (so o novo sistema define aparencia de dialogo agora); o bloco de JS antigo (`data-modal`, `data-modal-close`) saiu de `app.js`; e 37 chaves de i18n que so o `#modal-conta` antigo usava (`conta.dadosPessoais`, `conta.trocarSenha`, `dir.cargoDemo`, etc.) foram removidas dos 5 dicionarios - `scripts/verificar-i18n.py` ja apontava como "sem uso" e o padrao do projeto (caso `tutor.mensagem`, 2026-08-03) e podar em vez de deixar chave morta. De 479 para 442 chaves.
+  - **Debito assumido, registrado de proposito**: o conteudo das 15 secoes esta em portugues fixo, sem `data-i18n` - adicionar os 5 idiomas a ~150 strings novas era um projeto a parte do pedido ("sistema de modal"), e half-fazer i18n (algumas secoes traduzidas, outras nao) seria pior que nao comecar. Se/quando isso for priorizado, cada `sections/*.js` ja isola seu proprio texto - e so trocar string literal por chave e adicionar ao dicionario, sem tocar no motor.
+  - **Validação**: `node --check` (modo modulo) nos 25 arquivos JS sem erro; smoke test Playwright dirigindo os tres perfis (`aluno.html`, `professor.html`, `diretor.html`) via servidor estatico local, cobrindo contagem de secoes por perfil (6 pessoal-only vs 15 com espaço de trabalho), foco preso dentro do dialogo, o portao de confirmacao digitada, ESC fechando, e o padrao master-detail no mobile (390×844) abrindo e voltando - zero erros de console nas tres. Screenshots manuais conferidos: shell completa (claro), Perfil (escuro), confirmacao de exclusao de conta empilhada sobre o dialogo (com blur no fundo), e o estado de sucesso do Feedback substituindo o formulario. `scripts/verificar-i18n.py` (ok, 442 chaves, sem chave faltando) e `scripts/sincronizar-app.py` (44 arquivos, incluindo os 29 novos de `assets/modal/`) rodados no final.
+  - **Nao validado nesta rodada**: leitor de tela real (so `role="dialog"`/`aria-modal`/`aria-labelledby`/foco inicial por codigo, sem teste com NVDA/VoiceOver) e o fluxo de pagamento/checkout de creditos extras (propositalmente um toast "ainda nao disponivel", ja que nao ha gateway de pagamento neste repositorio).
+
+[2026-08-03] **Entrada React validada visualmente por Codex gpt-5.6-luna yolo  Estudo-com-IA**: a rota `/app-react` foi verificada com Playwright em 1440x900 e 390x844; os três cards apareceram, não houve overflow horizontal nem erros de console, e screenshots foram inspecionados. O navegador integrado não estava disponível; foi usado o Playwright já instalado no frontend. Estado do passo 14: **concluído**.
+
+[2026-08-03] **Entrada React integrada em rota experimental por Codex gpt-5.6-luna yolo  Estudo-com-IA**: `App.tsx` renderiza `EntradaPerfilPage` em `/app-react`; `/app/index.html` continua sendo o destino legado atual. Estado do passo 13: **concluído**. Validação: `npm run lint`, `npm run build`, `git diff --check` e servidor Vite real responderam `200` em `/` e `/app-react`.
+
+[2026-08-03] **Primeira página React da aplicação criada por Codex gpt-5.6-luna yolo  Estudo-com-IA**: adicionados `AppShell`, `EntradaPerfilPage` e o conteúdo tipado de `entrada.ts`; a página ainda não substitui o HTML legado, aguardando validação visual e integração de entrada. Estado do passo 12: **concluído**. Validação: `npm run lint`, `npm run build` e `git diff --check` passaram.
+
+[2026-08-03] **Caminhos frontend centralizados por Codex gpt-5.6-luna yolo  Estudo-com-IA**: criado `frontend/src/app/routes.ts` com os caminhos atuais da landing e da aplicação HTML; `destinos.ts` passou a consumir `ROTAS.app.entrada`. Não foi adicionada biblioteca de roteamento antes da migração das páginas. Estado do passo 11: **concluído**. Validação: `npm run lint`, `npm run build` e `git diff --check` passaram.
+
+[2026-08-03] **Estados de feedback frontend criados por Codex gpt-5.6-luna yolo  Estudo-com-IA**: adicionados `LoadingState`, `ErrorState` e `EmptyState` em `frontend/src/components/feedback/`; a landing não foi alterada porque não possui carregamento remoto. Estado do passo 10: **concluído**. Validação: `npm run lint`, `npm run build` e `git diff --check` passaram.
+
+[2026-08-03] **Fixtures da landing isoladas por Codex gpt-5.6-luna yolo  Estudo-com-IA**: os exemplos simulados do motor de refração saíram de `content/landing.ts` para `mocks/exemplosRefracao.ts`; a copy editorial permaneceu em `content`. Estado do passo 9: **concluído**. Validação: `npm run lint`, `npm run build` e `git diff --check` passaram; a leitura inicial do `IA.md` foi chamada no diretório `frontend` por engano, sem alterar arquivos.
+
+[2026-08-03] **Domínios de planos e créditos separados por Codex gpt-5.6-luna yolo  Estudo-com-IA**: a comparação editorial de planos individuais saiu de `Creditos` e virou `comparativoPlanos`, com tipo próprio em `ComparativoPlanos.ts`; `Creditos` agora representa apenas o saldo institucional. Estado do passo 8: **concluído**. Validação: `npm run lint`, `npm run build` e `git diff --check` passaram.
+
+[2026-08-03] **Dados de refração e créditos tipados por Codex gpt-5.6-luna yolo  Estudo-com-IA**: criados `ExemploRefracao.ts` e `Creditos.ts`; perfis de destino passaram a usar `PerfilId`, e o limite comparativo virou número, removendo `parseFloat` de `Creditos.tsx` e deixando `%` apenas na renderização. Estado do passo 7: **concluído**. Validação: `npm run lint`, `npm run build`, busca sem parsing de limite e `git diff --check` passaram.
+
+[2026-08-03] **Tipos de conteúdo da landing definidos por Codex gpt-5.6-luna yolo  Estudo-com-IA**: criados `Perfil.ts`, `Recurso.ts` e `Plano.ts`; `landing.ts` agora tipa explicitamente esses três conjuntos sem alterar a copy ou o visual. Estado do passo 6: **concluído**. Validação: `npm run lint`, `npm run build` e `git diff --check` passaram.
+
+[2026-08-03] **Portal de entrada separado por Codex gpt-5.6-luna yolo  Estudo-com-IA**: `Portal` saiu de `Atmosfera.tsx` para `Portal.tsx`; `Secao.tsx` passou a importar cada responsabilidade explicitamente. Estado do passo 5: **concluído**. Validação: `npm run lint`, `npm run build` e `git diff --check` passaram.
+
+[2026-08-03] **Cabeçalho de seção separado por Codex gpt-5.6-luna yolo  Estudo-com-IA**: `TituloSecao` saiu de `Secao.tsx` para `TituloSecao.tsx`, e os quatro consumidores foram atualizados. Estado do passo 4: **concluído**. Validação: `npm run lint`, `npm run build`, busca de referências e `git diff --check` passaram; a primeira tentativa de validação na raiz falhou apenas por diretório incorreto e foi repetida corretamente em `frontend/`.
+
+[2026-08-03] **Animações da UI separadas por responsabilidade por Codex gpt-5.6-luna yolo  Estudo-com-IA**: `Animar.tsx` foi dividido em `AoEntrar.tsx`, `ListaAnimada.tsx` e `ItemAnimado.tsx`; os consumidores foram atualizados sem mudança visual. Estado do passo 3: **concluído**. Validação: `npm run lint`, `npm run build`, busca sem referências ao módulo removido e `git diff --check` passaram.
+
+[2026-08-03] **Contrato tipado do `Button` corrigido por Codex gpt-5.6-luna yolo  Estudo-com-IA**: o componente agora distingue props de `<button>` e `<a>` com uma união de tipos, permitindo atributos próprios de cada elemento sem alterar o visual ou os consumidores existentes. Estado do passo 2: **concluído**. Validação: `npm run lint`, `npm run build` e `git diff --check` passaram.
+
+[2026-08-03] **Arquitetura frontend alvo definida por Codex gpt-5.6-luna yolo  Estudo-com-IA**: o escopo imediato fica restrito ao frontend React e à migração gradual do mockup HTML, sem backend, autenticação ou API. A estrutura por camadas, regras de dependência, estados de tela e sequência de migração estão em [`docs/ARQUITETURA-FRONTEND-ALVO.md`](docs/ARQUITETURA-FRONTEND-ALVO.md). Estado do passo 1: **concluído**. Validação: documento revisado contra a árvore atual; nenhum código de produção alterado.
+
+[2026-08-03] **Documentação alinhada ao estado atual por Codex gpt-5.6-luna yolo  Estudo-com-IA**: `README.md` e `frontend/README.md` agora descrevem a fundação visual implementada, o comportamento mobile-first, a preferência de idioma persistente, a cópia derivada em `/app/`, as validações existentes e a ausência de backend/autenticação real. Validação: comandos documentados e `scripts/verificar-i18n.py` conferidos contra a estrutura atual.
+
+[2026-08-03] **Fechamento completo do seletor de idioma por Codex gpt-5.6-luna yolo  Estudo-com-IA**: além do handler de dropdown em `app.js`, `i18n.js` agora remove diretamente `open` de `#dd-lang` e `#dd-backdrop` após a tradução carregar; a cópia publicada foi sincronizada. Estado: **concluído**. Validação: `git diff --check` e sincronização de 18 arquivos concluídos.
+
+[2026-08-03] **Dropdown de idioma fecha após seleção por Codex gpt-5.6-luna yolo  Estudo-com-IA**: o handler compartilhado em `mockup/assets/app.js` agora fecha o dropdown imediatamente depois de chamar `PrismaI18n.setLang`; a cópia publicada foi atualizada com `scripts/sincronizar-app.py`. Validação: Playwright em `aluno.html`, com idioma `en` aplicado, `localStorage` preservado e `#dd-lang` fechado.
+
 [2026-08-03] **Decoração da tela de escolha removida por Codex gpt-5.6-luna yolo  Estudo-com-IA**: retiradas as linhas diagonais, gradientes, pontilhado, losango e prisma decorativo de `mockup/index.html`; permanecem o logo, a divisão dos painéis e os elementos funcionais de escolha. Validação: screenshot Playwright em 390x844 e 1920x1080, sem overflow horizontal.
 
 [2026-08-03] **Mobile-first concluído por Codex gpt-5.6-luna yolo  Estudo-com-IA**: landing React e telas HTML de entrada, login, aluno, professor e diretor receberam ajustes de responsividade, áreas de toque, CTAs fluidos, contenção de overflow, tabelas móveis e compressão do Tutor em telefones estreitos. Validação concluída: `npm run lint`, `npm run build`, varredura UTF-8 em 54 arquivos e Playwright nas 6 rotas visuais em 390x844, sem overflow horizontal nem erros de console; landing também verificada em 1280x800. Estado desta rodada: **concluído**. Limite conhecido: backend e autenticação continuam fora do código existente e não foram implementados nesta rodada.
@@ -16,7 +60,9 @@
   sem reler toda a linha do tempo abaixo. Reescreva-a a cada mudanca de estado.
 -->
 
-[2026-07-28] Landing page do Prisma concluida em `frontend/` (React 19 + TypeScript + Vite 8 + Tailwind 4 + Motion 12), com identidade visual do documento UX/UI aplicada e secoes de tela cheia. O "Entrar" abre a aplicacao (telas do `Estudo-com-IA`, servidas em `/app/` via `scripts/sincronizar-app.py`). Backend nao existe: e escopo do Felipe.
+[2026-08-03] Landing page do Prisma concluída em `frontend/` (React 19 + TypeScript + Vite 8 + Tailwind 4 + Motion 12), com identidade visual aplicada, layout mobile-first e seções de tela cheia. O "Entrar" abre a aplicação demonstrativa (telas HTML servidas em `/app/` via `scripts/sincronizar-app.py`). As telas têm i18n em cinco idiomas, preferência persistente em `localStorage` e estado visual local; não têm autenticação real, API ou persistência em servidor. Backend ainda não existe neste repositório.
+
+[2026-08-03] As três telas da aplicação (`aluno.html`, `professor.html`, `diretor.html`) ganharam um modal de Configurações premium e reusável em `mockup/assets/modal/` (motor de dialogos + secoes de Perfil/Segurança/Preferências/Notificações/Ajuda/Feedback para todo mundo, mais Plano/Faturamento/API Keys/Equipe/Permissões/Convites/Instituição/Histórico/Logs só para o diretor), substituindo o antigo `#modal-conta`. Conteúdo das secoes ainda é só português (sem i18n) - ver registro datado no topo deste arquivo para o porquê e o caminho para fechar isso depois.
 
 ## Objetivo do projeto
 
@@ -29,8 +75,8 @@ O repositorio `Estudo-com-IA` mantem a documentacao de concepcao (visao, arquite
 ## Estado atual
 
 - **Implementado**: landing page publica em `frontend/`, `start_app.py` na raiz.
-- **Em progresso**: Fase 0 - falta o backend.
-- **Pendente**: backend Django, autenticacao dos 3 perfis, gateway de IA.
+- **Concluído neste repositório**: fundação visual da landing e aplicação demonstrativa, responsividade mobile-first e i18n das telas.
+- **Bloqueado por escopo externo**: backend Django, autenticação dos 3 perfis, gateway de IA e persistência de dados ainda não foram iniciados.
 
 ## Stack e dependencias
 
@@ -369,16 +415,16 @@ Nao verificado nesta sessao: FPS das animacoes, comportamento em telas pequenas 
 - Onde ficam variaveis: variavel de ambiente server-side, fora do repositorio
 - Observacao de seguranca: chave unica da plataforma, nunca no frontend nem versionada
 
-## Pendencias
+## Ideias para quem quiser contribuir
 
 - [ ] Definir se `Estudo-com-IA` continua como repositorio de concepcao ou se a documentacao migra para ca.
 - [x] ~~Fase 0: frontend React com `start_app.py`~~ - landing entregue em 2026-07-28.
 - [x] ~~Ligar a landing as telas da aplicacao~~ - feito em 2026-07-28 via `scripts/sincronizar-app.py`.
-- [ ] Fase 0: backend Django + login dos 3 perfis (**escopo do Felipe**). Contrato sugerido: `POST /api/auth/login` devolvendo token e perfil; o frontend passa a rotear pelo perfil autenticado em vez de abrir a tela inicial da aplicacao direto. Ponto de troca: `ENTRADA_APP` em `frontend/src/content/destinos.ts`.
+- [ ] Backend Django + login dos 3 perfis. Uma possível integração é `POST /api/auth/login` devolver token e perfil; o frontend passaria a rotear pelo perfil autenticado em vez de abrir a tela inicial da aplicação. Ponto de troca: `ENTRADA_APP` em `frontend/src/content/destinos.ts`.
 - [ ] Definir como a sessao sobrevive a troca landing -> aplicacao: hoje e navegacao de pagina inteira, e o estado do React se perde. Sem login isso nao importa; com login, importa.
 - [ ] Conferir FPS real das animacoes em navegador, sobretudo em maquina modesta.
 - [ ] Fase 1: gateway OpenRouter + modulo de creditos + primeira ferramenta de IA.
-- [ ] Definir estrategia de testes e comando de validacao objetiva.
+- [ ] Expandir a validação automatizada para regras de negócio quando o backend existir; hoje a interface já é validada por lint, build, Playwright e verificação de i18n.
 - [ ] Substituir os depoimentos placeholder por relatos reais coletados na instituicao.
 - [ ] Ligar os CTAs (`#comecar`, `#entrar`) as telas reais quando a autenticacao existir.
 - [ ] Ligar o demo do motor de refracao ao gateway de IA (hoje e estatico e ilustrativo).

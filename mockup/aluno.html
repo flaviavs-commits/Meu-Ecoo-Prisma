@@ -14,6 +14,11 @@
 <!-- Tutor: carrega depois do ui.css (herda os tokens) e tutor-painel depois de tutor -->
 <link rel="stylesheet" href="assets/tutor.css">
 <link rel="stylesheet" href="assets/tutor-painel.css">
+<!-- Modal de Configuracoes: motor generico + casca + estados + pecas -->
+<link rel="stylesheet" href="assets/modal/core.css">
+<link rel="stylesheet" href="assets/modal/shell.css">
+<link rel="stylesheet" href="assets/modal/states.css">
+<link rel="stylesheet" href="assets/modal/widgets.css">
 </head>
 <body>
 
@@ -44,6 +49,15 @@
 <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3.2v2M12 18.8v2M3.2 12h2M18.8 12h2M5.7 5.7l1.4 1.4M16.9 16.9l1.4 1.4M18.3 5.7l-1.4 1.4M7.1 16.9l-1.4 1.4"/></symbol>
 <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.2A8 8 0 1 1 10.8 4 6.4 6.4 0 0 0 20 13.2Z"/></symbol>
 <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8M12 3.6c2.4 2.3 3.6 5.2 3.6 8.4s-1.2 6.1-3.6 8.4c-2.4-2.3-3.6-5.2-3.6-8.4S9.6 5.9 12 3.6Z"/></symbol>
+<!-- Icones do modal de Configuracoes (assets/modal/) -->
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6 19 6.4v5.6c0 5-3 8-7 9-4-1-7-4-7-9V6.4Z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M9.6 9.3a2.4 2.4 0 1 1 3.4 2.2c-.9.5-1.4 1-1.4 2.1"/><path d="M12 17v.1"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.3a2.6 2.6 0 0 1-2.6 2.6H9.6L5 19.7V6.8a2.6 2.6 0 0 1 2.6-2.6h9.8A2.6 2.6 0 0 1 20 6.8Z"/></symbol>
+<symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="4.8" width="16.8" height="11.2" rx="1.8"/><path d="M8.4 20h7.2M12 16v4"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 7.2h14.4"/><path d="M9.6 7.2V5.4a1.8 1.8 0 0 1 1.8-1.8h1.2a1.8 1.8 0 0 1 1.8 1.8v1.8"/><path d="M6.6 7.2 7.5 19a1.8 1.8 0 0 0 1.8 1.7h5.4a1.8 1.8 0 0 0 1.8-1.7l.9-11.8"/><path d="M10.2 11v6M13.8 11v6"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.8 9.8 0 0 1 12 4c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.16 3.19m-3.1 2.6A9.4 9.4 0 0 1 12 18c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.22-5.02"/><path d="M9.5 9.5a3 3 0 0 0 4.24 4.24"/><path d="M2 2l20 20"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3.6l2.6 5.4 5.9.7-4.3 4.1 1.1 5.9L12 16.8l-5.3 2.9 1.1-5.9-4.3-4.1 5.9-.7Z"/></symbol>
 <!-- Logo oficial do Prisma: mesmo path de frontend/src/components/ui/Logo.tsx
      e de mockup/index.html (viewBox recortado nos limites reais do desenho). -->
 <symbol id="i-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -77,7 +91,9 @@
     </button>
     <div class="dd dd-up" id="dd-sideuser">
       <p class="ddh">Marina Souza</p>
-      <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+      <a class="ddi" href="#" data-settings-open="perfil"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+      <a class="ddi" href="#" data-settings-open="ajuda"><svg class="ic"><use href="#i-help"/></svg><span><b>Central de ajuda</b></span></a>
+      <a class="ddi" href="#" data-settings-open="feedback"><svg class="ic"><use href="#i-message"/></svg><span><b>Enviar feedback</b></span></a>
       <div class="ddsep"></div>
       <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
     </div>
@@ -112,7 +128,9 @@
       <button class="avbtn" data-dd="dd-user" aria-label="Conta" data-i18n-attr="aria-label:topbar.conta">MS</button>
       <div class="dd" id="dd-user" style="width:230px">
         <p class="ddh">Marina Souza</p>
-        <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+        <a class="ddi" href="#" data-settings-open="perfil"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+        <a class="ddi" href="#" data-settings-open="ajuda"><svg class="ic"><use href="#i-help"/></svg><span><b>Central de ajuda</b></span></a>
+        <a class="ddi" href="#" data-settings-open="feedback"><svg class="ic"><use href="#i-message"/></svg><span><b>Enviar feedback</b></span></a>
         <div class="ddsep"></div>
         <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
       </div>
@@ -618,57 +636,26 @@
 </main>
 </div>
 
-<div class="modal-backdrop" id="modal-backdrop"></div>
-<div class="modal" id="modal-conta">
-  <div class="modal-head">
-    <h3 data-i18n="conta.minhaConta">Minha conta</h3>
-    <button class="modal-x" data-modal-close aria-label="Fechar" data-i18n-attr="aria-label:acao.fechar">✕</button>
-  </div>
-  <div class="modal-body">
-    <div class="acgrid">
-      <div class="stack">
-        <div class="card acprofile">
-          <span class="bigav">MS</span>
-          <h3>Marina Souza</h3>
-          <p><span data-i18n="perfil.estudante">Estudante</span> · 86 <span data-i18n="conta.creditosDisponiveis">créditos disponíveis</span></p>
-          <button class="btn btn-gho btn-sm" data-i18n="conta.alterarFoto">Alterar foto</button>
-          <div class="acmeta" style="margin-top:18px">
-            <span><b data-estado="sessoes">14</b><span data-i18n="conta.sessoes">sessões</span></span>
-            <span><b>78%</b><span data-i18n="conta.aproveitamento">aproveitamento</span></span>
-            <span><b data-estado="creditos">86</b><span data-i18n="conta.creditos">créditos</span></span>
-          </div>
-        </div>
-        <div class="card">
-          <h2><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sessao">Sessão</span></h2>
-          <p class="desc">Conectada neste dispositivo desde 29/07.</p>
-          <a class="btn btn-danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sairDaConta">Sair da conta</span></a>
-        </div>
-      </div>
-      <div class="stack">
-        <div class="card">
-          <h2><svg class="ic"><use href="#i-user"/></svg><span data-i18n="conta.dadosPessoais">Dados pessoais</span></h2>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
-            <div class="field" style="margin:0"><label data-i18n="conta.nomeCompleto">Nome completo</label><input class="input" value="Marina Souza"></div>
-            <div class="field" style="margin:0"><label data-i18n="conta.email">E-mail</label><input class="input" value="marina@estudo.com"></div>
-            <div class="field" style="margin:0"><label data-i18n="conta.telefone">Telefone</label><input class="input" value="(11) 9 8877-2210"></div>
-          </div>
-          <div class="tfoot"><button class="btn btn-pri" data-i18n="conta.salvarAlteracoes">Salvar alterações</button><button class="btn btn-gho" data-i18n="conta.trocarSenha">Trocar senha</button></div>
-        </div>
-        <div class="card">
-          <h2><svg class="ic"><use href="#i-bell"/></svg><span data-i18n="conta.preferencias">Preferências</span></h2>
-          <div style="margin-top:8px">
-            <div class="togglerow"><span><span data-i18n="conta.lembretesEstudo">Lembretes de estudo</span><small data-i18n="conta.sugestoesDiarias">sugestões diárias do tutor</small></span><button type="button" class="tg" role="switch" aria-checked="true" aria-label="Lembretes de estudo" data-i18n-attr="aria-label:conta.lembretesEstudo"></button></div>
-            <div class="togglerow"><span><span data-i18n="conta.resumoSemanal">Resumo semanal por e-mail</span><small data-i18n="conta.desempenhoSimulados">desempenho nos simulados</small></span><button type="button" class="tg" role="switch" aria-checked="false" aria-label="Resumo semanal por e-mail" data-i18n-attr="aria-label:conta.resumoSemanal"></button></div>
-            <div class="togglerow"><span><span data-i18n="conta.modoEscuro">Modo escuro</span><small data-i18n="conta.paraEstudarNoite">para estudar à noite</small></span><button type="button" class="tg" id="tg-tema" role="switch" aria-checked="false" aria-label="Modo escuro" data-i18n-attr="aria-label:conta.modoEscuro"></button></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script src="assets/i18n.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/dev-reload.js"></script>
+<!-- Modal de Configuracoes: perfil desta tela + motor (assets/modal/) -->
+<script>
+  window.PRISMA_PERFIL = {
+    tipo: 'aluno',
+    nome: 'Marina Souza',
+    cargo: 'Estudante',
+    iniciais: 'MS',
+    cor: 'var(--green)',
+    email: 'marina@estudo.com',
+    telefone: '(11) 9 8877-2210',
+    stats: [
+      { valor: '14', rotulo: 'sessões' },
+      { valor: '78%', rotulo: 'aproveitamento' },
+      { valor: '86', rotulo: 'créditos' },
+    ],
+  };
+</script>
+<script type="module" src="assets/modal/index.js"></script>
 </body>
 </html>

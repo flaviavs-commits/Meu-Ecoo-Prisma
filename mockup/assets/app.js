@@ -150,30 +150,12 @@
     if (open && !open.contains(e.target)) close();
   });
 
-  // Modais (ex.: Minha conta) — sempre centralizados, nunca navegam para uma tela
-  var modalBackdrop = document.getElementById('modal-backdrop');
-  var openModal = null;
-  function closeModal() {
-    if (openModal) { openModal.classList.remove('open'); openModal = null; }
-    if (modalBackdrop) modalBackdrop.classList.remove('open');
-  }
-  document.querySelectorAll('[data-modal]').forEach(function (btn) {
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      close(); // fecha qualquer dropdown aberto
-      var m = document.getElementById('modal-' + btn.dataset.modal);
-      if (!m) return;
-      m.classList.add('open');
-      openModal = m;
-      if (modalBackdrop) modalBackdrop.classList.add('open');
-    });
-  });
-  document.querySelectorAll('[data-modal-close]').forEach(function (btn) {
-    btn.addEventListener('click', closeModal);
-  });
-  if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+  // Modal de Configuracoes (Perfil, Seguranca, etc.): sistema proprio em
+  // assets/modal/, carregado como modulo ES a parte - so falta fechar o
+  // dropdown quando ESC tambem deve fechar um dialogo dele (o proprio
+  // motor do modal cuida do resto).
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { close(); closeModal(); }
+    if (e.key === 'Escape') close();
   });
 
   // Conversas (mensagens)
@@ -235,6 +217,10 @@
     var themeBtn = document.getElementById('themebtn');
     if (themeBtn) themeBtn.addEventListener('click', alternar);
     if (tgTema) tgTema.addEventListener('click', alternar);
+
+    // Exposicao para o sistema de modais (secao Preferencias) controlar
+    // o mesmo tema por fora desta IIFE, sem duplicar a logica acima.
+    window.PrismaTheme = { atual: temaAtual, aplicar: aplicar };
   })();
 
   // ── Idioma ──
@@ -244,6 +230,7 @@
     opcoes.forEach(function (btn) {
       btn.addEventListener('click', function () {
         if (window.PrismaI18n) window.PrismaI18n.setLang(btn.dataset.lang);
+        close();
       });
     });
   })();
@@ -840,19 +827,13 @@
     pintar();
   })();
 
-  // ── Conta: salvar, trocar senha, foto ──
-  var salvar = document.querySelector('[data-i18n="conta.salvarAlteracoes"]');
-  if (salvar) salvar.addEventListener('click', function () {
-    comCarregando(salvar, 'Salvando…', 900, function () { toast('Alterações salvas', 'ok'); });
-  });
-  var trocarSenha = document.querySelector('[data-i18n="conta.trocarSenha"]');
-  if (trocarSenha) trocarSenha.addEventListener('click', function () {
-    toast('Enviamos um link de troca de senha para o seu e-mail');
-  });
-  var alterarFoto = document.querySelector('[data-i18n="conta.alterarFoto"]');
-  if (alterarFoto) alterarFoto.addEventListener('click', function () {
-    toast('Upload de foto chega na próxima versão');
-  });
+  // Exposicao minima para o sistema de modais (assets/modal/), que roda
+  // como modulo ES a parte e por isso nao enxerga o escopo desta IIFE -
+  // reusa o mesmo toast e o mesmo padrao de botao ocupado em vez de
+  // duplicar os dois. (window.PrismaTheme e exposto dentro do proprio
+  // IIFE de tema, mais acima, onde `temaAtual`/`aplicar` existem.)
+  window.PrismaToast = toast;
+  window.PrismaCarregando = comCarregando;
 
   // Anima a tela que ja esta aberta no carregamento
   animarTela(document.querySelector('.screen.on'));

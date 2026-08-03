@@ -11,6 +11,11 @@
 <script>try{var t=localStorage.getItem('prisma-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/ui.css">
+<!-- Modal de Configuracoes: motor generico + casca + estados + pecas -->
+<link rel="stylesheet" href="assets/modal/core.css">
+<link rel="stylesheet" href="assets/modal/shell.css">
+<link rel="stylesheet" href="assets/modal/states.css">
+<link rel="stylesheet" href="assets/modal/widgets.css">
 </head>
 <body>
 
@@ -38,6 +43,23 @@
 <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3.2v2M12 18.8v2M3.2 12h2M18.8 12h2M5.7 5.7l1.4 1.4M16.9 16.9l1.4 1.4M18.3 5.7l-1.4 1.4M7.1 16.9l-1.4 1.4"/></symbol>
 <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8M12 3.6c2.4 2.3 3.6 5.2 3.6 8.4s-1.2 6.1-3.6 8.4c-2.4-2.3-3.6-5.2-3.6-8.4S9.6 5.9 12 3.6Z"/></symbol>
 <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.2A8 8 0 1 1 10.8 4 6.4 6.4 0 0 0 20 13.2Z"/></symbol>
+<!-- Icones do modal de Configuracoes (assets/modal/) -->
+<symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 3.4v2.3M12 18.3v2.3M20.6 12h-2.3M5.7 12H3.4M18.1 5.9l-1.6 1.6M7.5 16.5l-1.6 1.6M18.1 18.1l-1.6-1.6M7.5 7.5 5.9 5.9"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6 19 6.4v5.6c0 5-3 8-7 9-4-1-7-4-7-9V6.4Z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M9.6 9.3a2.4 2.4 0 1 1 3.4 2.2c-.9.5-1.4 1-1.4 2.1"/><path d="M12 17v.1"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.3a2.6 2.6 0 0 1-2.6 2.6H9.6L5 19.7V6.8a2.6 2.6 0 0 1 2.6-2.6h9.8A2.6 2.6 0 0 1 20 6.8Z"/></symbol>
+<symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="4.8" width="16.8" height="11.2" rx="1.8"/><path d="M8.4 20h7.2M12 16v4"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 7.2h14.4"/><path d="M9.6 7.2V5.4a1.8 1.8 0 0 1 1.8-1.8h1.2a1.8 1.8 0 0 1 1.8 1.8v1.8"/><path d="M6.6 7.2 7.5 19a1.8 1.8 0 0 0 1.8 1.7h5.4a1.8 1.8 0 0 0 1.8-1.7l.9-11.8"/><path d="M10.2 11v6M13.8 11v6"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.8 9.8 0 0 1 12 4c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.16 3.19m-3.1 2.6A9.4 9.4 0 0 1 12 18c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.22-5.02"/><path d="M9.5 9.5a3 3 0 0 0 4.24 4.24"/><path d="M2 2l20 20"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3.6l2.6 5.4 5.9.7-4.3 4.1 1.1 5.9L12 16.8l-5.3 2.9 1.1-5.9-4.3-4.1 5.9-.7Z"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15.5" r="3.4"/><path d="M10.4 13.1 18.6 4.9"/><path d="M15.4 8.1l2.4 2.4"/><path d="M18.2 5.3l2.4 2.4"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8.6" y="8.6" width="11.4" height="11.4" rx="2"/><path d="M15.4 8.6V6.4A1.8 1.8 0 0 0 13.6 4.6H6.4A1.8 1.8 0 0 0 4.6 6.4v7.2a1.8 1.8 0 0 0 1.8 1.8h2.2"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 4.8v14.4M4.8 12h14.4"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 12a7.4 7.4 0 0 1 12.6-5.3l1.8 1.7"/><path d="M19.4 4.8v4.2h-4.2"/><path d="M19.4 12a7.4 7.4 0 0 1-12.6 5.3l-1.8-1.7"/><path d="M4.6 19.2V15h4.2"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="7.6" width="16.8" height="11.2" rx="1.8"/><path d="M8.4 7.6V6a1.8 1.8 0 0 1 1.8-1.8h3.6A1.8 1.8 0 0 1 15.6 6v1.6"/><path d="M3.6 12.6h16.8"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5.4" y="10.4" width="13.2" height="9.6" rx="2"/><path d="M8 10.4V7.6a4 4 0 0 1 8 0v2.8"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5.4 7.2h12.8a2 2 0 0 1 2 2v8.2a2 2 0 0 1-2 2H5.8a2 2 0 0 1-2-2V6.8A2.2 2.2 0 0 1 6 4.6h10.6"/><path d="M16.2 12.2h4v3.2h-4a1.6 1.6 0 0 1 0-3.2Z"/></symbol>
 <!-- Logo oficial do Prisma: mesmo path de frontend/src/components/ui/Logo.tsx -->
 <symbol id="i-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
   <path d="M16 6.38 6.35 21.56 16 25.37l9.65-3.81Z"/>
@@ -74,7 +96,10 @@
     </button>
     <div class="dd dd-up" id="dd-sideuser">
       <p class="ddh">Cláudia Nunes</p>
-      <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+      <a class="ddi" href="#" data-settings-open="perfil"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+      <a class="ddi" href="#" data-settings-open="plano"><svg class="ic"><use href="#i-briefcase"/></svg><span><b>Espaço de trabalho</b></span></a>
+      <a class="ddi" href="#" data-settings-open="ajuda"><svg class="ic"><use href="#i-help"/></svg><span><b>Central de ajuda</b></span></a>
+      <a class="ddi" href="#" data-settings-open="feedback"><svg class="ic"><use href="#i-message"/></svg><span><b>Enviar feedback</b></span></a>
       <div class="ddsep"></div>
       <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
     </div>
@@ -110,8 +135,11 @@
       <button class="avbtn" data-dd="dd-user" style="background:#C79A2A" aria-label="Conta" data-i18n-attr="aria-label:topbar.conta">CN</button>
       <div class="dd" id="dd-user" style="width:230px">
         <p class="ddh">Cláudia Nunes</p>
-        <a class="ddi" data-modal="conta"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
+        <a class="ddi" href="#" data-settings-open="perfil"><svg class="ic"><use href="#i-user"/></svg><span><b data-i18n="conta.minhaConta">Minha conta</b></span></a>
         <a class="ddi" data-s="relatorios"><svg class="ic"><use href="#i-doc"/></svg><span><b data-i18n="dir.relatorios">Relatórios</b></span></a>
+        <a class="ddi" href="#" data-settings-open="plano"><svg class="ic"><use href="#i-briefcase"/></svg><span><b>Espaço de trabalho</b></span></a>
+        <a class="ddi" href="#" data-settings-open="ajuda"><svg class="ic"><use href="#i-help"/></svg><span><b>Central de ajuda</b></span></a>
+        <a class="ddi" href="#" data-settings-open="feedback"><svg class="ic"><use href="#i-message"/></svg><span><b>Enviar feedback</b></span></a>
         <div class="ddsep"></div>
         <a class="ddi danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span><b data-i18n="conta.sair">Sair</b></span></a>
       </div>
@@ -373,59 +401,27 @@
 </main>
 </div>
 
-<div class="modal-backdrop" id="modal-backdrop"></div>
-<div class="modal" id="modal-conta">
-  <div class="modal-head">
-    <h3 data-i18n="conta.minhaConta">Minha conta</h3>
-    <button class="modal-x" data-modal-close aria-label="Fechar" data-i18n-attr="aria-label:acao.fechar">✕</button>
-  </div>
-  <div class="modal-body">
-    <div class="acgrid">
-      <div class="stack">
-        <div class="card acprofile">
-          <span class="bigav" style="background:#C79A2A">CN</span>
-          <h3>Cláudia Nunes</h3>
-          <p data-i18n="dir.cargoDemo">Diretora · desde 2015</p>
-          <button class="btn btn-gho btn-sm" data-i18n="conta.alterarFoto">Alterar foto</button>
-          <div class="acmeta" style="margin-top:18px">
-            <span><b>412</b><span data-i18n="dir.alunosMin">alunos</span></span>
-            <span><b>32</b><span data-i18n="dir.equipeMin">equipe</span></span>
-            <span><b>14</b><span data-i18n="prof.turmasMin">turmas</span></span>
-          </div>
-        </div>
-        <div class="card">
-          <h2><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sessao">Sessão</span></h2>
-          <p class="desc" data-i18n="dir.conectadaDesde">Conectada neste dispositivo desde 16/07.</p>
-          <a class="btn btn-danger" href="./"><svg class="ic"><use href="#i-logout"/></svg><span data-i18n="conta.sairDaConta">Sair da conta</span></a>
-        </div>
-      </div>
-      <div class="stack">
-        <div class="card">
-          <h2><svg class="ic"><use href="#i-user"/></svg><span data-i18n="conta.dadosPessoais">Dados pessoais</span></h2>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
-            <div class="field" style="margin:0"><label data-i18n="conta.nomeCompleto">Nome completo</label><input class="input" value="Cláudia Nunes"></div>
-            <div class="field" style="margin:0"><label data-i18n="conta.email">E-mail</label><input class="input" value="claudia.nunes@horizonte.edu"></div>
-            <div class="field" style="margin:0"><label data-i18n="dir.cargo">Cargo</label><input class="input" value="Diretora geral"></div>
-            <div class="field" style="margin:0"><label data-i18n="conta.telefone">Telefone</label><input class="input" value="(11) 9 6644-1029"></div>
-          </div>
-          <div class="tfoot"><button class="btn btn-pri" data-i18n="conta.salvarAlteracoes">Salvar alterações</button><button class="btn btn-gho" data-i18n="conta.trocarSenha">Trocar senha</button></div>
-        </div>
-        <div class="card">
-          <h2><svg class="ic"><use href="#i-bell"/></svg><span data-i18n="conta.preferencias">Preferências</span></h2>
-          <div style="margin-top:8px">
-            <div class="togglerow"><span data-i18n-html="dir.prefEvasao">Alertas de risco de evasão<small>previsões da IA em tempo real</small></span><span class="tg"></span></div>
-            <div class="togglerow"><span data-i18n-html="dir.prefCreditos">Alertas de créditos<small>quando uma cota passar de 80%</small></span><span class="tg"></span></div>
-            <div class="togglerow"><span data-i18n-html="dir.prefRelatorio">Relatório mensal automático<small>gerar e enviar à mantenedora</small></span><span class="tg"></span></div>
-            <div class="togglerow"><span data-i18n-html="prof.prefModoEscuro">Modo escuro<small>espelha o botão da barra superior</small></span><button type="button" class="tg" id="tg-tema" role="switch" aria-checked="false" aria-label="Modo escuro" data-i18n-attr="aria-label:conta.modoEscuro"></button></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script src="assets/i18n.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/dev-reload.js"></script>
+<!-- Modal de Configuracoes: perfil desta tela + motor (assets/modal/) -->
+<script>
+  window.PRISMA_PERFIL = {
+    tipo: 'diretor',
+    nome: 'Cláudia Nunes',
+    cargo: 'Diretora',
+    cargoCompleto: 'Diretora geral',
+    iniciais: 'CN',
+    cor: '#C79A2A',
+    email: 'claudia.nunes@horizonte.edu',
+    telefone: '(11) 9 6644-1029',
+    stats: [
+      { valor: '412', rotulo: 'alunos' },
+      { valor: '32', rotulo: 'equipe' },
+      { valor: '14', rotulo: 'turmas' },
+    ],
+  };
+</script>
+<script type="module" src="assets/modal/index.js"></script>
 </body>
 </html>
