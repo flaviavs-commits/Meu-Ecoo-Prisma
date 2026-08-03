@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Confere se toda chave data-i18n usada no mockup existe nos 5 dicionarios.
+"""Confere se toda chave data-i18n usada na aplicacao existe nos 5 dicionarios.
 
 Erro silencioso que este script pega: um data-i18n com chave errada nao
 quebra nada visivelmente - o texto em portugues fica no HTML como fallback
@@ -15,8 +15,8 @@ import re
 import sys
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MOCKUP = os.path.join(RAIZ, 'mockup')
-DIC = os.path.join(MOCKUP, 'assets', 'i18n')
+APP = os.path.join(RAIZ, 'app')
+DIC = os.path.join(APP, 'assets', 'i18n')
 
 # data-i18n="k", data-i18n-html="k" e data-i18n-attr="attr:k;attr2:k2"
 PADRAO_SIMPLES = re.compile(r'data-i18n(?:-html)?="([^"]+)"')
@@ -68,18 +68,18 @@ def main():
 
     # 2) toda chave usada no HTML existe
     usadas = set()
-    for nome in sorted(os.listdir(MOCKUP)):
+    for nome in sorted(os.listdir(APP)):
         if not nome.endswith('.html'):
             continue
-        chaves = chaves_do_html(os.path.join(MOCKUP, nome))
+        chaves = chaves_do_html(os.path.join(APP, nome))
         usadas |= chaves
         for chave in sorted(chaves - referencia):
             problemas.append(u'%s usa "%s", que nao existe no dicionario' % (nome, chave))
-        usadas |= chaves_do_js(os.path.join(MOCKUP, nome), referencia)
+        usadas |= chaves_do_js(os.path.join(APP, nome), referencia)
 
-    for nome in sorted(os.listdir(os.path.join(MOCKUP, 'assets'))):
+    for nome in sorted(os.listdir(os.path.join(APP, 'assets'))):
         if nome.endswith('.js'):
-            usadas |= chaves_do_js(os.path.join(MOCKUP, 'assets', nome), referencia)
+            usadas |= chaves_do_js(os.path.join(APP, 'assets', nome), referencia)
 
     if problemas:
         for p in problemas:

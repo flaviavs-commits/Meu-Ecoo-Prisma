@@ -7,15 +7,13 @@ import { Recursos } from './components/feature/Recursos'
 import { Creditos } from './components/feature/Creditos'
 import { Planos } from './components/feature/Planos'
 import { ChamadaFinal } from './components/feature/ChamadaFinal'
-import { PaginaLogin } from './components/auth/PaginaLogin'
 import { AutenticacaoProvider } from './auth/contexto'
 
 /**
  * Landing page do Prisma - a vitrine pública.
  *
- * As telas estaticas de aluno, professor e diretor sao derivadas de
- * `mockup/` e servidas em `/app/`. O "Entrar" abre o fluxo autenticado;
- * a protecao das telas por perfil sera a proxima camada.
+ * As telas definitivas de aluno, professor, diretor e login vivem em
+ * `app/` e sao servidas em `/app/` apos a sincronizacao.
  */
 function Landing() {
   return (
@@ -46,7 +44,11 @@ function Landing() {
 }
 
 function Conteudo() {
-  return window.location.pathname === '/entrar' ? <PaginaLogin /> : <Landing />
+  if (window.location.pathname === '/entrar') {
+    window.location.replace('/app/login.html')
+    return null
+  }
+  return <Landing />
 }
 
 function App() {

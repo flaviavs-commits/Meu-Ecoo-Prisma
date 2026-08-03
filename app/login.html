@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /*
-  Mockup visual de tela de login - sem autenticacao real por tras.
+  Tela definitiva de login da aplicacao, integrada ao backend real.
   Mesma identidade de index.html (split grafite/creme, Josefin Sans
   nos titulos, cards e botao pill do restante do produto). O backend
   de autenticacao fica fora deste repositorio.
@@ -128,6 +128,9 @@ form{display:flex;flex-direction:column;gap:16px}
 .linha-aux{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-top:-4px}
 .linha-aux a{color:var(--texto-secundario);text-decoration:none}
 .linha-aux a:hover{color:var(--texto);text-decoration:underline}
+.erro-login{display:none;margin-top:-4px;border:1px solid rgba(174,47,47,.35);border-radius:var(--radius);background:#fff0ed;color:#8c2d25;padding:10px 12px;font-size:13px;line-height:1.45}
+.erro-login.visivel{display:block}
+.cta:disabled{cursor:wait;opacity:.65}
 
 .cta{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -227,7 +230,7 @@ form{display:flex;flex-direction:column;gap:16px}
       <h2 class="fade d1" data-i18n="entrada.acesseConta">Acesse sua conta</h2>
       <p class="hint fade d1" data-i18n="entrada.useEmailSenha">Use o e-mail e a senha cadastrados na sua instituição.</p>
 
-      <form class="fade d1" onsubmit="return false">
+      <form class="fade d1" id="form-login">
         <div class="campo">
           <label for="email" data-i18n="conta.email">E-mail</label>
           <input id="email" type="email" placeholder="voce@escola.com.br" data-i18n-attr="placeholder:entrada.emailPlaceholder" autocomplete="email">
@@ -242,6 +245,7 @@ form{display:flex;flex-direction:column;gap:16px}
         <div class="linha-aux">
           <a href="#" data-i18n="entrada.esqueciSenha">Esqueci minha senha</a>
         </div>
+        <p class="erro-login" id="erro-login" role="alert"></p>
         <button class="cta" type="submit" data-i18n="entrada.entrar">Entrar</button>
       </form>
 
@@ -258,9 +262,7 @@ form{display:flex;flex-direction:column;gap:16px}
 </div>
 
 <script>
-// Mock visual: le o perfil da query string pra adaptar a coluna
-// escura (icone, cor de acento, titulo e texto de apoio). Nao ha
-// autenticacao real aqui - o backend fica em outro repositorio.
+// Le o perfil da query string e conecta o formulario ao backend real.
 (function () {
   document.getElementById('ano').textContent = new Date().getFullYear();
 
@@ -272,7 +274,6 @@ form{display:flex;flex-direction:column;gap:16px}
 
   var params = new URLSearchParams(location.search);
   var perfil = config[params.get('perfil')] ? params.get('perfil') : null;
-  var destino = perfil ? perfil + '.html' : 'aluno.html';
 
   if (perfil) {
     var c = config[perfil];
@@ -287,8 +288,27 @@ form{display:flex;flex-direction:column;gap:16px}
     if (window.PrismaI18n) window.PrismaI18n.aplicarEm(etq);
   }
 
-  document.querySelector('button[type="submit"]').addEventListener('click', function () {
-    location.href = destino;
+  var apiBase = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://127.0.0.1:8000/api/v1' : '/api/v1';
+  var formulario = document.getElementById('form-login');
+  var botaoEntrar = formulario.querySelector('button[type="submit"]');
+  var erroLogin = document.getElementById('erro-login');
+  function mostrarErro(mensagem) { erroLogin.textContent = mensagem; erroLogin.classList.add('visivel'); }
+  formulario.addEventListener('submit', async function (evento) {
+    evento.preventDefault();
+    erroLogin.classList.remove('visivel');
+    botaoEntrar.disabled = true;
+    try {
+      var resposta = await fetch(apiBase + '/auth/login/', {method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include', body: JSON.stringify({email: document.getElementById('email').value.trim(), password: document.getElementById('senha').value})});
+      var corpo = await resposta.json().catch(function () { return {}; });
+      if (!resposta.ok) { mostrarErro(corpo.erro && corpo.erro.mensagem || 'Nao foi possivel entrar. Confira seus dados e tente novamente.'); return; }
+      var identidade = await fetch(apiBase + '/auth/eu/', {headers: {Authorization: 'Bearer ' + corpo.access}, credentials: 'include'});
+      if (!identidade.ok) throw new Error('Falha ao carregar a identidade.');
+      var usuario = await identidade.json();
+      var destinos = {ALUNO: 'aluno.html', PROFESSOR: 'professor.html', DIRETOR: 'diretor.html'};
+      location.href = destinos[usuario.perfil] || 'index.html';
+    } catch (causa) {
+      mostrarErro(causa.message === 'Failed to fetch' ? 'Nao foi possivel conectar ao servidor. Tente novamente.' : 'Nao foi possivel concluir o login. Tente novamente.');
+    } finally { botaoEntrar.disabled = false; }
   });
 
   // Mostrar/ocultar senha: alterna o type do input e o icone/aria do

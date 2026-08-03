@@ -39,7 +39,7 @@ Para publicar manualmente:
 vercel deploy --prod --yes --build-env VITE_API_URL=/api/v1
 ```
 
-## Template original
+## Aplicação definitiva
 
 A landing pública do PrismaTest, implementada em React, TypeScript, Vite,
 Tailwind CSS e Motion. O layout é mobile-first e a aplicação visual é
@@ -64,7 +64,7 @@ npm run lint
 npm run build
 ```
 
-As telas demonstrativas são mantidas em `../mockup/` e sincronizadas para
+As telas definitivas são mantidas em `../app/` e sincronizadas para
 `public/app/` por `python ../scripts/sincronizar-app.py`. A pasta `public/app/`
 é uma cópia derivada e não é a fonte de edição.
 

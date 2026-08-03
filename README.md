@@ -66,7 +66,7 @@ PrismaTest/
 │       │   └── feature/    # Secoes da landing
 │       ├── content/        # Copy e destino da aplicacao
 │       └── index.css       # Tokens de design e regra de cor (@theme)
-├── mockup/                 # Telas de aluno, professor e diretor (fonte da verdade, HTML estatico)
+├── app/                    # Telas definitivas da aplicação (HTML estático)
 ├── docs/
 │   ├── CONSTITUICAO-MODULARIDADE.md
 │   └── backend/            # System design do backend, em 13 etapas independentes
@@ -185,7 +185,7 @@ Sao duas partes deste mesmo repositorio:
 | | Onde vive | O que e |
 |---|---|---|
 | **Landing** | `frontend/src/` | vitrine publica, em React |
-| **Aplicacao** | `mockup/` | telas de aluno, professor e diretor (HTML estatico) |
+| **Aplicacao** | `app/` | telas definitivas de aluno, professor e diretor (HTML estatico) |
 
 Ao clicar em "Entrar", a landing abre `/entrar`, que autentica por e-mail e
 senha contra o backend. O access token fica somente em memoria no navegador;
@@ -194,7 +194,7 @@ servida em `/app/` para o proximo ciclo de integracao.
 
 ### Sincronizar a aplicacao
 
-As telas sao mantidas em `mockup/`. Para trazer a versao atual para o Vite:
+As telas sao mantidas em `app/`. Para trazer a versao atual para o Vite:
 
 ```bash
 python scripts/sincronizar-app.py

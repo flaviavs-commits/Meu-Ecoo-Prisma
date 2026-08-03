@@ -23,7 +23,7 @@
     },
     {
       "source": "/entrar",
-      "destination": "/"
+      "destination": "/app/login.html"
     }
   ]
 }

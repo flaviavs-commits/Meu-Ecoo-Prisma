@@ -4,8 +4,8 @@
 CONTEXTO
     A landing (este repositório) é a vitrine pública. A aplicação em si
     - as telas de aluno, professor e diretor - vive em `Estudo-com-IA`,
-    na pasta `mockup/`. Ao clicar em "Entrar", a landing abre essas
-    telas.
+    na pasta `app/`. Ao clicar em "Entrar", a landing abre essas
+    telas definitivas.
 
     Enquanto o backend não existe, a forma mais simples de ligar as duas
     coisas é copiar as telas para `frontend/public/app/`, que o Vite
@@ -37,7 +37,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 DESTINO = RAIZ / "frontend" / "public" / "app"
 
-# Telas que a landing referencia - todas as que existem no `mockup/`.
+# Telas definitivas da aplicacao, mantidas na fonte `app/`.
 TELAS = (
     "index.html",
     "login.html",
@@ -47,13 +47,13 @@ TELAS = (
 )
 
 # Até 2026-08-03 havia aqui uma reescrita de `href="landing.html"` para
-# `/`: o mockup tinha uma landing própria, não copiada, e o link caía em
+# `/`: a aplicação tinha uma landing própria, não copiada, e o link caía em
 # 404 quando servido estaticamente. Essa landing foi apagada e as telas
 # já apontam para a raiz - a cópia agora é literal.
 
 
 def origem_padrao() -> Path:
-    """Onde procurar o `mockup/`.
+    """Onde procurar o `app/`.
 
     A landing e as telas viviam em repositórios separados; hoje moram
     no mesmo, então a origem padrão é a raiz daqui. O `--origem`
@@ -64,36 +64,36 @@ def origem_padrao() -> Path:
 
 def validar(origem: Path) -> Path | None:
     """Confere que a origem existe e tem o que precisamos."""
-    mockup = origem / "mockup"
+    app = origem / "app"
 
     if not origem.is_dir():
         print(f"  Repositorio de origem nao encontrado: {origem}")
         print("  Use --origem para indicar o caminho.")
         return None
 
-    if not mockup.is_dir():
-        print(f"  Pasta 'mockup/' nao encontrada em {origem}")
+    if not app.is_dir():
+        print(f"  Pasta 'app/' nao encontrada em {origem}")
         return None
 
-    faltando = [t for t in TELAS if not (mockup / t).is_file()]
+    faltando = [t for t in TELAS if not (app / t).is_file()]
     if faltando:
-        print(f"  Telas ausentes em {mockup}: {', '.join(faltando)}")
+        print(f"  Telas ausentes em {app}: {', '.join(faltando)}")
         return None
 
-    return mockup
+    return app
 
 
-def sincronizar(mockup: Path) -> int:
+def sincronizar(app: Path) -> int:
     """Copia telas e assets. Devolve a quantidade de arquivos copiados."""
     DESTINO.mkdir(parents=True, exist_ok=True)
 
     copiados = 0
     for tela in TELAS:
-        shutil.copy2(mockup / tela, DESTINO / tela)
+        shutil.copy2(app / tela, DESTINO / tela)
         print(f"    {tela}")
         copiados += 1
 
-    assets_origem = mockup / "assets"
+    assets_origem = app / "assets"
     if assets_origem.is_dir():
         assets_destino = DESTINO / "assets"
         if assets_destino.exists():
@@ -122,12 +122,12 @@ def main() -> int:
     print(f"\n  Origem:  {origem}")
     print(f"  Destino: {DESTINO}\n")
 
-    mockup = validar(origem)
-    if mockup is None:
+    app = validar(origem)
+    if app is None:
         return 1
 
     try:
-        total = sincronizar(mockup)
+        total = sincronizar(app)
     except OSError as erro:
         print(f"\n  Falha ao copiar: {erro}\n")
         return 1
