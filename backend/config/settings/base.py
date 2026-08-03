@@ -1,6 +1,7 @@
 """Settings comuns a todos os ambientes. Nada de valor sensivel aqui."""
 
 import os
+from decimal import Decimal
 from pathlib import Path
 
 import dj_database_url
@@ -115,3 +116,14 @@ CORS_ALLOWED_ORIGINS = [
     for origem in os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
     if origem
 ]
+
+IA_PROVEDOR = os.environ.get("IA_PROVEDOR", "falso")
+IA_MODELOS = {
+    "TUTORIA": os.environ.get("IA_MODELO_TUTORIA", "modelo-tutoria-local"),
+    "GERACAO": os.environ.get("IA_MODELO_GERACAO", "modelo-geracao-local"),
+    "CORRECAO": os.environ.get("IA_MODELO_CORRECAO", "modelo-correcao-local"),
+    "RESUMO": os.environ.get("IA_MODELO_RESUMO", "modelo-resumo-local"),
+}
+IA_CUSTO_POR_CREDITO = Decimal(os.environ.get("IA_CUSTO_POR_CREDITO", "0.001"))
+IA_MARGEM_CREDITOS = Decimal(os.environ.get("IA_MARGEM_CREDITOS", "1.20"))
+IA_TIMEOUT_SEGUNDOS = float(os.environ.get("IA_TIMEOUT_SEGUNDOS", "10"))
