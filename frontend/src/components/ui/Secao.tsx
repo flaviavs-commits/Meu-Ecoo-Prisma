@@ -68,7 +68,7 @@ export function Secao({
       ref={referencia}
       id={id}
       className={[
-        'relative flex min-h-svh flex-col justify-center overflow-hidden',
+        'relative flex min-h-svh flex-col justify-center overflow-hidden [content-visibility:auto] [contain-intrinsic-size:auto_900px]',
         'border-b border-contorno px-6 py-24 sm:px-10',
         porFundo[fundo],
         className,

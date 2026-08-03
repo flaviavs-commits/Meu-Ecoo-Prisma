@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { memo, type CSSProperties, type ReactNode } from 'react'
 
 interface CardProps {
   children: ReactNode
@@ -20,7 +20,7 @@ interface CardProps {
 }
 
 /** Superfície base para conteúdo agrupado. */
-export function Card({
+export const Card = memo(function Card({
   children,
   interativo = false,
   brilho,
@@ -50,4 +50,4 @@ export function Card({
       {children}
     </div>
   )
-}
+})

@@ -1,4 +1,4 @@
-import type { PointerEvent, ReactNode } from 'react'
+import { memo, type PointerEvent, type ReactNode } from 'react'
 import { useRef } from 'react'
 import {
   motion,
@@ -36,7 +36,7 @@ interface Card3DProps {
   className?: string
 }
 
-export function Card3D({
+export const Card3D = memo(function Card3D({
   children,
   brilho = 'var(--color-terracotta)',
   intensidade = 4,
@@ -112,4 +112,4 @@ export function Card3D({
       {children}
     </motion.div>
   )
-}
+})

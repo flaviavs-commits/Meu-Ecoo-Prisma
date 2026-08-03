@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import type { Clima } from './clima'
 import { ASSENTA } from './movimento'
@@ -79,7 +79,7 @@ interface Titulo3DProps {
   className?: string
 }
 
-export function Titulo3D({
+export const Titulo3D = memo(function Titulo3D({
   texto,
   clima = 'neutro',
   className = '',
@@ -158,4 +158,4 @@ export function Titulo3D({
       ))}
     </motion.span>
   )
-}
+})
