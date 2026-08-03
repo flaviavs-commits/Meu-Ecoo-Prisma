@@ -39,8 +39,8 @@ do frontend.
 | E06 | [Gateway de IA - interface](etapas/E06-gateway-de-ia.md) | NAO INICIADA | - | E05 | E07 |
 | E07 | [Memoria e conversas do tutor](etapas/E07-memoria-e-conversas.md) | BLOQUEADA | claude-sonnet-5 (canvas/E07) | E06 | - |
 | E08 | [Upload de materiais](etapas/E08-upload-de-materiais.md) | BLOQUEADA | Claude (agente E08) | E02 | E10 |
-| E09 | [Academico - turmas, notas, faltas](etapas/E09-academico.md) | NAO INICIADA | - | E04 | - |
-| E10 | [Conteudo e rascunhos](etapas/E10-conteudo-e-rascunhos.md) | NAO INICIADA | - | E04, E08 | - |
+| E09 | [Academico - turmas, notas, faltas](etapas/E09-academico.md) | BLOQUEADA | agente E09 | E04 | - |
+| E10 | [Conteudo e rascunhos](etapas/E10-conteudo-e-rascunhos.md) | BLOQUEADA | Claude | E04, E08 | - |
 | E11 | [Admin e onboarding da escola](etapas/E11-admin-e-onboarding.md) | NAO INICIADA | - | E04 | - |
 | E12 | [Infra Railway e deploy](etapas/E12-infra-railway-e-deploy.md) | NAO INICIADA | - | E01 | - |
 | E13 | [API nos repos satelites](etapas/E13-api-nos-repos-satelites.md) | NAO INICIADA | - | - | integracao real de E06 |

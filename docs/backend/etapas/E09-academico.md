@@ -1,6 +1,6 @@
 # E09 - Academico (turmas, notas, faltas)
 
-> **Status:** NAO INICIADA · **Responsavel:** _(assine ao pegar)_
+> **Status:** BLOQUEADA · **Responsavel:** agente E09
 > **Depende de:** E04 · **Destrava:** -
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -147,7 +147,18 @@ E10 usa `Turma` e `Disciplina` para vincular material e prova.
 > Ao pegar: status para `EM ANDAMENTO`, assine, atualize
 > [`../README.md`](../README.md).
 
-_(vazio - primeira entrada e sua)_
+- [2026-08-03] Peguei E09 e chequei as dependencias antes de comecar - protocolo
+  manda conferir se "Depende de" esta CONCLUIDA. Resultado: a pasta `backend/`
+  ainda nao existe no repositorio (so sera criada em E01) e E01, E02, E03 e E04
+  estao todas `NAO INICIADA`. Nao ha projeto Django, `Usuario`, `Instituicao`,
+  JWT nem permission classes para eu construir `Turma`/`Nota`/`Falta` em cima.
+  Decisao: **nao** vou implementar E01-E04 "de passagem" para me desbloquear -
+  o protocolo probe isso e corre o risco de conflitar com outro agente que
+  esteja nessas etapas em paralelo no canvas. Status vira `BLOQUEADA`.
+  Proximo passo real: assim que E04 estiver `CONCLUIDA` (ou pelo menos E01-E03,
+  se eu decidir assumir o risco do contrato declarado de E04 antes dela fechar),
+  retomo daqui seguindo o plano do item 5. Ate la, nao ha saida de codigo para
+  validar.
 
 ## 9. Criterio de pronto
 

@@ -1,6 +1,6 @@
 # E10 - Conteudo e rascunhos
 
-> **Status:** NAO INICIADA · **Responsavel:** _(assine ao pegar)_
+> **Status:** BLOQUEADA · **Responsavel:** Claude (sessao 2026-08-03)
 > **Depende de:** E04, E08 · **Destrava:** -
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -156,7 +156,22 @@ sempre como rascunho. O contrato ja esta pronto para isso.
 > Ao pegar: status para `EM ANDAMENTO`, assine, atualize
 > [`../README.md`](../README.md).
 
-_(vazio - primeira entrada e sua)_
+- [2026-08-03] Peguei E10 e chequei as dependencias antes de codar - protocolo
+  manda conferir "Depende de" antes de tocar em qualquer etapa - `git status`
+  e `ls` confirmaram: nao existe pasta `backend/` no repositorio (E01 nunca
+  criou), e E02, E03, E04 e E08 estao todas `NAO INICIADA` no
+  `docs/backend/README.md`. Ou seja, nao ha model, nao ha auth, nao ha
+  multi-tenancy, nao ha `Arquivo` - a base inteira que E10 usa (mixin de acao
+  destrutiva de E04, model `Arquivo` de E08) nao existe em codigo.
+  Decisao: nao vou implementar E01/E02/E04/E08 "de passagem" para me
+  desbloquear - o protocolo (`PROTOCOLO-DO-AGENTE.md`, secao 4 e secao 1)
+  probe isso explicitamente, e outros agentes podem estar trabalhando nelas
+  em paralelo no mesmo canvas. Marquei esta etapa como `BLOQUEADA` em vez de
+  simular progresso.
+  Proximo passo concreto para quem retomar: confirmar no README se algum
+  agente ja pegou E01/E02/E03/E04/E08; se sim, esperar essas ficarem
+  `CONCLUIDA` antes de reabrir E10; se nao, considerar pegar E01 (fundacao)
+  primeiro, que e o gargalo real do projeto - nada mais destrava sem ela.
 
 ## 9. Criterio de pronto
 
