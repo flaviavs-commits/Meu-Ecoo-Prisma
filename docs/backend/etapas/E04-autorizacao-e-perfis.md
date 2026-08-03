@@ -1,6 +1,6 @@
 # E04 - Autorizacao e perfis
 
-> **Status:** BLOQUEADA · **Responsavel:** agente-canvas-E04
+> **Status:** BLOQUEADA · **Responsavel:** /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md
 > **Depende de:** E03 · **Destrava:** E05, E09, E10, E11
 >
 > ⚠️ **Escreva na secao 8 enquanto trabalha, nao no fim.** Regras:
@@ -180,10 +180,11 @@ registro do motivo no diario.
   mixin de acao destrutiva + `RegistroDeAuditoria`) e a ordem de TDD do item
   5.5. Nao decidi nada sobre a pendencia de re-autenticacao do item 5.4 -
   continua em aberto para quando a etapa for retomada.
+- [2026-08-03] Retomei a E04 como /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md após E03 ser validada localmente - por que: o usuário confirmou que este agente é responsável por todas as etapas - como validei: `DATABASE_URL=sqlite:///local-test.sqlite3 pytest ./authenticacao/tests.py ./contas/tests.py -q` retornou `12 passed in 1.51s`; criei permissões por perfil, checagem de instituição, dono do objeto, auditoria e mixin de ação destrutiva. Estado final deste bloco: **BLOQUEADA**, pois ainda faltam os oito testes formais da E04 e a migração de `RegistroDeAuditoria`.
 
 ## 9. Criterio de pronto
 
-- [ ] Os 8 testes do item 5.5 passam - saida real no diario
+- [ ] Os 8 testes do item 5.5 passam - ainda não escritos
 - [ ] Existe teste de IDOR e ele passa
 - [ ] Recurso de outra instituicao responde 404, verificado
 - [ ] Mixin destrutivo grava auditoria - conferido no banco, nao presumido
