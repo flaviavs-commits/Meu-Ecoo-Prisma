@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "core",
     "memoria",
     "arquivos",
+    "conteudo",
 ]
 
 MIDDLEWARE = [

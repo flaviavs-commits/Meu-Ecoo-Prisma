@@ -7,6 +7,7 @@ urlpatterns = [
     path("api/v1/memoria/", include("memoria.urls")),
     path("api/v1/arquivos/", include("arquivos.urls")),
     path("api/v1/academico/", include("academico.urls")),
+    path("api/v1/conteudo/", include("conteudo.urls")),
 ]
 
 handler404 = "core.erros.pagina_nao_encontrada"
