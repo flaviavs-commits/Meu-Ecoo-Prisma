@@ -15,6 +15,9 @@ ALLOWED_HOSTS = [
 
 SECURE_SSL_REDIRECT = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# O health check interno do Railway chega por HTTP antes do proxy TLS.
+# As demais rotas continuam obrigadas a usar HTTPS.
+SECURE_REDIRECT_EXEMPT = [r"^api/v1/health/$"]
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 60 * 60 * 24 * 365
