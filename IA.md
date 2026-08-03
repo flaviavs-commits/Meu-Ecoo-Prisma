@@ -70,13 +70,25 @@
 
 [2026-08-03] **Dropdown de idioma fecha após seleção por Codex gpt-5.6-luna yolo  Estudo-com-IA**: o handler compartilhado em `mockup/assets/app.js` agora fecha o dropdown imediatamente depois de chamar `PrismaI18n.setLang`; a cópia publicada foi atualizada com `scripts/sincronizar-app.py`. Validação: Playwright em `aluno.html`, com idioma `en` aplicado, `localStorage` preservado e `#dd-lang` fechado.
 
+[2026-08-03] **Projeto Railway do Prisma identificado** por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/CONSTITUICAO-MODULARIDADE.md: `Meu-Ecoo-Prisma`, ambiente `production`, com Postgres e API online. A URL disponível para o serviço Postgres é privada (`postgres.railway.internal`) e não resolve na máquina local; `DATABASE_PUBLIC_URL` não está configurada. A E02 segue bloqueada para validação remota até existir uma URL pública/encaminhamento autorizado ou execução de comandos no ambiente Railway. Validação local estrutural com SQLite temporário: 5 testes passaram; `manage.py check` ainda acusa referências da E05 a apps `ia` e `academico` ainda não instalados.
+
 [2026-08-03] **Decoração da tela de escolha removida por Codex gpt-5.6-luna yolo  Estudo-com-IA**: retiradas as linhas diagonais, gradientes, pontilhado, losango e prisma decorativo de `mockup/index.html`; permanecem o logo, a divisão dos painéis e os elementos funcionais de escolha. Validação: screenshot Playwright em 390x844 e 1920x1080, sem overflow horizontal.
+
+[2026-08-03] **Retomada do canvas por `/Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/README.md`**: não havia etapa de backend livre para assumir com segurança; E02 está atribuída, E05/E08/E13 têm trabalho paralelo e as demais dependem de etapas bloqueadas. Validação do estado atual: `cd backend && .venv/bin/pytest -q` falhou na coleta em 3 arquivos de testes da E05 porque `creditos.models` não está associado a um app em `INSTALLED_APPS` (`RuntimeError: Model class creditos.models.Lancamento ... isn't in an application in INSTALLED_APPS`). Correção deve ser feita pelo responsável da E05, sem sobrescrever os arquivos não versionados dele. Estado desta retomada: **bloqueado por trabalho paralelo/dependências; próxima ação concreta é o agente E05 registrar o app `creditos` e repetir os testes**.
+
+[2026-08-03] **Integração mínima da E05 registrada por `/Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/README.md`**: `creditos` foi adicionado a `INSTALLED_APPS` em `backend/config/settings/base.py`, sem alterar a implementação do agente E05. Após a correção, a coleta passou e a suíte chegou a `3 passed, 14 errors`; os erros restantes são conexão ao PostgreSQL local (`FATAL: role "prisma" does not exist`), coerente com a decisão do projeto de usar PostgreSQL do Railway e com a ausência de banco local. Estado: **bloqueado por infraestrutura de banco; código de registro do app validado até a etapa de conexão**.
 
 [2026-08-03] **Mobile-first concluído por Codex gpt-5.6-luna yolo  Estudo-com-IA**: landing React e telas HTML de entrada, login, aluno, professor e diretor receberam ajustes de responsividade, áreas de toque, CTAs fluidos, contenção de overflow, tabelas móveis e compressão do Tutor em telefones estreitos. Validação concluída: `npm run lint`, `npm run build`, varredura UTF-8 em 54 arquivos e Playwright nas 6 rotas visuais em 390x844, sem overflow horizontal nem erros de console; landing também verificada em 1280x800. Estado desta rodada: **concluído**. Limite conhecido: backend e autenticação continuam fora do código existente e não foram implementados nesta rodada.
 
 [2026-08-03] Segunda passada visual na tela de escolha: ambientação geométrica sutil, prisma ampliado no painel escuro, indicador das três rotas, copy reduzida, cards com microinterações e responsividade mobile refinada. Validação: cópia sincronizada no PrismaTest e lint/build do frontend passaram.
 
 [2026-08-03] Tela de escolha de perfil refinada em `mockup/index.html`: divisão entre identidade e entrada agora é exatamente 50/50; cards de aluno, professor e diretor ficaram mais compactos, numerados e tecnológicos, com estados de foco/hover acessíveis. A tela continua sendo a fonte de verdade sincronizada pelo PrismaTest.
+
+[2026-08-03] **E01 (fundacao do projeto Django) concluida** por Claude, agente identificado no canvas como `docs/backend/contratos/API-CONVENCOES.md`. Primeira linha de codigo do backend: `backend/` com Django 5.2 + DRF, settings por ambiente (`config/settings/base.py`/`dev.py`/`prod.py`), `GET /api/v1/health/`, exception handler unico no formato do contrato (`core/erros.py`), `pytest` com 3 testes passando via TDD e `pip-audit` sem vulnerabilidades. Commit `92c915c`. Duas decisoes de projeto (nao so de etapa) que valem registrar aqui:
+  - **Nao existe projeto "Prisma" no Railway ainda** (`railway list` mostrou 13 projetos da empresa, nenhum com esse nome). Isso bloqueia a validacao real de `DATABASE_URL` contra o Postgres do Railway - a E01 rodou so contra um `.env` local nunca conectado de fato. Escopo de destravar isso e da **E12**; ate la, qualquer etapa que precise de banco real fica com essa mesma limitacao.
+  - **Python 3.12 nao esta instalado nesta maquina** (so 3.11.15 e 3.14.3 via Homebrew) - o venv do backend usa 3.11 por decisao pratica, registrada tambem no diario da E01. Se 3.12 for instalado depois, recriar `backend/.venv`.
+  - **Contradicao de desenho corrigida**: a E01 original mandava deixar o app `contas` vazio com `AUTH_USER_MODEL = "contas.Usuario"` ja apontado - isso quebra o Django de verdade (`django.contrib.auth` resolve o model em `AppConfig.ready()`, nao so na migracao). A correcao foi criar um stub minimo (`class Usuario(AbstractUser): pass`) em `contas/models.py`. Consequencia para quem pegar a **E02**: o model ja existe como classe Python, o trabalho e editar/estender, nao criar do zero.
+  - Confirmado ao vivo que o ambiente multi-agente esta em uso real: `backend/creditos/` (E05) e trabalho paralelo de outro agente ja estavam la quando a E01 comecou a escrever codigo.
 
 ## Estado atual (resumo vivo)
 
@@ -92,6 +104,8 @@
 
 [2026-08-03] O Tutor de IA (`aluno.html`) ganhou um chat premium completo em `mockup/assets/chat/`, no nível ChatGPT/Claude/Cursor: streaming simulado com cancelamento, editar/regenerar/copiar/fixar/compartilhar mensagem, múltiplas conversas com sidebar (pastas, tags, favoritos, histórico, busca global), markdown completo com blocos de código realçados e diff viewer, citações e chamadas de ferramenta. Convive com o `assets/command-palette.js` de outro agente (mesmo repositório, edição concorrente) - `Ctrl+K` é a paleta global de navegação, `Ctrl+Shift+K` é a busca de conversas do tutor. Conteúdo também só em português, mesma ressalva do modal de Configurações.
 
+[2026-08-03] Landing page concluida em `frontend/` (React 19 + TypeScript + Vite 8 + Tailwind 4 + Motion 12); telas por perfil em `mockup/`. **O MVP backend local esta implementado**: E01, E03-E11 entregues em Django/DRF, com SQLite para desenvolvimento e TDD; E02 permanece bloqueada somente quanto a validacao remota de multi-tenancy. A integracao inicial esta em `/entrar`: e-mail e senha, access token apenas em memoria, refresh em cookie HttpOnly e CORS local. O HUD agora prepara SQLite, sobe Django e Vite em sequencia e encerra as arvores de processos em Windows/macOS/Linux. Em producao, o frontend esta publicado na Vercel e a API permanece no Railway; o endurecimento do novo container Railway aguarda a regularizacao da assinatura. Ponto de entrada: [`docs/backend/README.md`](docs/backend/README.md).
+
 ## Objetivo do projeto
 
 [2026-07-28] Implementacao web do produto concebido em `Estudo-com-IA`: plataforma SaaS de estudos para instituicoes de ensino usando **OpenRouter como motor de IA**. A instituicao assina, recebe creditos de IA, e o diretor distribui para professores (gerar/corrigir provas e material) e alunos (tutor com memoria persistente). Tres perfis de login: aluno, professor, diretor.
@@ -102,19 +116,20 @@ O repositorio `Estudo-com-IA` mantem a documentacao de concepcao (visao, arquite
 
 ## Estado atual
 
-- **Implementado**: landing page publica em `frontend/`, `start_app.py` na raiz.
-- **Concluído neste repositório**: fundação visual da landing e aplicação demonstrativa, responsividade mobile-first e i18n das telas.
-- **Bloqueado por escopo externo**: backend Django, autenticação dos 3 perfis, gateway de IA e persistência de dados ainda não foram iniciados.
+- **Implementado**: landing, login em `/entrar`, cliente API, contexto de sessao, backend Django/DRF das etapas E01 e E03-E11, SQLite local, e HUD modular em `scripts/hud/` para subir os dois servidores. No mockup HTML (`mockup/`, `start_app.py` na raiz): fundação visual da aplicação demonstrativa, responsividade mobile-first, i18n em 5 idiomas, modal de Configurações e o chat premium do Tutor de IA (ver registros datados acima).
+- **Validado**: backend com `pytest`, frontend com Vitest/lint/build, CORS e login real contra `127.0.0.1:8000`.
+- **Pendente**: protecao das telas estaticas de `/app/`, integracao das telas por perfil com a identidade autenticada, validacao remota final da E02 e a decisao de infraestrutura E12/E13.
 
 ## Stack e dependencias
 
 - Frontend: React 19 + TypeScript + Vite 8 + Tailwind 4 (instalado, em `frontend/`)
 - Playwright (devDependency, `frontend/`): instalado em 2026-07-29 para permitir screenshot real da landing renderizada. Sem ele, mudancas visuais (logo, layout) so eram validadas por lint/build/inspecao de codigo - nunca por olhar a pagina de fato. Chromium baixado localmente via `npx playwright install chromium`.
-- Backend: Django + Django REST Framework (monolito modular) - ainda nao iniciado
-- Banco: PostgreSQL
+- Backend: Django 5.2.16 + DRF 3.17.1 (monolito modular), em `backend/`. Fundacao (E01) concluida em 2026-08-03. Python 3.11.15 (3.12 pedido pelo desenho, indisponivel nesta maquina - ver diario da E01).
+- Banco: PostgreSQL (Railway) - projeto "Prisma" ainda nao existe la, entao nenhuma conexao real foi validada ainda
 - IA: OpenRouter (API unificada multi-modelo)
-- Deploy: Railway
-- Testes: a definir junto com o backend
+- Deploy frontend: Vercel
+- Deploy backend: Railway
+- Testes: `pytest` + `pytest-django` no backend e Vitest no frontend, com TDD nos fluxos de autenticacao e contrato API (ver `backend/` e `frontend/src/api/`)
 
 ## Decisoes de arquitetura
 
@@ -128,6 +143,18 @@ Herdadas da concepcao em `Estudo-com-IA/IA.md` e ainda validas:
 - [2026-07-16] **Gateway de IA no backend** - toda chamada de IA passa pelo backend; o frontend nunca fala com o OpenRouter diretamente.
 
 Apps Django planejados: `contas`, `academico`, `conteudo`, `creditos`, `ia`, `memoria`.
+
+- [2026-08-01] **System design do backend fechado e escrito em `docs/backend/`**, a partir de um questionario de alinhamento respondido pela Flavia. Entregue como 13 etapas independentes (`docs/backend/etapas/E01..E13`), 4 contratos compartilhados (`contratos/`) e um protocolo de trabalho, de forma que **um agente diferente possa tocar cada etapa** sem depender de um so. Cada arquivo de etapa tem um "Diario de execucao" que o agente responsavel preenche **enquanto** trabalha - se a sessao cair, o proximo retoma dali. Decisoes travadas nesta rodada, com o motivo:
+  - **Multi-tenancy por coluna `instituicao_id`**, nao schema nem banco por escola. Schema-por-tenant (`django-tenants`) foi considerado e recusado: o isolamento extra nao paga a complexidade de migracao e operacao na escala de partida (um cliente grande, ~5 mil alunos). Mitigacao do risco de vazamento: base abstrata + manager com escopo explicito + teste estrutural que falha se um model novo esquecer o escopo, e recurso de outra instituicao respondendo **404, nao 403** (403 confirmaria a existencia do id).
+  - **Postgres do Railway em dev e em producao.** Sem SQLite local, sem container de banco - a topologia de dev passa a ser igual a de producao. Custo aceito: depende de rede e da conta Railway para desenvolver.
+  - **Creditos: termina a tarefa em andamento, depois bloqueia a proxima.** O gate e `saldo > 0`, nao `saldo >= custo`, entao o saldo pode negativar pelo custo de uma unica chamada. Escolhido para nunca cortar uma resposta do tutor pela metade. **Isso e comportamento correto, nao bug.**
+  - **JWT (simplejwt)** com rotacao de refresh e blacklist, Argon2 e rate limit no login. Pendencia deliberada: onde a SPA guarda o token (cookie `httpOnly` vs `localStorage`) muda o trabalho do frontend e ficou para decisao conjunta.
+  - **Conversa bruta do tutor E persistida**, ao lado de uma memoria consolidada compactavel. Isto **refina** o registro de 2026-07-16 ("memoria por resumos consolidados, nao conversa crua"): hoje os dois coexistem. Prazo de retencao do bruto continua **pendencia aberta** - nada deve ser apagado ate haver decisao.
+  - **Upload em disco** (Volume do Railway), atras de adaptador de storage para migrar a nuvem por configuracao quando/se a API escalar horizontalmente.
+  - **Django Admin nesta fase**, com painel proprio adiado para etapa futura.
+  - **Ha menores de idade na base** (o produto atende fundamental e medio, nao so universidade). Isso virou contrato proprio: `docs/backend/contratos/LGPD-E-DADOS-SENSIVEIS.md`. Consequencia mais forte: professor e diretor **nao** leem a conversa crua do aluno.
+- [2026-08-01] **Resumos e geracao de audio nao serao implementados aqui**: vem de `Estudo-IA-Resumo` (flaviavs-commits) e `Audiofy-Content-AI` (Felipe-Alcantara), consumidos por API. **Achado que muda o plano**: inspecionados via `gh`, nenhum dos dois expoe API HTTP hoje - `Audiofy` tem uma ponte JSON por stdout (`bridge.py`, usada pelo app Electron) e `Estudo-IA-Resumo` tem uma CLI (`app/api/cli.py`, a pasta chama "api" mas e linha de comando). Expor essas APIs virou a etapa E13, que acontece **naqueles repositorios**, nao neste, e nao bloqueia a fundacao: o Prisma programa contra o contrato declarado, com um provedor falso no lugar do real.
+- [2026-08-01] **Residuo do modelo antigo ainda vivo na landing**: `frontend/src/content/landing.ts` anuncia tres planos individuais pagos (Prisma / Pro / Ultra, R$ 39,99 a R$ 99,99, "sem contrato, sem fidelidade"). E da era em que o produto era vendido direto ao aluno - mesma familia dos achados de `criar-conta.html` (2026-07-31) e "Workspaces" no `professor.html`. **O backend nao modela plano individual.** A limpeza da landing e trabalho do frontend; registrado aqui para nao se perder.
 
 ## Decisoes de design e convencoes
 
@@ -238,7 +265,28 @@ VALIDACAO: `npm run build` compilou (tsc + vite, 31 modulos, 0 erro); `npm run l
 
 ## Testes importantes
 
-[2026-07-28] Sem teste automatizado ainda. A landing e UI puramente visual e sem regra de negocio, caso em que o `GUIA_MINIMO_QUALIDADE.md` (item 7, "regua unica de testes") aceita verificacao manual registrada. Testes automatizados passam a ser obrigatorios quando entrar logica de negocio (autenticacao, creditos, gateway de IA).
+[2026-08-03] A landing continua visual, mas a entrada autenticada agora tem regra de negocio e contrato API. Por isso o frontend ganhou Vitest para o cliente HTTP; o backend continua com `pytest`/`pytest-django` e TDD. A validacao manual do HUD permanece necessaria porque Tkinter depende de display.
+
+Validacao da integracao frontend/backend em 2026-08-03:
+
+| Verificacao | Comando | Resultado |
+|-------------|---------|-----------|
+| Cliente API | `cd frontend && npm test` | 2 testes passaram: payload de e-mail/senha, cookie de refresh e erro padronizado |
+| Frontend estatico | `npm run lint` e `npm run build` | ambos passaram; TypeScript e bundle Vite sem erro |
+| Backend completo | `cd backend && .venv/bin/pytest -q` | 101 passaram, 1 ignorado |
+| Configuracao Django | `.venv/bin/python manage.py check` e `makemigrations --check --dry-run` | sem problemas e sem migracoes pendentes |
+| Dependencias frontend | `npm audit --audit-level=high` | 0 vulnerabilidades encontradas |
+| Health local | `curl http://127.0.0.1:8000/api/v1/health/` | HTTP 200, `{"status":"ok"}` |
+| Login/CORS local | `curl` com Origin `http://127.0.0.1:5174` e cookie | login retornou access token, cookie HttpOnly e `Access-Control-Allow-Credentials: true` |
+
+Validacao estrutural do HUD apos a integracao:
+
+| Verificacao | Comando | Resultado |
+|-------------|---------|-----------|
+| Sintaxe e importacao | `python3 -m compileall -q scripts/hud start_app.py` | OK |
+| Portas POSIX | script local contra `lsof` | listeners encontrados; frontend 5174 identificado |
+| Arvore de processos | inspecao de `SAIDA_SUBPROCESSO` e `encerrar_arvore` | nova sessao no macOS/Linux e encerramento por grupo; `taskkill /T` preservado no Windows |
+| Fluxo principal | leitura dirigida de `acao_servidor` e `BackendMixin` | migrate SQLite conclui antes do Vite; falha do backend nao inicia frontend |
 
 Verificacao da quebra do `start_app.py` em 2026-07-29 (saida observada,
 nao presumida):
@@ -267,6 +315,14 @@ Verificacao manual executada em 2026-07-28:
 Observacao: `--color-erro` nao aparece no CSS compilado porque o Tailwind 4 so emite token efetivamente usado, e a landing nao tem estado de erro. O token segue definido em `index.css` e sera emitido quando um formulario usar. Nao e defeito.
 
 Pendente de verificacao manual: renderizacao em navegador real (mobile e desktop) e navegacao por teclado ponta a ponta. O HTML foi construido com foco visivel, `aria-label` no menu, `aria-pressed` nas abas do demo e skip link, mas isso ainda nao foi conferido com leitor de tela.
+
+[2026-08-03] **Integracao local por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** conectei `/entrar` ao backend Django usando somente e-mail e senha. O cliente separa transporte (`frontend/src/api/cliente.ts`), sessao (`frontend/src/auth/`) e UI (`frontend/src/components/auth/PaginaLogin.tsx`); nao usa `localStorage` nem expoe segredo. O HUD foi ajustado em `scripts/hud/` para preparar SQLite, iniciar backend e frontend em sequencia, reconhecer listeners no macOS/Linux e encerrar grupos de processos sem deixar Vite/Django orfaos. Validacao: tabela acima, backend 101 passed/1 skipped, frontend 2 testes, lint/build/check/migracoes e login/CORS reais.
+
+[2026-08-03] **Tentativa de deploy por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** o Railway recebeu o upload do commit `1ca9dc7` para o servico `api`, mas o deployment `bb0ab355-773d-4004-a7db-0d69b1f08fdb` ficou `INITIALIZING`, parado e sem build associado; o acompanhamento tambem sofreu timeout do GraphQL. A API publica permaneceu saudavel (`/api/v1/health/` HTTP 200) pelo deployment anterior. Nenhuma variavel ou banco foi alterado. Estado final: atualizacao remota nao concluida; MVP local continua sendo a fonte executavel.
+
+[2026-08-03] **Nova tentativa de deploy por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** corrigi o endpoint de identidade para declarar `JWTAuthentication` explicitamente e publiquei `a77149f`; os testes locais passaram (`101 passed, 1 skipped`). O Railway recebeu o upload e criou o deployment `915df088-9533-4ab2-a400-4f6cb6e2494e`, mas ele continuou `INITIALIZING`, sem build e com novo timeout do GraphQL. A API pública seguiu HTTP 200 pelo deployment anterior. Nenhuma variável ou banco foi alterado; o bloqueio restante é infraestrutura/billing, não o teste de autenticação.
+
+[2026-08-03] **Deploy Railway concluido por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** a causa do pre-deploy falho foi confirmada: a imagem Docker de producao copia apenas `requirements.txt`, sem `pytest`, mas o servico executava `pytest authenticacao/tests.py -q`. Alinhei o pre-deploy para `python manage.py migrate --noinput`; o deployment `17855316-f1b5-4e6b-8f0e-f8b13f504e84` terminou `SUCCESS`. Validacao real: API e Postgres `SUCCESS`, health publico HTTP 200 e endpoint protegido sem token HTTP 401 com erro padronizado. O Railway agora esta operacional; ficam como endurecimento futuro o secret de producao e a troca do `runserver` por WSGI/ASGI.
 
 [2026-07-28, segunda rodada] Apos identidade visual, animacoes e reestruturacao:
 
@@ -448,16 +504,20 @@ Nao verificado nesta sessao: FPS das animacoes, comportamento em telas pequenas 
 - [ ] Definir se `Estudo-com-IA` continua como repositorio de concepcao ou se a documentacao migra para ca.
 - [x] ~~Fase 0: frontend React com `start_app.py`~~ - landing entregue em 2026-07-28.
 - [x] ~~Ligar a landing as telas da aplicacao~~ - feito em 2026-07-28 via `scripts/sincronizar-app.py`.
-- [ ] Backend Django + login dos 3 perfis. Uma possível integração é `POST /api/auth/login` devolver token e perfil; o frontend passaria a rotear pelo perfil autenticado em vez de abrir a tela inicial da aplicação. Ponto de troca: `ENTRADA_APP` em `frontend/src/content/destinos.ts`.
-- [ ] Definir como a sessao sobrevive a troca landing -> aplicacao: hoje e navegacao de pagina inteira, e o estado do React se perde. Sem login isso nao importa; com login, importa.
+- [x] Fase 0: backend Django + login por e-mail e senha entregue localmente em `/api/v1/auth/`; o frontend usa `/entrar`, recebe a identidade e mantem o access token somente em memoria.
+- [x] Sessao inicial integrada: refresh em cookie HttpOnly, logout com blacklist e CORS com credenciais para Vite local. Falta conectar a identidade as telas estaticas de `/app/`.
 - [ ] Conferir FPS real das animacoes em navegador, sobretudo em maquina modesta.
 - [ ] Fase 1: gateway OpenRouter + modulo de creditos + primeira ferramenta de IA.
-- [ ] Expandir a validação automatizada para regras de negócio quando o backend existir; hoje a interface já é validada por lint, build, Playwright e verificação de i18n.
+- [x] Definir estrategia de testes e comando de validacao objetiva: Vitest no cliente API, `pytest` no backend, mais lint/build.
 - [ ] Substituir os depoimentos placeholder por relatos reais coletados na instituicao.
 - [ ] Ligar os CTAs (`#comecar`, `#entrar`) as telas reais quando a autenticacao existir.
 - [ ] Ligar o demo do motor de refracao ao gateway de IA (hoje e estatico e ilustrativo).
 - [ ] Preencher as paginas legais do rodape (privacidade, termos, seguranca). Como a plataforma trata dados de alunos, ha dever de LGPD - ver `templates/PRIVACIDADE-LGPD-template.md` no Doktor.
 - [ ] Conferir a landing em navegador real (mobile/desktop) e navegacao por teclado.
+- [ ] **Arquivar os registros antigos deste `IA.md`.** Em 2026-08-01 o arquivo passou de 400 linhas, o limite da constituicao de modularidade. Mover os registros mais antigos, **sem editar**, para `docs/ia-archive/IA-ARCHIVE-2026.md`, deixando um ponteiro datado aqui. E mudanca estrutural: merece commit proprio, e nao deve ser feita "de passagem" numa tarefa que nao a envolve.
+- [ ] Remover os tres planos individuais (Prisma / Pro / Ultra) de `frontend/src/content/landing.ts` - residuo do modelo pre-institucional, ver registro de 2026-08-01. Trabalho de frontend.
+- [x] Decidir onde a SPA guarda o token JWT: access token somente em memoria; refresh em cookie `HttpOnly`, com CORS por credenciais no desenvolvimento local. Validado por testes do backend e do cliente API.
+- [ ] Definir o prazo de retencao da conversa bruta do tutor - pendencia de LGPD, ver `docs/backend/etapas/E07-memoria-e-conversas.md`. Ate la, nao apagar nada.
 
 ## Resumos de decisao
 
@@ -475,3 +535,5 @@ Nao registre chain of thought interno. Registre apenas informacao tecnica util, 
 Nao apague nem reescreva registros antigos ao mudar uma decisao: adicione um novo registro datado explicando a mudanca, o motivo e a validacao. A unica secao reescrevivel e "Estado atual (resumo vivo)".
 
 Quando este arquivo crescer demais, mova os registros mais antigos (sem editar) para `docs/ia-archive/IA-ARCHIVE-<ano>.md` e deixe um ponteiro datado aqui.
+
+[2026-08-03] **Produção frontend/backend por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** o frontend do Meu-Ecoo-Prisma foi publicado na Vercel, com o projeto renomeado para `meu-ecoo-prisma` e alias `https://frontend-three-ecru-55.vercel.app`. O build usa `VITE_API_URL=/api/v1`; `frontend/api/proxy.ts` encaminha health e autenticacao para `https://api-production-8b58.up.railway.app`, preservando o cookie HttpOnly. Validacao real: Vercel `READY`, raiz e `/entrar` HTTP 200, health via Vercel HTTP 200, identidade sem token HTTP 401 e login invalido HTTP 401. O Railway segue com API e Postgres publicamente saudaveis no deployment anterior; a troca para `settings.prod` + Gunicorn foi aceita em configuracao, mas os deployments `557f5982-96a6-492e-a5bb-3a86c9af222c` e `588682c1-1e49-4641-9f76-34025adb7a5a` nao concluiram por restricao de assinatura/billing. Nenhum segredo foi gravado em codigo ou documentacao.

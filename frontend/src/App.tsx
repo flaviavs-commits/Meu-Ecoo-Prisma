@@ -7,15 +7,17 @@ import { Recursos } from './components/feature/Recursos'
 import { Creditos } from './components/feature/Creditos'
 import { Planos } from './components/feature/Planos'
 import { ChamadaFinal } from './components/feature/ChamadaFinal'
+import { PaginaLogin } from './components/auth/PaginaLogin'
+import { AutenticacaoProvider } from './auth/contexto'
 
 /**
  * Landing page do Prisma - a vitrine pública.
  *
- * A aplicação em si (telas de aluno, professor e diretor) vive no
- * repositório `Estudo-com-IA` e é servida em `/app/`. O "Entrar"
- * leva à escolha de perfil, que abre a aplicação.
+ * As telas estaticas de aluno, professor e diretor sao derivadas de
+ * `mockup/` e servidas em `/app/`. O "Entrar" abre o fluxo autenticado;
+ * a protecao das telas por perfil sera a proxima camada.
  */
-function App() {
+function Landing() {
   return (
     <>
       <a
@@ -40,6 +42,18 @@ function App() {
 
       <Rodape />
     </>
+  )
+}
+
+function Conteudo() {
+  return window.location.pathname === '/entrar' ? <PaginaLogin /> : <Landing />
+}
+
+function App() {
+  return (
+    <AutenticacaoProvider>
+      <Conteudo />
+    </AutenticacaoProvider>
   )
 }
 

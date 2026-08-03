@@ -13,7 +13,7 @@ from pathlib import Path
 
 from .ambiente import dependencias_instaladas, npm, porta_em_uso, portas_em_escuta
 from .caminhos import FRONTEND, RAIZ, SINCRONIZAR_APP
-from .processos import SAIDA_SUBPROCESSO, encerrar_arvore
+from .processos import SAIDA_SUBPROCESSO, encerrar_arvore, encerrar_pid
 from .tokens import ICONES
 from .widgets import Modal, PainelPortas
 
@@ -75,22 +75,33 @@ class AcoesMixin:
     # -- servidor ------------------------------------------------------
 
     def acao_servidor(self) -> None:
-        """Card principal: sobe ou para, conforme o estado."""
-        if self.servidor and self.servidor.poll() is None:
+        """Card principal: sobe ou para frontend e backend locais."""
+        algum_rodando = any(
+            processo and processo.poll() is None
+            for processo in (self.servidor, self.backend)
+        )
+        if self.ocupado and not algum_rodando:
+            self._escrever("A aplicacao ainda esta sendo preparada.", "suave")
+            return
+        if algum_rodando:
             self._parar_servidor()
+            self._parar_backend()
         else:
-            self._subir_servidor()
+            # O frontend so inicia depois que a migracao e o processo Django
+            # estiverem prontos. Assim uma falha do backend nao deixa uma
+            # aplicacao parcialmente funcional no ar.
+            self._subir_backend(iniciar_frontend=True)
 
-    def _subir_servidor(self) -> None:
+    def _subir_servidor(self) -> bool:
         executavel = self._npm_ou_avisa()
         if executavel is None or not self._deps_ou_avisa():
-            return
+            return False
 
         if porta_em_uso(self.porta):
             self._escrever(f"A porta {self.porta} já está em uso.", "erro")
             self._escrever("Use 'Porta' para escolher outra, ou encerre o outro processo.", "suave")
             self._toast_mostrar(f"Porta {self.porta} ocupada", False)
-            return
+            return False
 
         self._escrever(f"$ npm run dev -- --port {self.porta}", "suave")
 
@@ -103,7 +114,7 @@ class AcoesMixin:
         except OSError as exc:
             self._escrever(f"Falha ao subir o servidor: {exc}", "erro")
             self._toast_mostrar("Não foi possível subir", False)
-            return
+            return False
 
         processo = self.servidor
         self._card_servidor_para()
@@ -117,6 +128,7 @@ class AcoesMixin:
             self.fila.put(("suave", "O servidor encerrou."))
 
         threading.Thread(target=acompanhar, daemon=True).start()
+        return True
 
     def _parar_servidor(self) -> None:
         processo = self.servidor
@@ -213,7 +225,9 @@ class AcoesMixin:
             return
 
         self.porta = int(texto)
-        self.cards["porta"].definir_conteudo(ICONES["porta"], "Porta", f"Atual: {self.porta}")
+        self.cards["porta"].definir_conteudo(
+            ICONES["porta"], "Porta frontend", f"Atual: {self.porta}"
+        )
         self._escrever(f"Porta definida para {self.porta}.", "ok")
         self._toast_mostrar(f"Porta {self.porta}")
 
@@ -240,13 +254,7 @@ class AcoesMixin:
         self._escrever(f"Encerrando {item.processo} (PID {item.pid}) na porta {item.porta}...", "suave")
 
         def trabalho() -> None:
-            resultado = subprocess.run(
-                ["taskkill", "/F", "/T", "/PID", str(item.pid)],
-                capture_output=True,
-                timeout=10,
-                check=False,
-            )
-            if resultado.returncode != 0:
+            if not encerrar_pid(item.pid):
                 self.fila.put(("erro", f"Falha ao encerrar PID {item.pid}."))
                 self.fila.put(("toast_erro", "Falha ao encerrar processo"))
             else:
@@ -256,27 +264,33 @@ class AcoesMixin:
         threading.Thread(target=trabalho, daemon=True).start()
 
     def ao_fechar(self) -> None:
-        """Nao deixa o Vite orfao quando a janela fecha."""
-        processo = self.servidor
-        if processo and processo.poll() is None:
+        """Nao deixa os servidores locais orfaos quando a janela fecha."""
+        processos = [
+            processo
+            for processo in (self.servidor, self.backend)
+            if processo and processo.poll() is None
+        ]
+        if processos:
             modal = Modal(
                 self.raiz,
                 self.fontes,
                 "Encerrar o servidor?",
-                "O Vite ainda está rodando. Fechar o HUD encerra o "
-                "servidor junto.",
+                "Há servidores locais rodando. Fechar o HUD encerra os "
+                "processos junto.",
                 confirmar="Encerrar",
                 cancelar="Manter aberto",
             )
             if modal.esperar() is None:
                 # "Manter aberto" cancela o fechamento inteiro: fechar a
-                # janela assim mesmo deixaria o Vite orfao segurando a
+                # janela assim mesmo deixaria um servidor local segurando a
                 # porta, que e justamente o que o aviso quer evitar.
                 return
 
             # Aqui o encerramento e sincrono de proposito: a thread do
             # `_parar_servidor` e daemon e morreria junto com o processo,
-            # deixando o Vite orfao.
+            # deixando um servidor local orfao.
             self.servidor = None
-            encerrar_arvore(processo)
+            self.backend = None
+            for processo in processos:
+                encerrar_arvore(processo)
         self.raiz.destroy()

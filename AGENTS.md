@@ -12,6 +12,8 @@ O **PrismaTest** e a plataforma SaaS de estudos para instituicoes de ensino, com
 
 Este repositorio contem o **codigo real**: a landing publica (`frontend/`) e as telas de aluno, professor e diretor (`mockup/`). No inicio do projeto, concepcao e mockup viviam num repositorio separado (`Estudo-com-IA`) - hoje moram aqui, no mesmo lugar do codigo.
 
+O **backend ainda nao existe em codigo**, mas ja esta desenhado em `docs/backend/`, dividido em 13 etapas independentes para execucao paralela por agentes diferentes. Se a sua tarefa e de backend, o ponto de entrada e `docs/backend/README.md` - nao comece a escrever codigo sem passar por la.
+
 Os padroes de qualidade ficam sincronizados em `doktor SystemDesign/`, atualizaveis com o comando `doktor` rodado na raiz.
 
 ## 1. Principio central
@@ -37,6 +39,7 @@ Todos os caminhos abaixo sao relativos a `doktor SystemDesign/`.
 
 | Se a tarefa e... | Leia alem do guia minimo |
 |------------------|--------------------------|
+| **Qualquer trabalho de backend** | **`docs/backend/PROTOCOLO-DO-AGENTE.md` e depois so o arquivo da sua etapa em `docs/backend/etapas/` - nao leia as 13** |
 | Frontend, UI ou UX | `core/DESIGN_SYSTEM_FRONTEND.md` |
 | Backend, API, banco ou regra de negocio | `core/DESIGN_SYSTEM_BACKEND.md` |
 | API REST, contratos ou status codes | `core/DESIGN_SYSTEM_API_REST.md` |

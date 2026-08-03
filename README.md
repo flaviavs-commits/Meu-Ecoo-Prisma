@@ -2,7 +2,7 @@
 
 Implementacao web da plataforma de estudos com IA para instituicoes de ensino: OpenRouter como motor de IA, creditos por assinatura e memoria persistente por aluno.
 
-> **Estado atual: fundação visual concluída.** A landing pública, a entrada de perfis, o login demonstrativo e as áreas visuais de aluno, professor e diretor estão implementados. A interface é mobile-first, oferece cinco idiomas com preferência persistente e fecha o seletor após a escolha. O backend, a autenticação real e o gateway de IA ainda não existem neste repositório.
+> **Estado atual: fundação visual e backend MVP concluídos.** A landing pública, a entrada de perfis, o login real (`/entrar`, Django/DRF) e as áreas de aluno, professor e diretor (mockup HTML, mobile-first, cinco idiomas, modal de Configurações e chat premium do Tutor de IA) estão implementados. O backend Django ja possui fundacao, autenticacao, multitenancy, creditos, IA, memoria, arquivos, academico, conteudo e onboarding administrativo, validado localmente com SQLite (PostgreSQL/Railway em producao). Falta conectar a identidade autenticada as telas estaticas de `/app/` e fechar a validacao remota de multi-tenancy (E02).
 
 **Divisão de trabalho:** o frontend visual está neste repositório; o backend ainda não foi iniciado aqui.
 
@@ -24,9 +24,20 @@ A instituicao assina a plataforma e recebe creditos de IA, distribuidos pelo dir
 | Backend | Django + Django REST Framework | API, regras de negocio, contabilidade de creditos |
 | IA | OpenRouter | Acesso multi-modelo (geracao, correcao, tutoria) |
 | Banco | PostgreSQL | Usuarios, conteudo, notas, faltas, creditos, memoria |
-| Deploy | Railway | Hospedagem do backend |
+| Deploy frontend | Vercel | Landing e entrada autenticada |
+| Deploy backend | Railway | API Django e PostgreSQL |
 
 Toda chamada de IA passa pelo gateway do backend. O frontend nunca fala com o OpenRouter diretamente.
+
+## URLs de producao
+
+- Frontend: <https://frontend-three-ecru-55.vercel.app>
+- API: <https://api-production-8b58.up.railway.app>
+
+O build da Vercel usa `VITE_API_URL=/api/v1`. As rotas de autenticacao e o
+health check passam por uma funcao same-origin em `frontend/api/proxy.ts`, que
+encaminha as requisicoes para o Railway e preserva o cookie HttpOnly de refresh.
+O frontend nao depende de variaveis privadas no navegador.
 
 ## Estrutura
 
@@ -56,9 +67,61 @@ PrismaTest/
 │       ├── content/        # Copy e destino da aplicacao
 │       └── index.css       # Tokens de design e regra de cor (@theme)
 ├── mockup/                 # Telas de aluno, professor e diretor (fonte da verdade, HTML estatico)
-├── docs/                   # Constituicao de modularidade e outros documentos do projeto
+├── docs/
+│   ├── CONSTITUICAO-MODULARIDADE.md
+│   └── backend/            # System design do backend, em 13 etapas independentes
+│       ├── README.md       # Painel: o que esta livre, o que depende do que
+│       ├── PROTOCOLO-DO-AGENTE.md
+│       ├── contratos/      # Regras que todas as etapas respeitam
+│       └── etapas/         # E01..E13 - uma etapa por arquivo
 └── doktor SystemDesign/    # Padroes de qualidade (copia sincronizada, nao versionada)
 ```
+
+## Backend
+
+A fundacao (E01) esta pronta: projeto Django + DRF rodando, conectado ao
+Postgres do Railway, com `pytest` e o endpoint de saude respondendo. O restante
+do dominio esta dividido em etapas que podem ser tocadas **em paralelo, por
+pessoas ou agentes diferentes** - cada etapa e um arquivo que serve ao mesmo
+tempo de especificacao e de diario de trabalho.
+
+Comece por [`docs/backend/README.md`](docs/backend/README.md) para ver o que
+esta livre e o que depende do que.
+
+### Como rodar o backend localmente
+
+```bash
+cd backend
+python3.11 -m venv .venv          # Python 3.12 preferido; 3.11 usado nesta maquina por falta do 3.12
+.venv/bin/pip install -r requirements-dev.txt
+cp .env.example .env              # mantenha DATABASE_URL em SQLite no desenvolvimento
+.venv/bin/python manage.py migrate
+.venv/bin/python manage.py check
+.venv/bin/pytest
+```
+
+O SQLite e a escolha segura para desenvolvimento e TDD local. Nao e necessario
+Railway para rodar ou validar o MVP. Em producao, o frontend roda na Vercel e a
+API usa PostgreSQL no Railway com as variaveis do ambiente correspondente.
+
+### Criar uma instituicao nova
+
+O onboarding interno e transacional: ou cria a instituicao, o diretor e o
+credito inicial, ou nao cria nada. O diretor recebe uma conta sem senha
+utilizavel para seguir o fluxo de definicao de senha.
+
+```bash
+.venv/bin/python manage.py criar_instituicao \\
+  --nome "Colegio Exemplo" \\
+  --documento "00.000.000/0001-00" \\
+  --diretor-email "diretor@exemplo.edu.br" \\
+  --diretor-nome "Nome do Diretor" \\
+  --creditos-iniciais 100000
+```
+
+O Admin interno fica em `DJANGO_ADMIN_URL` (padrao local: `/backoffice/`),
+fora de `/admin/`, e exige `is_staff`. Diretores de escola nao recebem acesso
+ao Admin.
 
 ## Como rodar
 
@@ -69,10 +132,12 @@ python start_app.py
 ```
 
 Isso abre uma **janela** (o HUD) com o estado do ambiente ao vivo -
-servidor, dependencias, telas, npm - e as acoes em botoes: **Rodar o
-site**, **Abrir no navegador**, **Instalar dependencias**, **Sincronizar
-aplicacao**, **Gerar build**, **Validar**, **Configurar porta** e **Parar
-servidor**. A saida dos comandos aparece no painel de baixo.
+frontend, backend, dependencias, telas, npm - e as acoes em botoes: **Rodar
+aplicacao**, **Abrir no navegador**, **Rodar backend**, **Instalar
+dependencias**, **Sincronizar aplicacao**, **Gerar build**, **Validar**,
+**Configurar porta** e **Fechar portas**. A saida dos comandos aparece no
+painel de baixo. Ao rodar a aplicacao, o HUD prepara as migracoes em SQLite
+local e sobe o Django e o Vite em conjunto.
 
 O painel de baixo e um **console funcional**: digite qualquer comando de
 terminal e tecle Enter. Comeca em `frontend/`, entao `npm run dev` e
@@ -91,7 +156,12 @@ npm install
 npm run dev
 ```
 
-O site fica em `http://localhost:5173`.
+O site fica em `http://localhost:5173` (ou na porta exibida pelo Vite se a
+porta padrao estiver ocupada).
+
+O login da landing fica em `/entrar` e usa `VITE_API_URL` (padrao:
+`http://127.0.0.1:8000/api/v1`) para conversar com o backend Django. O token de
+acesso permanece somente em memoria; o refresh usa cookie HttpOnly.
 
 ## Como validar
 
@@ -99,11 +169,14 @@ Pelo botao **Validar** do HUD, ou direto:
 
 ```bash
 cd frontend
+npm test       # Vitest
 npm run lint     # oxlint
 npm run build    # tsc + vite build
+cd ../backend
+.venv/bin/pytest -q
 ```
 
-Há verificações automatizadas de qualidade visual e estrutural, embora ainda não exista uma suíte de testes de regras de negócio. O frontend usa Playwright para validar rotas, idiomas, persistência da preferência, ausência de overflow em viewports móveis e erros de console; `scripts/verificar-i18n.py` valida as chaves dos cinco dicionários. Os comandos e resultados executados ficam em [IA.md](IA.md), na seção "Testes importantes".
+Há verificações automatizadas de qualidade visual e estrutural no frontend: Playwright valida rotas, idiomas, persistência da preferência, ausência de overflow em viewports móveis e erros de console; `scripts/verificar-i18n.py` valida as chaves dos cinco dicionários. O backend tem cobertura por `pytest`. Os comandos e resultados executados ficam em [IA.md](IA.md), na seção "Testes importantes".
 
 ## Landing e aplicacao
 
@@ -114,8 +187,10 @@ Sao duas partes deste mesmo repositorio:
 | **Landing** | `frontend/src/` | vitrine publica, em React |
 | **Aplicacao** | `mockup/` | telas de aluno, professor e diretor (HTML estatico) |
 
-Ao clicar em "Entrar", a landing abre a tela inicial da aplicacao,
-que faz a escolha de perfil.
+Ao clicar em "Entrar", a landing abre `/entrar`, que autentica por e-mail e
+senha contra o backend. O access token fica somente em memoria no navegador;
+o refresh usa cookie HttpOnly. A tela de perfil da aplicacao continua sendo
+servida em `/app/` para o proximo ciclo de integracao.
 
 ### Sincronizar a aplicacao
 
@@ -129,9 +204,9 @@ Isso copia as telas para `frontend/public/app/`, que o Vite serve em
 `/app/`. **Rode de novo sempre que as telas mudarem la** - a pasta e
 uma copia derivada, ignorada pelo git.
 
-> **Não há autenticação real.** Qualquer pessoa acessa qualquer área: o
-> "Entrar" e o login são navegação demonstrativa, não controle de acesso.
-> A autenticação real depende do backend e ainda não foi implementada.
+O controle de acesso da API ja existe. As telas estaticas de `/app/` ainda
+precisam receber a identidade autenticada e as protecoes de rota no proximo
+ciclo; nao devem ser tratadas como uma area protegida concluida.
 
 ## Mexer no HUD
 
