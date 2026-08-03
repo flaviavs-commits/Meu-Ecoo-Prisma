@@ -243,6 +243,8 @@ Pendente de verificacao manual: renderizacao em navegador real (mobile e desktop
 
 [2026-08-03] **Tentativa de deploy por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** o Railway recebeu o upload do commit `1ca9dc7` para o servico `api`, mas o deployment `bb0ab355-773d-4004-a7db-0d69b1f08fdb` ficou `INITIALIZING`, parado e sem build associado; o acompanhamento tambem sofreu timeout do GraphQL. A API publica permaneceu saudavel (`/api/v1/health/` HTTP 200) pelo deployment anterior. Nenhuma variavel ou banco foi alterado. Estado final: atualizacao remota nao concluida; MVP local continua sendo a fonte executavel.
 
+[2026-08-03] **Nova tentativa de deploy por /Users/thonychesse/Documents/GitHub/Meu-Ecoo-Prisma/docs/backend/etapas/E01-fundacao-do-projeto.md:** corrigi o endpoint de identidade para declarar `JWTAuthentication` explicitamente e publiquei `a77149f`; os testes locais passaram (`101 passed, 1 skipped`). O Railway recebeu o upload e criou o deployment `915df088-9533-4ab2-a400-4f6cb6e2494e`, mas ele continuou `INITIALIZING`, sem build e com novo timeout do GraphQL. A API pública seguiu HTTP 200 pelo deployment anterior. Nenhuma variável ou banco foi alterado; o bloqueio restante é infraestrutura/billing, não o teste de autenticação.
+
 [2026-07-28, segunda rodada] Apos identidade visual, animacoes e reestruturacao:
 
 | Verificacao | Comando | Resultado |
