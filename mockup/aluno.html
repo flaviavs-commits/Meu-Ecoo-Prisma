@@ -19,6 +19,12 @@
 <link rel="stylesheet" href="assets/modal/shell.css">
 <link rel="stylesheet" href="assets/modal/states.css">
 <link rel="stylesheet" href="assets/modal/widgets.css">
+<!-- Chat premium do Tutor de IA -->
+<link rel="stylesheet" href="assets/chat/chat-layout.css">
+<link rel="stylesheet" href="assets/chat/chat-sidebar.css">
+<link rel="stylesheet" href="assets/chat/chat-mensagens.css">
+<link rel="stylesheet" href="assets/chat/chat-codigo.css">
+<link rel="stylesheet" href="assets/chat/chat-comandos.css">
 </head>
 <body>
 
@@ -58,6 +64,16 @@
 <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
 <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.8 9.8 0 0 1 12 4c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.16 3.19m-3.1 2.6A9.4 9.4 0 0 1 12 18c-6.4 0-10-7-10-7a17.6 17.6 0 0 1 4.22-5.02"/><path d="M9.5 9.5a3 3 0 0 0 4.24 4.24"/><path d="M2 2l20 20"/></symbol>
 <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 3.6l2.6 5.4 5.9.7-4.3 4.1 1.1 5.9L12 16.8l-5.3 2.9 1.1-5.9-4.3-4.1 5.9-.7Z"/></symbol>
+<!-- Icones do chat premium do Tutor (assets/chat/) -->
+<symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8.6" y="8.6" width="11.4" height="11.4" rx="2"/><path d="M15.4 8.6V6.4A1.8 1.8 0 0 0 13.6 4.6H6.4A1.8 1.8 0 0 0 4.6 6.4v7.2a1.8 1.8 0 0 0 1.8 1.8h2.2"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 5.5 4 4L8 20l-4.6.6L4 16Z"/><path d="m12.8 7.2 4 4"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.8A1.8 1.8 0 0 1 5.8 5h4.4l2 2.4h7A1.8 1.8 0 0 1 21 9.2v8.2a1.8 1.8 0 0 1-1.8 1.8H5.8A1.8 1.8 0 0 1 4 17.4Z"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 4.8v14.4M4.8 12h14.4"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 12a7.4 7.4 0 0 1 12.6-5.3l1.8 1.7"/><path d="M19.4 4.8v4.2h-4.2"/><path d="M19.4 12a7.4 7.4 0 0 1-12.6 5.3l-1.8-1.7"/><path d="M4.6 19.2V15h4.2"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="m7.5 8.5 4.5-4.5 4.5 4.5"/><path d="M5 13v5.4A1.6 1.6 0 0 0 6.6 20h10.8a1.6 1.6 0 0 0 1.6-1.6V13"/></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11.4 4.6h-5A1.8 1.8 0 0 0 4.6 6.4v5c0 .48.19.93.53 1.27l8 8a1.8 1.8 0 0 0 2.54 0l5-5a1.8 1.8 0 0 0 0-2.54l-8-8a1.8 1.8 0 0 0-1.27-.53Z"/><circle cx="8.6" cy="9.4" r="1.3"/></symbol>
+<symbol id="i-sidebar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="4.8" width="16.8" height="14.4" rx="2"/><path d="M9.2 4.8v14.4"/></symbol>
 <!-- Logo oficial do Prisma: mesmo path de frontend/src/components/ui/Logo.tsx
      e de mockup/index.html (viewBox recortado nos limites reais do desenho). -->
 <symbol id="i-logo" viewBox="5.15 5.18 21.8 21.39" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -207,14 +223,17 @@
           <span class="tut-orb"><svg><use href="#i-spark"/></svg></span>
           <span class="tut-brand-tx"><b data-i18n="nav.tutor">Tutor de IA</b><i><span class="tut-pulse"></span><span data-i18n="tutor.sessaoAtiva">Sessão ativa</span></i></span>
         </span>
+        <span class="chat-status" id="chat-status"></span>
         <nav class="tut-subs">
-          <button class="tut-sub on" data-i18n="materia.portugues">Português</button>
-          <button class="tut-sub" data-i18n="materia.matematica">Matemática</button>
-          <button class="tut-sub" data-i18n="materia.historia">História</button>
-          <button class="tut-sub" data-i18n="materia.quimica">Química</button>
-          <button class="tut-sub" data-i18n="materia.redacao">Redação</button>
+          <button class="tut-sub on" data-materia="portugues" data-i18n="materia.portugues">Português</button>
+          <button class="tut-sub" data-materia="matematica" data-i18n="materia.matematica">Matemática</button>
+          <button class="tut-sub" data-materia="historia" data-i18n="materia.historia">História</button>
+          <button class="tut-sub" data-materia="quimica" data-i18n="materia.quimica">Química</button>
+          <button class="tut-sub" data-materia="redacao" data-i18n="materia.redacao">Redação</button>
         </nav>
-        <button class="tut-hist"><svg class="ic"><use href="#i-clock"/></svg><span data-i18n="tutor.sessoes">Sessões</span></button>
+        <button class="tut-hist" aria-pressed="false" aria-label="Conversas"><svg class="ic"><use href="#i-sidebar"/></svg><span data-i18n="tutor.sessoes">Sessões</span></button>
+        <button class="tut-cmdk-btn iconbtn" aria-label="Buscar em todas as conversas"><svg class="ic"><use href="#i-search"/></svg></button>
+        <button class="tut-ajuda-btn iconbtn" aria-label="Atalhos de teclado"><svg class="ic"><use href="#i-help"/></svg></button>
         <div class="tut-tabs" id="tut-tabs">
           <button class="tut-tab" data-panel="ctx" aria-expanded="false"><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="tutor.contexto">Contexto</span><span class="tut-ctx-count">3</span></button>
           <button class="tut-tab" data-panel="cfg" aria-expanded="false"><svg class="ic"><use href="#i-cog"/></svg><span data-i18n="tutor.configuracoes">Configurações</span></button>
@@ -223,58 +242,15 @@
 
       <div class="tut-body" id="tut-body">
 
+        <aside class="chat-side" id="chat-side"></aside>
+
         <div class="tut-chat">
-          <div class="tut-scroll">
-            <div class="tut-flow">
-
-              <div class="tut-memory">
-                <svg class="ic"><use href="#i-spark"/></svg>
-                <span>Retomando de terça-feira — dificuldade ativa em <b>orações reduzidas</b>, você aprende melhor com música.</span>
-              </div>
-
-              <div class="tut-day" data-i18n="tempo.hoje">Hoje</div>
-
-              <div class="tmsg ai">
-                <span class="tmsg-av"><svg><use href="#i-spark"/></svg></span>
-                <div class="tmsg-bubble">Adjetiva ou adverbial? <i>"Apesar de você…"</i> — que tipo é?</div>
-              </div>
-              <div class="tmsg me"><div class="tmsg-bubble">Adverbial! Indica concessão, né?</div></div>
-              <div class="tmsg ai">
-                <span class="tmsg-av"><svg><use href="#i-spark"/></svg></span>
-                <div class="tmsg-bubble">Certo. Vamos para o ENEM ou revisamos <b>orações reduzidas</b>?</div>
-              </div>
-              <div class="tmsg me"><div class="tmsg-bubble">Vai de ENEM. Se eu errar, a gente volta pra teoria.</div></div>
-
-              <div class="tmsg ai">
-                <span class="tmsg-av"><svg><use href="#i-spark"/></svg></span>
-                <div class="tmsg-bubble tmsg-quiz">
-                  <span class="tmsg-tag">ENEM 2023 · adaptada</span>
-                  <p>Em <i>"Caminhando contra o vento, sem lenço e sem documento"</i>, a oração destacada é reduzida de gerúndio com valor de…</p>
-                  <div class="tut-opts">
-                    <button class="tut-opt"><b>a</b>causa</button>
-                    <button class="tut-opt"><b>b</b>modo</button>
-                    <button class="tut-opt"><b>c</b>condição</button>
-                    <button class="tut-opt"><b>d</b>tempo</button>
-                  </div>
-                </div>
-              </div>
-
-            </div>
+          <div class="chat-busca-bar" id="chat-busca-bar" hidden></div>
+          <div class="tut-scroll" id="tut-scroll">
+            <div class="tut-flow" id="tut-flow"></div>
           </div>
 
-          <div class="tut-dock">
-            <div class="tut-flow">
-              <div class="tut-quick">
-                <button><svg class="ic"><use href="#i-doc"/></svg><span data-i18n="tutor.soExplicar">Só explicar</span></button>
-                <button><svg class="ic"><use href="#i-spark"/></svg><span data-i18n="tutor.darDica">Dar uma dica</span></button>
-                <button><svg class="ic"><use href="#i-cards"/></svg><span data-i18n="tutor.parecidas">3 parecidas</span></button>
-              </div>
-              <div class="tut-input">
-                <input placeholder="Responder ao tutor…" aria-label="Resposta" data-i18n-attr="placeholder:tutor.responder;aria-label:tutor.resposta">
-                <button class="tut-send" aria-label="Enviar" data-i18n-attr="aria-label:acao.enviar"><svg><use href="#i-send"/></svg></button>
-              </div>
-            </div>
-          </div>
+          <div class="tut-dock" id="tut-dock"></div>
         </div>
 
         <aside class="tut-ctx" data-panel="ctx">
@@ -658,5 +634,6 @@
 <script type="module" src="assets/modal/index.js"></script>
 <script src="assets/dashboard.js"></script>
 <script src="assets/command-palette.js"></script>
+<script type="module" src="assets/chat/index.js"></script>
 </body>
 </html>

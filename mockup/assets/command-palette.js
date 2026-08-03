@@ -27,6 +27,9 @@
     painel.addEventListener('mousedown', function (event) { if (event.target === painel) fechar(); });
     renderizar(); input.focus();
   }
-  document.addEventListener('keydown', function (event) { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); abrir(); } if (event.key === 'Escape' && painel) fechar(); });
+  // `!event.shiftKey`: assets/chat/ui/atalhosAjuda.js usa Cmd/Ctrl+Shift+K
+  // para a busca de conversas do Tutor - sem essa exclusao, as duas paletas
+  // abriam juntas no mesmo atalho.
+  document.addEventListener('keydown', function (event) { if ((event.metaKey || event.ctrlKey) && !event.shiftKey && event.key.toLowerCase() === 'k') { event.preventDefault(); abrir(); } if (event.key === 'Escape' && painel) fechar(); });
   window.PrismaCommandPalette = { open: abrir, close: fechar };
 }());

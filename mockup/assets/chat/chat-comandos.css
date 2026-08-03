@@ -1,0 +1,53 @@
+/* ══ Paleta de comandos (Cmd+K), ajuda de atalhos, status do modelo,
+   anexos pendentes no composer e o realce de arrastar-e-soltar. ══ */
+
+/* ── Paleta de comandos ── */
+.chat-paleta { padding: 0; }
+.chat-paleta-busca {
+  display: flex; align-items: center; gap: 10px; padding: 16px 18px; border-bottom: 1px solid var(--line); flex: none;
+}
+.chat-paleta-busca .ic { width: 16px; height: 16px; color: var(--ink-3); flex: none; }
+.chat-paleta-busca input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 15px; outline: none; color: var(--ink); min-width: 0; }
+.chat-paleta-busca kbd { flex: none; }
+.chat-paleta-resultados { max-height: 360px; overflow-y: auto; padding: 8px; }
+.chat-paleta-item {
+  display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; border: 0; background: transparent;
+  border-radius: 10px; padding: 10px 11px; cursor: pointer; color: inherit;
+}
+.chat-paleta-item .ic { width: 15px; height: 15px; color: var(--ink-3); flex: none; }
+.chat-paleta-item b { display: block; font-size: 13.5px; font-weight: 620; }
+.chat-paleta-item small { display: block; font-size: 11.5px; color: var(--ink-3); margin-top: 1px; line-height: 1.4; }
+.chat-paleta-item:hover, .chat-paleta-item.on { background: var(--card2); }
+.chat-paleta-item.on b { color: var(--green-ink); }
+
+/* ── Ajuda de atalhos ── */
+.chat-atalhos-lista { display: flex; flex-direction: column; gap: 2px; }
+.chat-atalho-linha { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 9px 2px; font-size: 13px; border-bottom: 1px solid var(--line); }
+.chat-atalho-linha:last-child { border-bottom: 0; }
+.chat-atalho-teclas { display: flex; align-items: center; gap: 4px; flex: none; }
+.chat-atalho-teclas i { font-style: normal; color: var(--ink-3); font-size: 11px; }
+
+/* ── Status do modelo (barra do tutor) ── */
+.chat-status {
+  display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--tut-ink-3);
+  border: 1px solid var(--tut-line); background: var(--tut-panel); border-radius: 99px; padding: 5px 11px 5px 9px;
+}
+.chat-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--good); flex: none; animation: ndot-pulse 2.1s ease-out infinite; }
+.chat-status-dot.ocupado { background: var(--gold); animation: none; }
+.chat-status-tx b { color: var(--tut-ink); font-weight: 620; }
+
+/* ── Botao de anexar, dentro do `.tut-input` (entre o texto e o enviar) ── */
+.chat-anexar {
+  flex: none; width: 38px; height: 38px; border-radius: 11px; border: 1px solid var(--tut-line-2);
+  background: var(--tut-bg); color: var(--tut-ink-2); cursor: pointer; display: grid; place-items: center;
+  transition: border-color .15s ease, color .15s ease;
+}
+.chat-anexar .ic { width: 16px; height: 16px; }
+.chat-anexar:hover { border-color: var(--tut-accent); color: var(--tut-accent-ink); }
+
+/* ── Anexos pendentes, antes de enviar ── */
+.chat-anexos-pendentes[hidden] { display: none; }
+.chat-anexos-pendentes { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; padding: 0 2px; }
+
+/* ── Realce de arrastar arquivo sobre o dock inteiro ── */
+.tut-dock.chat-dock-drag { outline: 2px dashed var(--tut-accent); outline-offset: -6px; border-radius: 14px; background: var(--tut-accent-wash); }
