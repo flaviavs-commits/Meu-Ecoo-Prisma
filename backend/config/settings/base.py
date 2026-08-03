@@ -23,6 +23,9 @@ INSTALLED_APPS = [
     "corsheaders",
     "contas",
     "authenticacao",
+    "academico",
+    "ia",
+    "creditos",
     "core",
 ]
 
