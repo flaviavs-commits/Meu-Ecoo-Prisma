@@ -1,5 +1,9 @@
 # IA.md - Contexto Operacional
 
+[2026-08-03] Segunda passada visual na tela de escolha: ambientação geométrica sutil, prisma ampliado no painel escuro, indicador das três rotas, copy reduzida, cards com microinterações e responsividade mobile refinada. Validação: cópia sincronizada no PrismaTest e lint/build do frontend passaram.
+
+[2026-08-03] Tela de escolha de perfil refinada em `mockup/index.html`: divisão entre identidade e entrada agora é exatamente 50/50; cards de aluno, professor e diretor ficaram mais compactos, numerados e tecnológicos, com estados de foco/hover acessíveis. A tela continua sendo a fonte de verdade sincronizada pelo PrismaTest.
+
 ## Estado atual (resumo vivo)
 
 <!--
