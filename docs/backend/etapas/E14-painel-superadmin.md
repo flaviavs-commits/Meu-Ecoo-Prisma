@@ -36,6 +36,7 @@ servico Railway ou duplicar banco/API.
 - [2026-08-03] Primeira fatia concluída localmente - por que: o núcleo seguro de troca de perfil está entregue; como validei: testes e check passaram. Estado final: **AGUARDANDO DECISÃO** para priorizar a próxima fatia (registros do backend, logs operacionais e ações destrutivas auditadas) e autorizar a validação/deploy Railway.
 - [2026-08-03] Deploy automático ativado no serviço Railway `api` - por que: o usuário pediu publicação por push; como validei: `railway status --json` mostrou fonte `flaviavs-commits/Meu-Ecoo-Prisma`, branch `main`, root `backend` e deployment do commit `4a5b593`. Estado: o gatilho está ativo, mas a assinatura vencida pode impedir a conclusão do deployment.
 - [2026-08-03] Health check preparado para Gunicorn no Railway - por que: o health check interno chega por HTTP e o redirect global para HTTPS impedia a réplica de ficar saudável; como validei: testes backend retornaram `7 passed`, `manage.py check` sem issues e Gunicorn local respondeu HTTP 200 em `/api/v1/health/`. Estado final: **AGUARDANDO DECISÃO** para ampliar o painel; a validação final do novo deployment depende do push e da disponibilidade operacional do Railway.
+- [2026-08-03] Validação Railway bloqueada - por que: após o push `53e66b2`, três tentativas com Gunicorn e uma comparação com `runserver` construíram a imagem, mas terminaram com `1/1 replicas never became healthy`, sem traceback da aplicação; como validei: logs de build do Railway e health check público HTTP 200 na réplica anterior. O dashboard informa assinatura vencida. Estado final: **BLOQUEADO** até regularizar a assinatura/infraestrutura; a configuração de produção foi restaurada para Gunicorn.
 
 ## 5. Criterio de pronto da primeira fatia
 
@@ -43,4 +44,4 @@ servico Railway ou duplicar banco/API.
 - [ ] painel protegido contra usuario comum e staff não-superuser;
 - [ ] `manage.py check` e suíte do painel passando;
 - [ ] documentação e estado atual atualizados;
-- [ ] deploy Railway validado ou bloqueio operacional registrado.
+- [x] bloqueio operacional do deploy Railway registrado; validação final está **BLOQUEADA** pela assinatura/infraestrutura.
