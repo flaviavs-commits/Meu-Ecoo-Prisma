@@ -99,14 +99,28 @@ class BackendMixin:
         ambiente.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.dev")
         return ambiente
 
+    def _seguir_sem_backend(self, iniciar_frontend: bool) -> None:
+        """Segue so com o frontend quando o backend nao sobe.
+
+        Quem trabalha nas telas nao deveria ficar sem landing page por
+        causa da API: o Vite serve tudo sozinho, e so as partes que
+        chamam a API e que ficam mudas.
+        """
+        if not iniciar_frontend:
+            return
+        self._escrever("Seguindo so com o frontend; as telas nao dependem da API.", "suave")
+        self.fila.put(("backend_pronto", ""))
+
     def _subir_backend(self, iniciar_frontend: bool = False) -> None:
         if not (BACKEND / "manage.py").is_file():
             self._escrever("Backend nao encontrado em backend/manage.py.", "erro")
             self._toast_mostrar("Backend ausente", False)
+            self._seguir_sem_backend(iniciar_frontend)
             return
         if porta_em_uso(self.porta_backend):
             self._escrever(f"A porta do backend ({self.porta_backend}) ja esta em uso.", "erro")
             self._toast_mostrar("Porta do backend ocupada", False)
+            self._seguir_sem_backend(iniciar_frontend)
             return
 
         pendencias = self._pendencias_backend()
@@ -114,12 +128,21 @@ class BackendMixin:
             for pendencia in pendencias:
                 self._escrever(pendencia, "erro")
             self._toast_mostrar("Ambiente do backend incompleto", False)
+            self._seguir_sem_backend(iniciar_frontend)
             return
 
         self._travar_cards(True)
         self._escrever("Preparando banco SQLite local do backend...", "suave")
         python = self._backend_python()
         ambiente = self._backend_env()
+
+        def seguir_so_frontend() -> None:
+            """Mesma regra do `_seguir_sem_backend`, vista de dentro da thread."""
+            if iniciar_frontend:
+                self.fila.put(("suave", "Seguindo so com o frontend; as telas nao dependem da API."))
+                self.fila.put(("backend_pronto", ""))
+            else:
+                self.fila.put(("fim", ""))
 
         def trabalho() -> None:
             try:
@@ -136,7 +159,7 @@ class BackendMixin:
                 )
             except (OSError, subprocess.SubprocessError) as exc:
                 self.fila.put(("erro", f"Falha ao preparar backend: {exc}"))
-                self.fila.put(("fim", ""))
+                seguir_so_frontend()
                 return
 
             for linha in migracao.stdout.splitlines():
@@ -151,7 +174,7 @@ class BackendMixin:
                 if pista:
                     self.fila.put(("erro", pista))
                 self.fila.put(("toast_erro", "Backend nao foi iniciado"))
-                self.fila.put(("fim", ""))
+                seguir_so_frontend()
                 return
 
             try:
@@ -163,7 +186,7 @@ class BackendMixin:
                 )
             except OSError as exc:
                 self.fila.put(("erro", f"Falha ao iniciar backend: {exc}"))
-                self.fila.put(("fim", ""))
+                seguir_so_frontend()
                 return
             self.fila.put(("ok", f"Backend iniciado em http://127.0.0.1:{self.porta_backend}"))
             self.fila.put(("toast_ok", "Backend iniciado"))
