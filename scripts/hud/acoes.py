@@ -87,6 +87,18 @@ class AcoesMixin:
             self._parar_servidor()
             self._parar_backend()
         else:
+            # A porta do frontend e conferida aqui, antes de subir o
+            # backend: descobrir que ela esta ocupada depois deixaria o
+            # Django no ar sem interface, que e o pior dos dois estados.
+            if porta_em_uso(self.porta):
+                self._escrever(f"A porta {self.porta} já está em uso.", "erro")
+                self._escrever(
+                    "Use 'Fechar portas' para encerrar o processo antigo, "
+                    "ou 'Porta frontend' para escolher outra.",
+                    "suave",
+                )
+                self._toast_mostrar(f"Porta {self.porta} ocupada", False)
+                return
             # O frontend so inicia depois que a migracao e o processo Django
             # estiverem prontos. Assim uma falha do backend nao deixa uma
             # aplicacao parcialmente funcional no ar.
