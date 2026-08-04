@@ -130,7 +130,7 @@ class LayoutMixin:
 
         # (chave, icone, titulo, descricao, callback, primario)
         acoes = [
-            ("servidor", ICONES["rodar"], "Rodar aplicação", "Inicia frontend e backend", self.acao_servidor, True),
+            ("servidor", ICONES["rodar"], "Rodar aplicação", "Inicia o frontend em localhost", self.acao_servidor, True),
             ("abrir", ICONES["navegador"], "Abrir navegador", "Abre a landing page", self.acao_abrir, False),
             ("backend", ICONES["backend"], "Rodar backend", "Inicia a API Django", self.acao_backend, False),
             ("instalar", ICONES["pacote"], "Instalar dependências", "Executa npm install", self.acao_instalar, False),

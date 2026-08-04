@@ -75,34 +75,20 @@ class AcoesMixin:
     # -- servidor ------------------------------------------------------
 
     def acao_servidor(self) -> None:
-        """Card principal: sobe ou para frontend e backend locais."""
-        algum_rodando = any(
-            processo and processo.poll() is None
-            for processo in (self.servidor, self.backend)
-        )
-        if self.ocupado and not algum_rodando:
-            self._escrever("A aplicacao ainda esta sendo preparada.", "suave")
+        """Card principal: sobe ou para o frontend em localhost.
+
+        So cuida do frontend, de proposito. O backend e outra
+        responsabilidade, com o proprio card ('Rodar backend') - assim
+        uma falha na API nunca impede a landing page de subir.
+        """
+        rodando = self.servidor is not None and self.servidor.poll() is None
+        if self.ocupado and not rodando:
+            self._escrever("O frontend ainda esta sendo preparado.", "suave")
             return
-        if algum_rodando:
+        if rodando:
             self._parar_servidor()
-            self._parar_backend()
         else:
-            # A porta do frontend e conferida aqui, antes de subir o
-            # backend: descobrir que ela esta ocupada depois deixaria o
-            # Django no ar sem interface, que e o pior dos dois estados.
-            if porta_em_uso(self.porta):
-                self._escrever(f"A porta {self.porta} já está em uso.", "erro")
-                self._escrever(
-                    "Use 'Fechar portas' para encerrar o processo antigo, "
-                    "ou 'Porta frontend' para escolher outra.",
-                    "suave",
-                )
-                self._toast_mostrar(f"Porta {self.porta} ocupada", False)
-                return
-            # O frontend so inicia depois que a migracao e o processo Django
-            # estiverem prontos. Assim uma falha do backend nao deixa uma
-            # aplicacao parcialmente funcional no ar.
-            self._subir_backend(iniciar_frontend=True)
+            self._subir_servidor()
 
     def _subir_servidor(self) -> bool:
         executavel = self._npm_ou_avisa()

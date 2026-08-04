@@ -54,8 +54,9 @@ class StatusMixin:
         backend_ocupado = backend_ocupado == "1"
         meu_frontend = self.servidor is not None and self.servidor.poll() is None
         meu_backend = self.backend is not None and self.backend.poll() is None
-        meu = meu_frontend or meu_backend
-        self.rodando = meu
+        # O card principal cuida so do frontend: e o que ele liga e
+        # desliga, entao e o unico que decide se vira 'Parar aplicacao'.
+        self.rodando = meu_frontend
 
         def estado_porta(ocupada: bool, proprio: bool):
             if ocupada and proprio:
@@ -82,8 +83,8 @@ class StatusMixin:
         self.linhas["Porta frontend"].atualizar(str(self.porta), INFO, INFO_FUNDO)
         self.linhas["Porta backend"].atualizar(str(self.porta_backend), INFO, INFO_FUNDO)
 
-        # O card principal alterna entre subir e parar o servidor.
-        if meu:
+        # O card principal alterna entre subir e parar o frontend.
+        if meu_frontend:
             self._card_servidor_para()
         elif not self.ocupado:
             self._card_servidor_roda()
@@ -96,13 +97,13 @@ class StatusMixin:
     def _card_servidor_para(self) -> None:
         """Poe o card principal no modo 'parar'."""
         self.cards["servidor"].definir_conteudo(
-            ICONES["parar"], "Parar aplicação", "Finaliza frontend e backend"
+            ICONES["parar"], "Parar aplicação", "Finaliza o frontend em localhost"
         )
 
     def _card_servidor_roda(self) -> None:
         """Poe o card principal no modo 'rodar'."""
         self.cards["servidor"].definir_conteudo(
-            ICONES["rodar"], "Rodar aplicação", "Inicia frontend e backend"
+            ICONES["rodar"], "Rodar aplicação", "Inicia o frontend em localhost"
         )
 
     def _travar_cards(self, travar: bool) -> None:
