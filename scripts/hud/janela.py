@@ -103,7 +103,10 @@ class Hud(LayoutMixin, StatusMixin, ConsoleMixin, BackendMixin, AcoesMixin):
                 elif tipo == "backend_pronto":
                     if not self._subir_servidor():
                         self._parar_backend()
-                        self._travar_cards(False)
+                    # Destrava nos dois casos: com a aplicacao no ar os
+                    # cards precisam voltar, senao "Abrir navegador" e os
+                    # demais ficam cinzas ate o processo encerrar.
+                    self._travar_cards(False)
                 elif tipo == "status":
                     self._pintar_status(texto)
                 elif tipo == "toast_ok":
