@@ -85,7 +85,7 @@ export function Header() {
             Entrar
           </a>
           <Button size="md" href={ENTRADA_APP}>
-            Começar grátis
+            Estou pronto
           </Button>
         </div>
 
@@ -138,7 +138,7 @@ export function Header() {
             <Button variant="secondary" href={ENTRADA_APP}>
               Entrar
             </Button>
-            <Button href={ENTRADA_APP}>Começar grátis</Button>
+            <Button href={ENTRADA_APP}>Estou pronto</Button>
           </div>
         </div>
       )}
