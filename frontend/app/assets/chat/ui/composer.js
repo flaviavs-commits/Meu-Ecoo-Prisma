@@ -36,7 +36,7 @@ export function criarComposer(container, ctx) {
         '<textarea rows="1" placeholder="Responder ao tutor…" aria-label="Resposta"></textarea>' +
         '<button type="button" class="chat-anexar" aria-label="Anexar arquivo"><svg class="ic"><use href="#i-doc"/></svg></button>' +
         '<button type="button" class="tut-send" aria-label="Enviar"></button>' +
-        '<input type="file" multiple hidden class="chat-input-arquivo">' +
+        '<input type="file" multiple hidden class="chat-input-arquivo" aria-label="Anexar arquivos à conversa">' +
       '</div>' +
     '</div>';
 

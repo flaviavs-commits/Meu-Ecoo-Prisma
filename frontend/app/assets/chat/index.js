@@ -14,8 +14,6 @@ import { abrirPaletaComandos } from './ui/paletaComandos.js';
 import { montarStatusModelo } from './ui/statusModelo.js';
 import { ligarAtalhosGlobais, abrirAjudaAtalhos } from './ui/atalhosAjuda.js';
 
-const MATERIAS = ['portugues', 'matematica', 'historia', 'quimica', 'redacao'];
-
 function iniciar() {
   const secaoTutor = document.getElementById('s-tutor');
   if (!secaoTutor) return;

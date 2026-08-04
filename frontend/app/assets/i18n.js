@@ -21,7 +21,7 @@
     try {
       var salvo = localStorage.getItem(CHAVE_LS);
       if (salvo && IDIOMAS.indexOf(salvo) !== -1) return salvo;
-    } catch (e) {}
+    } catch {}
     return PADRAO;
   }
 
@@ -96,7 +96,7 @@
       aplicar(dic);
       marcarSelecionado(codigo);
       fecharSeletor();
-      try { localStorage.setItem(CHAVE_LS, codigo); } catch (e) {}
+      try { localStorage.setItem(CHAVE_LS, codigo); } catch {}
     }).catch(function (err) {
       console.error('[i18n] falha ao trocar para', codigo, err);
     });

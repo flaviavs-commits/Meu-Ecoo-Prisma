@@ -410,19 +410,19 @@
             <div class="tut-cfg-toggles">
               <div class="tut-toggle">
                 <div><b data-i18n="tutor.correcaoComentada">Correção comentada</b><span data-i18n="tutor.explicaErro">explica cada erro</span></div>
-                <button class="tut-sw on" role="switch" aria-checked="true"></button>
+                <button class="tut-sw on" role="switch" aria-checked="true" aria-label="Alternar correção comentada"></button>
               </div>
               <div class="tut-toggle">
                 <div><b data-i18n="tutor.focoDificuldades">Foco nas minhas dificuldades</b><span data-i18n="tutor.priorizaFracos">prioriza tópicos fracos</span></div>
-                <button class="tut-sw on" role="switch" aria-checked="true"></button>
+                <button class="tut-sw on" role="switch" aria-checked="true" aria-label="Alternar foco nas minhas dificuldades"></button>
               </div>
               <div class="tut-toggle">
                 <div><b data-i18n="tutor.respostaAudio">Resposta em áudio</b><span data-i18n="tutor.leExplicacoes">lê as explicações em voz</span></div>
-                <button class="tut-sw" role="switch" aria-checked="false"></button>
+                <button class="tut-sw" role="switch" aria-checked="false" aria-label="Alternar resposta em áudio"></button>
               </div>
               <div class="tut-toggle">
                 <div><b data-i18n="tutor.usarArquivos">Usar arquivos de contexto</b><span>3 arquivos anexados</span></div>
-                <button class="tut-sw on" role="switch" aria-checked="true"></button>
+                <button class="tut-sw on" role="switch" aria-checked="true" aria-label="Alternar uso de arquivos de contexto"></button>
               </div>
             </div>
 
@@ -448,7 +448,7 @@
         <div><b data-i18n="materiais.assistente">Assistente da biblioteca</b><div class="libai-sub" data-i18n="materiais.assistenteDesc">Peça para organizar, importar ou encontrar qualquer material</div></div>
       </div>
       <div class="libai-composer">
-        <input type="text" placeholder="Ex.: organize meus materiais de Matemática por assunto…" data-i18n-attr="placeholder:materiais.exemploComando" autocomplete="off">
+        <input type="text" aria-label="Comando para organizar materiais" placeholder="Ex.: organize meus materiais de Matemática por assunto…" data-i18n-attr="placeholder:materiais.exemploComando" autocomplete="off">
         <button aria-label="Enviar" data-i18n-attr="aria-label:acao.enviar"><svg><use href="#i-send"/></svg></button>
       </div>
       <div class="libai-chips">
@@ -461,7 +461,7 @@
 
     <div class="libsearch" id="lib-search-wrap">
       <svg class="ic"><use href="#i-search"/></svg>
-      <input type="text" id="lib-search" placeholder="Buscar por título, matéria ou tipo…" data-i18n-attr="placeholder:materiais.buscarPor" autocomplete="off">
+      <input type="text" id="lib-search" aria-label="Buscar materiais" placeholder="Buscar por título, matéria ou tipo…" data-i18n-attr="placeholder:materiais.buscarPor" autocomplete="off">
       <button class="clear" id="lib-clear" aria-label="Limpar busca" data-i18n-attr="aria-label:acao.limparBusca">✕</button>
     </div>
 

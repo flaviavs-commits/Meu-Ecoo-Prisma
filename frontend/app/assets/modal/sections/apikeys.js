@@ -56,7 +56,7 @@ export function montar(container) {
 
       revelPanel.querySelector('[data-copiar]').addEventListener('click', function (ev) {
         const btn = ev.currentTarget;
-        navigator.clipboard && navigator.clipboard.writeText(chaveCompleta).catch(function () {});
+        if (navigator.clipboard) navigator.clipboard.writeText(chaveCompleta).catch(function () {});
         btn.classList.add('pm-copiado');
         btn.innerHTML = '<svg class="ic"><use href="#i-check"/></svg>';
         avisar('Chave copiada', 'ok');

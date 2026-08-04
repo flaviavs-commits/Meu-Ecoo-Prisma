@@ -29,7 +29,7 @@ export function ligarBlocosDeCodigo(container) {
     cabecalho.querySelector('.chat-code-copiar').addEventListener('click', function (e) {
       const btn = e.currentTarget;
       const codigo = pre.querySelector('code').textContent;
-      navigator.clipboard && navigator.clipboard.writeText(codigo).catch(function () {});
+      if (navigator.clipboard) navigator.clipboard.writeText(codigo).catch(function () {});
       const original = btn.innerHTML;
       btn.classList.add('copiado');
       btn.innerHTML = '<svg class="ic"><use href="#i-check"/></svg><span>Copiado</span>';

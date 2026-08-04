@@ -212,7 +212,7 @@
     }
     function aplicar(tema) {
       root.dataset.theme = tema;
-      try { localStorage.setItem(CHAVE, tema); } catch (e) {}
+      try { localStorage.setItem(CHAVE, tema); } catch {}
       pintar();
     }
     function alternar() { aplicar(temaAtual() === 'dark' ? 'light' : 'dark'); }
@@ -220,7 +220,7 @@
     try {
       var salvo = localStorage.getItem(CHAVE);
       if (salvo) root.dataset.theme = salvo;
-    } catch (e) {}
+    } catch {}
     pintar();
 
     var themeBtn = document.getElementById('themebtn');

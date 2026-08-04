@@ -30,17 +30,17 @@ export function abrirCompartilhar(alvo) {
 
   dlg.painel.querySelector('[data-fechar]').addEventListener('click', function () { dlg.fechar('fechar'); });
   dlg.painel.querySelector('[data-copiar-link]').addEventListener('click', function (e) {
-    navigator.clipboard && navigator.clipboard.writeText(link).catch(function () {});
+    if (navigator.clipboard) navigator.clipboard.writeText(link).catch(function () {});
     avisar('Link copiado', 'ok');
     e.currentTarget.classList.add('pm-copiado');
   });
   dlg.painel.querySelector('[data-copiar="markdown"]').addEventListener('click', function () {
-    navigator.clipboard && navigator.clipboard.writeText(alvo.texto).catch(function () {});
+    if (navigator.clipboard) navigator.clipboard.writeText(alvo.texto).catch(function () {});
     avisar('Copiado como Markdown', 'ok');
   });
   dlg.painel.querySelector('[data-copiar="texto"]').addEventListener('click', function () {
     const semMarkdown = alvo.texto.replace(/[`*_#>]/g, '');
-    navigator.clipboard && navigator.clipboard.writeText(semMarkdown).catch(function () {});
+    if (navigator.clipboard) navigator.clipboard.writeText(semMarkdown).catch(function () {});
     avisar('Texto copiado', 'ok');
   });
 }

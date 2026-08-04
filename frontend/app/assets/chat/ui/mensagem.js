@@ -123,7 +123,7 @@ function ligarAcoes(el, msg, acoes) {
     btn.addEventListener('click', function () {
       const acao = btn.dataset.acao;
       if (acao === 'copiar') {
-        navigator.clipboard && navigator.clipboard.writeText(msg.texto).catch(function () {});
+        if (navigator.clipboard) navigator.clipboard.writeText(msg.texto).catch(function () {});
         acoes.copiar(msg);
       } else if (acao === 'editar') {
         iniciarEdicao(el, msg, acoes);
