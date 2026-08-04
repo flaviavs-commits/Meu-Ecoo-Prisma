@@ -105,45 +105,47 @@ export function Creditos() {
 
           <ListaAnimada className="mt-6" intervalo={0.1}>
             <ItemAnimado>
-              <table className="w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-borda text-left text-xs tracking-widest text-texto-secundario uppercase">
-                    <th className="pb-3 font-medium">Plano</th>
-                    <th className="pb-3 font-medium">Preço</th>
-                    <th className="pb-3 font-medium">Limite de uso</th>
-                    <th className="pb-3 font-medium">Economia</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparativoPlanos.linhas.map((linha) => (
-                    <tr key={linha.plano} className="border-b border-borda last:border-0">
-                      <td className="py-3.5 font-medium">
-                        <span className="flex items-center gap-2.5">
-                          <span
-                            aria-hidden="true"
-                            className="h-2.5 w-2.5 rounded-full"
-                            style={{ backgroundColor: corPorPlano[linha.plano] }}
-                          />
-                          {linha.plano}
-                        </span>
-                      </td>
-                      <td className="py-3.5 tabular-nums text-texto-secundario">{linha.preco}</td>
-                      <td className="py-3.5 tabular-nums text-texto-secundario">{linha.limite}%</td>
-                      <td className="py-3.5 tabular-nums">
-                        {linha.economia === 'referência' ? (
-                          <span className="text-xs tracking-wide text-texto-secundario uppercase">
-                            {linha.economia}
-                          </span>
-                        ) : (
-                          <span className="fonte-display text-xs font-bold text-sucesso">
-                            ↓ {linha.economia}
-                          </span>
-                        )}
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[420px] border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-borda text-left text-xs tracking-widest text-texto-secundario uppercase">
+                      <th className="pb-3 font-medium">Plano</th>
+                      <th className="pb-3 font-medium">Preço</th>
+                      <th className="pb-3 font-medium">Limite de uso</th>
+                      <th className="pb-3 font-medium">Economia</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {comparativoPlanos.linhas.map((linha) => (
+                      <tr key={linha.plano} className="border-b border-borda last:border-0">
+                        <td className="py-3.5 font-medium">
+                          <span className="flex items-center gap-2.5">
+                            <span
+                              aria-hidden="true"
+                              className="h-2.5 w-2.5 rounded-full"
+                              style={{ backgroundColor: corPorPlano[linha.plano] }}
+                            />
+                            {linha.plano}
+                          </span>
+                        </td>
+                        <td className="py-3.5 tabular-nums text-texto-secundario">{linha.preco}</td>
+                        <td className="py-3.5 tabular-nums text-texto-secundario">{linha.limite}%</td>
+                        <td className="py-3.5 tabular-nums">
+                          {linha.economia === 'referência' ? (
+                            <span className="text-xs tracking-wide text-texto-secundario uppercase">
+                              {linha.economia}
+                            </span>
+                          ) : (
+                            <span className="fonte-display text-xs font-bold text-sucesso">
+                              ↓ {linha.economia}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </ItemAnimado>
           </ListaAnimada>
 

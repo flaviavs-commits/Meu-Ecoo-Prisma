@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from '../ui/Button'
 import { LogoComNome } from '../ui/Logo'
 import { navegacao } from '../../content/landing'
@@ -8,6 +8,7 @@ import { ENTRADA_APP } from '../../content/destinos'
 export function Header() {
   const [aberto, setAberto] = useState(false)
   const [rolou, setRolou] = useState(false)
+  const cabecalhoRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const aoRolar = () => setRolou(window.scrollY > 8)
@@ -16,8 +17,26 @@ export function Header() {
     return () => window.removeEventListener('scroll', aoRolar)
   }, [])
 
+  useEffect(() => {
+    if (!aberto) return
+    function fechar(event: MouseEvent | KeyboardEvent) {
+      if (event instanceof KeyboardEvent) {
+        if (event.key === 'Escape') setAberto(false)
+        return
+      }
+      if (!cabecalhoRef.current?.contains(event.target as Node)) setAberto(false)
+    }
+    document.addEventListener('mousedown', fechar)
+    document.addEventListener('keydown', fechar)
+    return () => {
+      document.removeEventListener('mousedown', fechar)
+      document.removeEventListener('keydown', fechar)
+    }
+  }, [aberto])
+
   return (
     <header
+      ref={cabecalhoRef}
       className={[
         // Linha nítida de largura total, em grafite suavizado
         'sticky top-0 z-50 border-b border-contorno-forte transition-colors duration-300',
@@ -65,7 +84,7 @@ export function Header() {
           >
             Entrar
           </a>
-          <Button size="md" href="#comecar">
+          <Button size="md" href={ENTRADA_APP}>
             Começar grátis
           </Button>
         </div>
@@ -119,7 +138,7 @@ export function Header() {
             <Button variant="secondary" href={ENTRADA_APP}>
               Entrar
             </Button>
-            <Button href="#comecar">Começar grátis</Button>
+            <Button href={ENTRADA_APP}>Começar grátis</Button>
           </div>
         </div>
       )}

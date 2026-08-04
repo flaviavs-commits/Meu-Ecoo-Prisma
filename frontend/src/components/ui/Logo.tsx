@@ -47,7 +47,7 @@ export function LogoComNome({ className = '' }: { className?: string }) {
     <span className={['inline-flex items-center gap-2', className].join(' ')}>
       <Logo tamanho={30} className="text-texto" />
       <span className="fonte-display text-xl font-bold tracking-[0.16em] uppercase">
-        Prisma
+        PRISMA
       </span>
     </span>
   )

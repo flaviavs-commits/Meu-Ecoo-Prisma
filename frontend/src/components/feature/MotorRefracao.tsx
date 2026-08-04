@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { Secao } from '../ui/Secao'
 import { TituloSecao } from '../ui/TituloSecao'
@@ -27,6 +27,12 @@ const porPerfil = {
   diretor: { cor: 'var(--color-diretor)', rotulo: 'Diretor' },
 } as const
 
+const perfisDemo = [
+  { id: 'aluno', rotulo: 'Ver como aluno' },
+  { id: 'professor', rotulo: 'Ver como professor' },
+  { id: 'diretor', rotulo: 'Ver como diretor' },
+] as const
+
 /**
  * Demo estático do motor: um tema entra, três materiais saem.
  * Ilustrativo - não chama o backend ainda. A integração real
@@ -34,52 +40,49 @@ const porPerfil = {
  */
 export function MotorRefracao() {
   const [ativo, setAtivo] = useState(0)
+  const [perfilAtivo, setPerfilAtivo] = useState<(typeof perfisDemo)[number]['id']>('aluno')
+  const [menuAberto, setMenuAberto] = useState(false)
+  const seletorRef = useRef<HTMLDivElement>(null)
+  const gatilhoRef = useRef<HTMLButtonElement>(null)
   const exemplo = exemplosRefracao[ativo]
+  const saidasVisiveis = exemplo.saidas.filter((saida) => saida.perfil === perfilAtivo)
   const reduzido = useReducedMotion()
+
+  useEffect(() => {
+    function fecharAoClicarFora(event: MouseEvent) {
+      if (!seletorRef.current?.contains(event.target as Node)) setMenuAberto(false)
+    }
+
+    document.addEventListener('mousedown', fecharAoClicarFora)
+    return () => document.removeEventListener('mousedown', fecharAoClicarFora)
+  }, [])
 
   return (
     <Secao id="como-funciona" fundo="aluno">
       <TituloSecao
         etiqueta="Como funciona"
         titulo="Um tema entra. Materiais prontos saem."
-        descricao="Escolha um exemplo."
+        descricao="Veja o que cada perfil pode fazer com o mesmo tema."
         clima="aluno"
       />
 
-      <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {exemplosRefracao.map((item, indice) => {
-          const selecionado = indice === ativo
+      <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Visualizar materiais por perfil">
+        {perfisDemo.map((perfil) => {
+          const selecionado = perfil.id === perfilAtivo
           return (
             <button
-              key={item.entrada}
+              key={perfil.id}
               type="button"
               aria-pressed={selecionado}
-              onClick={() => setAtivo(indice)}
+              onClick={() => setPerfilAtivo(perfil.id)}
               className={[
-                'relative rounded-lg border p-4 text-left text-sm transition-all duration-200',
+                'min-h-11 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200',
                 selecionado
-                  /*
-                    A aba ativa inverte contra o fundo da secao: usa a
-                    cor do texto como preenchimento e o fundo da secao
-                    como tinta. Assim funciona no creme e no breu sem
-                    precisar de variante por tema. O filete espectral
-                    no topo reforca que esta e a entrada "ativa" do prisma.
-                  */
-                  ? 'border-texto bg-texto text-fundo shadow-[0_8px_24px_-12px_rgb(26_26_26/0.5)]'
-                  : 'border-contorno bg-superficie text-texto-secundario hover:-translate-y-0.5 hover:border-texto/50 hover:text-texto',
+                  ? 'border-texto bg-texto text-fundo shadow-[0_6px_18px_-12px_rgb(26_26_26/0.6)]'
+                  : 'border-contorno bg-superficie text-texto-secundario hover:border-texto/50 hover:text-texto',
               ].join(' ')}
             >
-              {selecionado && (
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-x-0 top-0 flex h-1 overflow-hidden rounded-t-lg"
-                >
-                  <span className="flex-1 bg-aluno" />
-                  <span className="flex-1 bg-professor" />
-                  <span className="flex-1 bg-diretor" />
-                </span>
-              )}
-              {item.entrada}
+              {perfil.rotulo}
             </button>
           )
         })}
@@ -92,9 +95,100 @@ export function MotorRefracao() {
             <p className="text-xs font-medium tracking-[0.12em] text-texto-secundario uppercase">
               Entrada
             </p>
-            <p className="fonte-display mt-3 text-2xl font-bold tracking-wide uppercase">
-              {exemplo.entrada}
-            </p>
+            <div
+              ref={seletorRef}
+              className="relative mt-3 max-w-xl"
+              onKeyDown={(event) => {
+                if (event.key !== 'Escape') return
+                setMenuAberto(false)
+                gatilhoRef.current?.focus()
+              }}
+            >
+              <button
+                ref={gatilhoRef}
+                type="button"
+                aria-haspopup="listbox"
+                aria-expanded={menuAberto}
+                aria-label="Selecionar matéria"
+                onClick={() => setMenuAberto((aberto) => !aberto)}
+                onKeyDown={(event) => {
+                  if (event.key === 'ArrowDown') {
+                    event.preventDefault()
+                    setMenuAberto(true)
+                    setAtivo((valor) => (valor + 1) % exemplosRefracao.length)
+                  }
+                  if (event.key === 'ArrowUp') {
+                    event.preventDefault()
+                    setMenuAberto(true)
+                    setAtivo((valor) => (valor - 1 + exemplosRefracao.length) % exemplosRefracao.length)
+                  }
+                }}
+                className="group flex w-full items-center justify-between gap-4 border-b border-contorno border-b-aluno bg-transparent px-0 pb-3 pt-1 text-left outline-none transition-all hover:border-b-texto focus:border-b-texto focus:ring-0"
+              >
+                <span className="flex min-w-0 items-center gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="h-2 w-2 shrink-0 rounded-full bg-aluno"
+                  >
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[10px] font-medium tracking-[0.16em] text-texto-secundario uppercase">
+                      Tema selecionado
+                    </span>
+                    <span className="fonte-display mt-0.5 block truncate text-xl font-bold tracking-[0.04em] uppercase sm:text-2xl">
+                      {exemplo.entrada}
+                    </span>
+                  </span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  className={["flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-texto-secundario transition-all duration-200 group-hover:bg-texto/5 group-hover:text-texto", menuAberto ? "rotate-180 bg-texto/5 text-texto" : ""].join(' ')}
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="m3 5 4 4 4-4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              </button>
+
+              {menuAberto && (
+                <div
+                  role="listbox"
+                  aria-label="Matérias disponíveis"
+                  className="absolute z-20 mt-3 w-full overflow-hidden rounded-xl border border-contorno bg-superficie/95 p-1.5 shadow-[0_18px_40px_-20px_rgb(26_26_26/0.55)] backdrop-blur-sm"
+                >
+                  {exemplosRefracao.map((item, indice) => {
+                    const selecionado = indice === ativo
+                    return (
+                      <button
+                        key={item.entrada}
+                        type="button"
+                        role="option"
+                        aria-selected={selecionado}
+                        onClick={() => {
+                          setAtivo(indice)
+                          setMenuAberto(false)
+                        }}
+                        className={[
+                          'relative flex w-full items-center justify-between overflow-hidden rounded-lg px-3.5 py-3 text-left text-sm font-medium transition-colors',
+                          selecionado
+                            ? 'bg-texto text-fundo shadow-[0_8px_20px_-12px_rgb(26_26_26/0.65)]'
+                            : 'text-texto-secundario hover:bg-fundo hover:text-texto',
+                        ].join(' ')}
+                      >
+                        {selecionado && (
+                          <span aria-hidden="true" className="absolute inset-x-0 top-0 flex h-1">
+                            <span className="flex-1 bg-aluno" />
+                            <span className="flex-1 bg-professor" />
+                            <span className="flex-1 bg-diretor" />
+                          </span>
+                        )}
+                        {item.entrada}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Prisma: feixe entra, triangulo refrata, espectro sai */}
@@ -121,13 +215,13 @@ export function MotorRefracao() {
                 animate={{ pathLength: 1, opacity: 1 }}
                 transition={{ duration: 0.4, ease: SUAVE }}
                 /* key faz a animacao repetir quando o exemplo muda */
-                key={`entrada-${ativo}`}
+                key="entrada"
               />
 
               {/* Espectro: os tres raios saem em sequencia, apos o feixe */}
               {raiosEspectro.map((raio, indice) => (
                 <motion.path
-                  key={`${raio.d}-${ativo}`}
+                  key={raio.d}
                   d={raio.d}
                   stroke={raio.cor}
                   strokeWidth="2.5"
@@ -157,12 +251,12 @@ export function MotorRefracao() {
               Saídas
             </p>
             <ul className="mt-3 space-y-2.5">
-              {exemplo.saidas.map((saida, indice) => {
+              {saidasVisiveis.map((saida, indice) => {
                 const destino = porPerfil[saida.perfil]
                 return (
                   <motion.li
                     /* key com `ativo` refaz a entrada a cada troca de exemplo */
-                    key={`${saida.rotulo}-${ativo}`}
+                    key={`${ativo}-${saida.rotulo}`}
                     className="flex items-center justify-between gap-4 rounded-md border border-contorno bg-superficie px-4 py-4 transition-colors duration-200 hover:border-texto/40"
                     style={{ borderLeft: `3px solid ${destino.cor}` }}
                     initial={reduzido ? false : { opacity: 0, x: 12 }}
@@ -194,6 +288,11 @@ export function MotorRefracao() {
                 )
               })}
             </ul>
+            {saidasVisiveis.length === 0 && (
+              <p className="mt-3 rounded-md border border-dashed border-contorno px-4 py-4 text-sm text-texto-secundario">
+                Nenhum material de demonstração para este perfil neste tema.
+              </p>
+            )}
           </div>
         </div>
 

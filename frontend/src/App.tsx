@@ -7,7 +7,6 @@ import { Recursos } from './components/feature/Recursos'
 import { Creditos } from './components/feature/Creditos'
 import { Planos } from './components/feature/Planos'
 import { ChamadaFinal } from './components/feature/ChamadaFinal'
-import { AutenticacaoProvider } from './auth/contexto'
 
 /**
  * Landing page do Prisma - a vitrine pública.
@@ -52,11 +51,7 @@ function Conteudo() {
 }
 
 function App() {
-  return (
-    <AutenticacaoProvider>
-      <Conteudo />
-    </AutenticacaoProvider>
-  )
+  return <Conteudo />
 }
 
 export default App
