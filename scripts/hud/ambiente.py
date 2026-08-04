@@ -13,6 +13,8 @@ import shutil
 import socket
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from dataclasses import dataclass
 from functools import lru_cache
 
@@ -62,6 +64,31 @@ def porta_em_uso(porta: int) -> bool:
                 if sock.connect_ex((endereco, porta)) == 0:
                     return True
         except OSError:
+            continue
+    return False
+
+
+def e_vite_do_prisma(porta: int) -> bool:
+    """Confirma, por HTTP, que quem responde na porta e o Vite do Prisma.
+
+    `porta_em_uso` so sabe que ha algo escutando - nao quem. Duas
+    janelas de projetos diferentes podem disputar a mesma porta padrao
+    (5173), e abrir o navegador nesse caso mostraria a landing page
+    errada sem nenhum aviso. O marcador em `/__prisma_dev_marker`
+    (`frontend/vite.config.ts`) e a unica fonte confiavel disso.
+
+    Testa `::1` antes de `127.0.0.1`: o Vite deste projeto escuta em
+    IPv6 primeiro (mesma ordem de `porta_em_uso`), e 127.0.0.1 sozinho
+    da falso negativo quando so o v6 esta de pe.
+    """
+    for endereco in ("[::1]", "127.0.0.1"):
+        try:
+            with urllib.request.urlopen(
+                f"http://{endereco}:{porta}/__prisma_dev_marker", timeout=0.5
+            ) as resposta:
+                if resposta.read(16) == b"prisma":
+                    return True
+        except (urllib.error.URLError, OSError, TimeoutError):
             continue
     return False
 

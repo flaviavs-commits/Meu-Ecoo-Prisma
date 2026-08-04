@@ -11,7 +11,7 @@ import threading
 import webbrowser
 from pathlib import Path
 
-from .ambiente import dependencias_instaladas, npm, porta_em_uso, portas_em_escuta
+from .ambiente import dependencias_instaladas, e_vite_do_prisma, npm, porta_em_uso, portas_em_escuta
 from .caminhos import FRONTEND, RAIZ, SINCRONIZAR_APP
 from .processos import SAIDA_SUBPROCESSO, encerrar_arvore, encerrar_pid
 from .tokens import ICONES
@@ -155,6 +155,18 @@ class AcoesMixin:
         if not porta_em_uso(self.porta):
             self._escrever(f"Nada respondendo em {endereco}", "erro")
             self._toast_mostrar("Suba o servidor antes", False)
+            return
+        # A porta pode estar ocupada por outro projeto (outro Vite na
+        # mesma porta padrao) - sem confirmar o marcador, abririamos a
+        # landing page errada sem nenhum aviso.
+        if not e_vite_do_prisma(self.porta):
+            self._escrever(f"Tem algo respondendo em {endereco}, mas nao e o Vite do Prisma.", "erro")
+            self._escrever(
+                "Provavelmente outro projeto esta usando essa porta. "
+                "Use 'Fechar portas' ou 'Porta frontend' para escolher outra.",
+                "suave",
+            )
+            self._toast_mostrar("Isso não é o Prisma", False)
             return
         webbrowser.open(endereco)
         self._escrever(f"Abrindo {endereco}", "suave")
