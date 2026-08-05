@@ -811,3 +811,18 @@ entre control plane e produto.
 
 **Estado final:** CONCLUÍDO localmente no commit `2a45e81`; aguardando apenas
 deploy e teste manual autenticado. Identidade: **Code Review**.
+
+## 18. Publicação do onboarding administrativo
+
+Os commits `2a45e81` e `7aaaa11` foram publicados em `origin/main`. O Railway
+concluiu o deployment da API com status `SUCCESS` no deployment
+`75ac6e3d-2ba6-414b-afdc-07a6803e69c3`; o Postgres continuou saudável.
+
+Validação pública observada:
+
+- `/painel/instituicoes/` → `302` para o login sem sessão;
+- `/painel/contas-teste/` → `302` para o login sem sessão;
+- `/api/v1/health/` → `200`.
+
+**Estado final:** CONCLUÍDO e publicado; aguardando somente teste manual
+autenticado. Identidade: **Code Review**.

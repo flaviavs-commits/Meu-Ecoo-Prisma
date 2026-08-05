@@ -159,3 +159,13 @@ Validação observada: `pytest painel_admin/tests/test_painel_superadmin.py -q`
 --dry-run` sem mudanças; `git diff --check` sem saída. Não alterei Railway ou
 Vercel neste turno. Estado final: **CONCLUÍDO localmente; aguardando
 deploy e teste manual autenticado**. Commit: `2a45e81`. Identidade: **Code Review**.
+
+## 2026-08-05 · Code Review · Publicação do painel de onboarding
+
+O código local foi publicado em `origin/main` (`2a45e81` + `7aaaa11`). O
+Railway publicou a API no deployment `75ac6e3d-2ba6-414b-afdc-07a6803e69c3`
+com status `SUCCESS`; o Postgres também permaneceu saudável. Validação
+externa: `/painel/instituicoes/` e `/painel/contas-teste/` respondem `302` para
+o login quando acessadas sem sessão; `/api/v1/health/` responde `200`. Estado
+final: **CONCLUÍDO e publicado; aguardando somente teste manual autenticado**.
+Identidade: **Code Review**.

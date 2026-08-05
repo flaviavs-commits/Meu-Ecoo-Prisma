@@ -94,3 +94,14 @@ servico Railway ou duplicar banco/API.
 
 **Estado final:** CONCLUÍDA localmente no commit `2a45e81`; aguardando apenas
 deploy e teste manual autenticado. Identidade: **Code Review**.
+
+## 8. Publicação da terceira fatia
+
+Em 2026-08-05, os commits `2a45e81` e `7aaaa11` foram publicados em
+`origin/main`. O deployment Railway `75ac6e3d-2ba6-414b-afdc-07a6803e69c3`
+terminou com `SUCCESS`. As duas novas rotas foram verificadas externamente:
+ambas retornam `302` para autenticação sem sessão; o health check retorna
+`200`.
+
+**Estado final:** CONCLUÍDA e publicada; aguardando somente teste manual
+autenticado. Identidade: **Code Review**.
