@@ -48,10 +48,5 @@ def test_mantenedora_exige_o_codigo_reservado_da_vitis_souls():
     with pytest.raises(ValidationError):
         mantenedora.full_clean()
 
-    vitis = Instituicao(
-        nome="Vitis Souls",
-        tipo=TipoInstituicao.MANTENEDORA,
-        documento=None,
-        codigo="VITIS_SOULS",
-    )
+    vitis = Instituicao.objects.get(codigo="VITIS_SOULS")
     vitis.full_clean()
