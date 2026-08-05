@@ -856,3 +856,21 @@ preservação de dados; a exclusão física foi bloqueada no Admin completo.
 
 **Estado final:** CONCLUÍDO localmente; publicação e validação remota serão
 registradas após o push. Identidade: **Code Review**.
+
+## 20. Publicação do tier Vitis Souls
+
+O push até `fff2459` acionou o deploy automático do Railway. O deployment
+`9688809f-6d83-4465-bbf0-dd15118661d8` terminou com `SUCCESS`, executou a
+migração predeploy e deixou a API saudável.
+
+Validação pública observada:
+
+- API health → `200`;
+- `/painel/`, `/painel/instituicoes/`, `/painel/contas-teste/` e
+  `/painel/usuarios/` → `302` sem sessão;
+- `/backoffice/login/` → `200`;
+- proxy Vercel do painel → `302`;
+- proxy Vercel do health → `200`.
+
+**Estado final:** CONCLUÍDO e publicado; aguardando apenas teste manual
+autenticado sem reutilizar credenciais expostas. Identidade: **Code Review**.

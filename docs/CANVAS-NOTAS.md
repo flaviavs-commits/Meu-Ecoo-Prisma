@@ -183,3 +183,14 @@ Validação observada: `manage.py check`, `makemigrations --check --dry-run`,
 testes focados `45 passed` e suíte completa `157 passed, 2 skipped`. O código e
 a documentação estão prontos localmente; falta publicar e confirmar o
 deployment automático. Identidade: **Code Review**.
+
+## 2026-08-05 · Code Review · Publicação do tier Vitis Souls
+
+O push até `fff2459` acionou o deploy automático do Railway. O deployment
+`9688809f-6d83-4465-bbf0-dd15118661d8` terminou com `SUCCESS`, executou a
+migração predeploy e deixou a API saudável. Validação pública: health da API
+`200`, `/painel/`, `/painel/instituicoes/`, `/painel/contas-teste/` e
+`/painel/usuarios/` retornam `302` sem sessão, `/backoffice/login/` retorna
+`200`; pela Vercel, `/painel/instituicoes/` retorna `302` e health retorna
+`200`. Estado final: **CONCLUÍDO e publicado; aguardando apenas teste manual
+autenticado sem reutilizar credenciais expostas**. Identidade: **Code Review**.

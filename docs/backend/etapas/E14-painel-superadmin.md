@@ -140,3 +140,17 @@ ambas retornam `302` para autenticação sem sessão; o health check retorna
 
 **Estado final:** CONCLUÍDA e publicada; aguardando somente teste manual
 autenticado. Identidade: **Code Review**.
+
+## 10. Publicação da quarta fatia
+
+O push do commit `fff2459` acionou o deploy automático do Railway. O
+deployment `9688809f-6d83-4465-bbf0-dd15118661d8` terminou com `SUCCESS` e
+executou a migração predeploy `python manage.py migrate --noinput`.
+
+Validação pública observada: health da API em `200`; `/painel/`,
+`/painel/instituicoes/`, `/painel/contas-teste/` e `/painel/usuarios/` em `302`
+sem sessão; `/backoffice/login/` em `200`; proxy Vercel do painel em `302` e
+proxy Vercel do health em `200`.
+
+**Estado final:** CONCLUÍDA e publicada; aguardando apenas teste manual
+autenticado sem reutilizar credenciais expostas. Identidade: **Code Review**.
