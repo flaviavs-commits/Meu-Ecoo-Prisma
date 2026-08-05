@@ -4,7 +4,29 @@ from .auditoria import RegistroDeAuditoria
 
 
 class DesativacaoNegada(ValueError):
-    pass
+    def __init__(self, mensagem, *, codigo="validacao"):
+        super().__init__(mensagem)
+        self.codigo = codigo
+
+
+def _pode_desativar(ator, alvo) -> bool:
+    """Quem pode desativar quem, dito de forma afirmativa.
+
+    Antes esta regra era um `not ator.is_staff and (...)`, e `is_staff` (um
+    booleano comum, marcavel pelo Django Admin - nao o superusuario)
+    curto-circuitava a checagem inteira: qualquer conta com a flag desativava
+    usuario de QUALQUER instituicao. O superadmin e o unico papel cross-tenant
+    do produto; diretor manda so na propria instituicao.
+    """
+    if ator.is_superuser:
+        return True
+    return (
+        ator.perfil == "DIRETOR"
+        # `instituicao_id` e anulavel: sem esta guarda, dois usuarios sem
+        # instituicao (None == None) passariam como "mesma instituicao".
+        and ator.instituicao_id is not None
+        and ator.instituicao_id == alvo.instituicao_id
+    )
 
 
 def desativar_usuario(*, alvo, ator, confirmacao, motivo):
@@ -13,10 +35,11 @@ def desativar_usuario(*, alvo, ator, confirmacao, motivo):
     motivo = str(motivo or "").strip()
     if not motivo:
         raise DesativacaoNegada("Informe o motivo da acao.")
-    if not ator.is_staff and (
-        ator.perfil != "DIRETOR" or ator.instituicao_id != alvo.instituicao_id
-    ):
-        raise DesativacaoNegada("Usuario sem permissao para desativar este usuario.")
+    if not _pode_desativar(ator, alvo):
+        raise DesativacaoNegada(
+            "Usuario sem permissao para desativar este usuario.",
+            codigo="sem_permissao",
+        )
     if alvo.pk == ator.pk:
         raise DesativacaoNegada("O usuario atual nao pode desativar a propria conta.")
 

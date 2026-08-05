@@ -188,3 +188,111 @@ def test_listagens_admin_nao_exibem_hash_de_senha_ou_conteudo_sensivel():
     ]
     assert "prompt" not in chamada_admin.list_display
     assert "resposta" not in chamada_admin.list_display
+
+# --- Isolamento entre instituicoes na desativacao (revisao 2026-08-05) ---
+#
+# `is_staff` (booleano comum, marcavel pelo Django Admin) curto-circuitava a
+# checagem de permissao e o filtro de tenant da view, deixando qualquer conta
+# com a flag desativar usuario de QUALQUER instituicao. O superadmin e o unico
+# papel cross-tenant do produto. Ver
+# `docs/REVISAO-2026-08-05-SEGURANCA-E-INTEGRACAO.md`.
+
+
+def criar_staff_nao_superadmin(escola, email="staff@escola.test"):
+    return get_user_model().objects.create_user(
+        email=email, password="senha-segura-123", instituicao=escola,
+        perfil=Perfil.PROFESSOR, is_staff=True,
+    )
+
+
+def test_staff_nao_superadmin_nao_desativa_usuario_de_outra_instituicao():
+    _, diretor_a = criar_diretor(email="dir-a@escola.test", documento="00.000.000/0001-A1")
+    escola_b, diretor_b = criar_diretor(email="dir-b@escola.test", documento="00.000.000/0001-B1")
+    atacante = criar_staff_nao_superadmin(diretor_a.instituicao)
+    cliente = APIClient()
+    cliente.force_authenticate(atacante)
+
+    resposta = cliente.post(
+        reverse("desativar-usuario", kwargs={"pk": diretor_b.pk}),
+        {"confirmacao": True, "motivo": "atravessando o tenant"}, format="json",
+    )
+
+    assert resposta.status_code == 404  # nem existe, do ponto de vista dele
+    diretor_b.refresh_from_db()
+    assert diretor_b.ativo is True
+    assert escola_b.usuarios.filter(ativo=False).count() == 0
+
+
+def test_staff_nao_superadmin_nao_desativa_nem_na_propria_instituicao():
+    escola, _ = criar_diretor(email="dir-c@escola.test", documento="00.000.000/0001-C1")
+    atacante = criar_staff_nao_superadmin(escola, email="staff-c@escola.test")
+    colega = get_user_model().objects.create_user(
+        email="colega-c@escola.test", password="senha-segura-123",
+        instituicao=escola, perfil=Perfil.ALUNO,
+    )
+    cliente = APIClient()
+    cliente.force_authenticate(atacante)
+
+    resposta = cliente.post(
+        reverse("desativar-usuario", kwargs={"pk": colega.pk}),
+        {"confirmacao": True, "motivo": "sem permissao para isto"}, format="json",
+    )
+
+    assert resposta.status_code == 403
+    colega.refresh_from_db()
+    assert colega.ativo is True
+
+
+def test_diretor_nao_desativa_usuario_de_outra_instituicao():
+    _, diretor_a = criar_diretor(email="dir-d@escola.test", documento="00.000.000/0001-D1")
+    _, diretor_b = criar_diretor(email="dir-e@escola.test", documento="00.000.000/0001-E1")
+    cliente = APIClient()
+    cliente.force_authenticate(diretor_a)
+
+    resposta = cliente.post(
+        reverse("desativar-usuario", kwargs={"pk": diretor_b.pk}),
+        {"confirmacao": True, "motivo": "fora do meu tenant"}, format="json",
+    )
+
+    assert resposta.status_code == 404
+    diretor_b.refresh_from_db()
+    assert diretor_b.ativo is True
+
+
+def test_superadmin_desativa_cross_tenant():
+    _, diretor = criar_diretor(email="dir-f@escola.test", documento="00.000.000/0001-F1")
+    superadmin = get_user_model().objects.create_superuser(
+        email="super@prisma.test", password="senha-segura-123",
+    )
+    cliente = APIClient()
+    cliente.force_authenticate(superadmin)
+
+    resposta = cliente.post(
+        reverse("desativar-usuario", kwargs={"pk": diretor.pk}),
+        {"confirmacao": True, "motivo": "papel cross-tenant legitimo"}, format="json",
+    )
+
+    assert resposta.status_code == 204
+    diretor.refresh_from_db()
+    assert diretor.ativo is False
+
+
+def test_usuarios_sem_instituicao_nao_sao_o_mesmo_tenant():
+    """`instituicao_id` e anulavel: None == None nao pode virar 'mesma escola'."""
+    orfao_ator = get_user_model().objects.create_user(
+        email="orfao-ator@sem.test", password="senha-segura-123", perfil=Perfil.DIRETOR,
+    )
+    orfao_alvo = get_user_model().objects.create_user(
+        email="orfao-alvo@sem.test", password="senha-segura-123", perfil=Perfil.ALUNO,
+    )
+    cliente = APIClient()
+    cliente.force_authenticate(orfao_ator)
+
+    resposta = cliente.post(
+        reverse("desativar-usuario", kwargs={"pk": orfao_alvo.pk}),
+        {"confirmacao": True, "motivo": "os dois sem instituicao"}, format="json",
+    )
+
+    assert resposta.status_code == 403
+    orfao_alvo.refresh_from_db()
+    assert orfao_alvo.ativo is True
