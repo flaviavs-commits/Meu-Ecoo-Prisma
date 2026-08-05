@@ -33,6 +33,10 @@
       "destination": "/api/painel?path=painel/"
     },
     {
+      "source": "/painel/:path*/",
+      "destination": "https://api-production-8b58.up.railway.app/painel/:path*/"
+    },
+    {
       "source": "/painel/:path*",
       "destination": "https://api-production-8b58.up.railway.app/painel/:path*"
     },
@@ -43,6 +47,10 @@
     {
       "source": "/backoffice/",
       "destination": "/api/painel?path=backoffice/"
+    },
+    {
+      "source": "/backoffice/:path*/",
+      "destination": "https://api-production-8b58.up.railway.app/backoffice/:path*/"
     },
     {
       "source": "/backoffice/:path*",
