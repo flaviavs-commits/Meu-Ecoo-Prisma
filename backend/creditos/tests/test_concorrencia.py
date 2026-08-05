@@ -8,6 +8,7 @@ from creditos.consumo import autorizar_consumo, registrar_consumo, trava_saldo
 from creditos.excecoes import SaldoInsuficienteError
 from creditos.models import Lancamento, TipoLancamento
 from creditos.saldo import saldo_usuario
+from painel_admin.services.zerar_creditos import zerar_creditos_usuario
 
 pytestmark = [
     pytest.mark.django_db(transaction=True),
@@ -63,3 +64,52 @@ def test_duas_chamadas_paralelas_nao_passam_pelo_gate_indevidamente(instituicao,
     # nunca as duas partindo do mesmo saldo 10 - prova de que a trava serializou.
     assert sorted(resultados) == [Decimal("2"), Decimal("10")]
     assert saldo_usuario(aluno.id) == Decimal("10") - Decimal("8") - Decimal("8")
+
+
+def test_zerar_creditos_compete_com_consumo_sem_gravar_saldo_negativo(
+    instituicao, aluno, diretor
+):
+    """O zeramento e o consumo precisam compartilhar a mesma trava por usuario."""
+    Lancamento.objects.create(
+        instituicao=instituicao, usuario=aluno, tipo=TipoLancamento.CREDITO,
+        quantidade=Decimal("10"), motivo="carga",
+    )
+    barreira = threading.Barrier(2)
+    erros = []
+
+    def zerar():
+        try:
+            barreira.wait(timeout=5)
+            zerar_creditos_usuario(
+                alvo=aluno, ator=diretor, confirmado=True, motivo="encerramento"
+            )
+        except Exception as erro:  # pragma: no cover - falha inesperada deve aparecer abaixo
+            erros.append(erro)
+        finally:
+            connection.close()
+
+    def consumir():
+        try:
+            barreira.wait(timeout=5)
+            with trava_saldo(aluno):
+                saldo_antes = autorizar_consumo(aluno)
+                registrar_consumo(
+                    instituicao=instituicao, usuario=aluno, quantidade=Decimal("8"),
+                    motivo="consumo concorrente", referencia=None,
+                )
+                assert saldo_antes > 0
+        except SaldoInsuficienteError:
+            pass
+        except Exception as erro:  # pragma: no cover - falha inesperada deve aparecer abaixo
+            erros.append(erro)
+        finally:
+            connection.close()
+
+    threads = [threading.Thread(target=zerar), threading.Thread(target=consumir)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    assert erros == []
+    assert saldo_usuario(aluno.id) == Decimal("0")

@@ -47,6 +47,10 @@ def alocar(*, instituicao, destino_usuario=None, destino_turma_id=None, quantida
 
 def reduzir_alocacao(*, instituicao, origem_usuario=None, origem_turma_id=None, quantidade: Decimal, motivo: str, criado_por, confirmado: bool):
     """Reducao de alocacao ja concedida e acao destrutiva: exige confirmacao + motivo (E04)."""
+    # `.strip()` para alinhar com `alterar_perfil` e `desativar_usuario`: sem ele,
+    # um motivo so de espacos passava e a auditoria da acao destrutiva ficava
+    # gravada sem justificativa legivel, que e justamente o proposito do campo.
+    motivo = str(motivo or "").strip()
     if not confirmado or not motivo:
         raise AlocacaoSemConfirmacaoError(
             "Reducao de alocacao exige confirmacao explicita e motivo."

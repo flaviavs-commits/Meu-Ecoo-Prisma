@@ -63,6 +63,18 @@ def test_staff_nao_superadmin_nao_acessa_painel():
     assert resposta.status_code == 403
 
 
+def test_diretor_nao_acessa_painel():
+    escola = Instituicao.objects.create(nome="Escola diretor", documento="00.000.000/0001-72")
+    diretor = get_user_model().objects.create_user(
+        email="diretor-painel@escola.test", password="senha-segura-123",
+        instituicao=escola, perfil=Perfil.DIRETOR,
+    )
+    cliente = Client()
+    cliente.force_login(diretor)
+
+    assert cliente.get(reverse("painel-dashboard")).status_code == 403
+
+
 def test_superadmin_ve_usuario():
     superadmin, aluno = criar_contas()
     cliente = Client()
@@ -232,3 +244,21 @@ def test_zerar_creditos_com_saldo_zero_nao_gera_lancamento():
 
     assert resposta.status_code == 400
     assert saldo_usuario(aluno.pk) == Decimal("0")
+
+
+def test_zerar_creditos_rejeita_motivo_so_com_espacos():
+    superadmin, aluno = criar_contas()
+    Lancamento.objects.create(
+        instituicao=aluno.instituicao, usuario=aluno, tipo=TipoLancamento.ALOCACAO,
+        quantidade=Decimal("10"), motivo="carga inicial", criado_por=superadmin,
+    )
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    resposta = cliente.post(
+        reverse("painel-usuario-zerar-creditos", kwargs={"pk": aluno.pk}),
+        {"confirmacao": "on", "motivo": "   "},
+    )
+
+    assert resposta.status_code == 400
+    assert saldo_usuario(aluno.pk) == Decimal("10")
