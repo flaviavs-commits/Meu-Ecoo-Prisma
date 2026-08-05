@@ -194,3 +194,12 @@ migração predeploy e deixou a API saudável. Validação pública: health da A
 `200`; pela Vercel, `/painel/instituicoes/` retorna `302` e health retorna
 `200`. Estado final: **CONCLUÍDO e publicado; aguardando apenas teste manual
 autenticado sem reutilizar credenciais expostas**. Identidade: **Code Review**.
+
+## 2026-08-05 · Code Review · Redeploy final
+
+O commit documental `0ed484a` também foi publicado pelo deploy automático. O
+deployment final `4af56ba7-4c3a-466b-86b0-2ad2e03aad7a` terminou com `SUCCESS`.
+Nova checagem pública confirmou API health `200`, painel e subrotas em `302`
+sem sessão, Admin login `200`, Vercel painel `302` e Vercel health `200`.
+Estado final: **CONCLUÍDO e publicado; aguardando apenas teste manual
+autenticado sem reutilizar credenciais expostas**. Identidade: **Code Review**.

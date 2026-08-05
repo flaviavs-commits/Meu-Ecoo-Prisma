@@ -874,3 +874,14 @@ Validação pública observada:
 
 **Estado final:** CONCLUÍDO e publicado; aguardando apenas teste manual
 autenticado sem reutilizar credenciais expostas. Identidade: **Code Review**.
+
+## 21. Redeploy final do tier Vitis Souls
+
+O commit documental `0ed484a` também foi publicado pelo deploy automático. O
+deployment final `4af56ba7-4c3a-466b-86b0-2ad2e03aad7a` terminou com `SUCCESS`.
+Nova checagem pública confirmou API health `200`, painel e subrotas `302` sem
+sessão, Admin login `200`, proxy Vercel do painel `302` e proxy Vercel do
+health `200`.
+
+**Estado final:** CONCLUÍDO e publicado; aguardando apenas teste manual
+autenticado sem reutilizar credenciais expostas. Identidade: **Code Review**.

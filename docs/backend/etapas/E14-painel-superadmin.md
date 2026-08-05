@@ -154,3 +154,14 @@ proxy Vercel do health em `200`.
 
 **Estado final:** CONCLUÍDA e publicada; aguardando apenas teste manual
 autenticado sem reutilizar credenciais expostas. Identidade: **Code Review**.
+
+## 11. Redeploy final
+
+O commit documental `0ed484a` acionou o redeploy automático final
+`4af56ba7-4c3a-466b-86b0-2ad2e03aad7a`, concluído com `SUCCESS`. A nova
+checagem confirmou API health `200`, painel e subrotas em `302` sem sessão,
+`/backoffice/login/` em `200`, proxy Vercel do painel em `302` e proxy Vercel
+do health em `200`.
+
+**Estado final:** CONCLUÍDA e publicada; aguardando apenas teste manual
+autenticado sem reutilizar credenciais expostas. Identidade: **Code Review**.
