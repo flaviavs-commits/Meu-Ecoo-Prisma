@@ -179,3 +179,101 @@ def test_media_da_turma_e_calculada_no_banco(instituicao, professor, diretor, al
 
     assert media == Decimal("7")
     assert len(queries) == 1
+
+
+def test_diretor_enxerga_notas_de_turmas_de_varios_professores(
+    instituicao, professor, outro_professor, diretor, aluno, colega
+):
+    """Diretor monitora a instituicao inteira, nao so uma turma/professor."""
+    turma_a, disciplina_a = turma_com_disciplina(instituicao, professor)
+    turma_b = Turma.objects.create(
+        instituicao=instituicao, nome="9o ano B", disciplina=disciplina_a,
+        professor_responsavel=outro_professor,
+    )
+    matricular(turma=turma_a, aluno=aluno, criado_por=diretor)
+    matricular(turma=turma_b, aluno=colega, criado_por=diretor)
+    lancar_nota(turma=turma_a, disciplina=disciplina_a, aluno=aluno, valor=Decimal("8"), avaliacao="p1", ator=professor)
+    lancar_nota(turma=turma_b, disciplina=disciplina_a, aluno=colega, valor=Decimal("9"), avaliacao="p1", ator=outro_professor)
+
+    notas_do_diretor = consultar_notas(usuario=diretor)
+
+    assert set(notas_do_diretor.values_list("aluno_id", flat=True)) == {aluno.id, colega.id}
+
+
+def test_dois_diretores_da_mesma_instituicao_enxergam_os_mesmos_dados(
+    instituicao, professor, diretor, aluno
+):
+    """Varias contas de diretor da mesma instituicao monitoram a mesma coisa."""
+    outro_diretor = type(diretor).objects.create_user(
+        email="segundo-diretor@teste.com", password="senha-segura-123",
+        instituicao=instituicao, perfil="DIRETOR",
+    )
+    turma, disciplina = turma_com_disciplina(instituicao, professor)
+    matricular(turma=turma, aluno=aluno, criado_por=diretor)
+    lancar_nota(turma=turma, disciplina=disciplina, aluno=aluno, valor=Decimal("7"), avaliacao="p1", ator=professor)
+
+    notas_diretor_1 = set(consultar_notas(usuario=diretor).values_list("id", flat=True))
+    notas_diretor_2 = set(consultar_notas(usuario=outro_diretor).values_list("id", flat=True))
+
+    assert notas_diretor_1 == notas_diretor_2
+    assert len(notas_diretor_1) == 1
+
+
+def test_professor_com_varias_turmas_ve_notas_de_todas_elas(
+    instituicao, professor, diretor, aluno, colega
+):
+    """1 professor pode ter varias turmas na mesma instituicao."""
+    disciplina = Disciplina.objects.create(instituicao=instituicao, nome="Historia")
+    turma_1 = Turma.objects.create(
+        instituicao=instituicao, nome="7o ano A", disciplina=disciplina, professor_responsavel=professor,
+    )
+    turma_2 = Turma.objects.create(
+        instituicao=instituicao, nome="8o ano A", disciplina=disciplina, professor_responsavel=professor,
+    )
+    matricular(turma=turma_1, aluno=aluno, criado_por=diretor)
+    matricular(turma=turma_2, aluno=colega, criado_por=diretor)
+    lancar_nota(turma=turma_1, disciplina=disciplina, aluno=aluno, valor=Decimal("8"), avaliacao="p1", ator=professor)
+    lancar_nota(turma=turma_2, disciplina=disciplina, aluno=colega, valor=Decimal("9"), avaliacao="p1", ator=professor)
+
+    notas_do_professor = consultar_notas(usuario=professor)
+
+    assert set(notas_do_professor.values_list("aluno_id", flat=True)) == {aluno.id, colega.id}
+
+
+def test_aluno_matriculado_com_professores_diferentes_tem_notas_de_ambos(
+    instituicao, professor, outro_professor, diretor, aluno
+):
+    """Aluno pode ser 'filho' de varios professores (uma turma por professor)."""
+    disciplina_1 = Disciplina.objects.create(instituicao=instituicao, nome="Matematica")
+    disciplina_2 = Disciplina.objects.create(instituicao=instituicao, nome="Portugues")
+    turma_do_professor = Turma.objects.create(
+        instituicao=instituicao, nome="6o ano A", disciplina=disciplina_1, professor_responsavel=professor,
+    )
+    turma_do_outro_professor = Turma.objects.create(
+        instituicao=instituicao, nome="6o ano A - Portugues", disciplina=disciplina_2,
+        professor_responsavel=outro_professor,
+    )
+    matricular(turma=turma_do_professor, aluno=aluno, criado_por=diretor)
+    matricular(turma=turma_do_outro_professor, aluno=aluno, criado_por=diretor)
+    lancar_nota(turma=turma_do_professor, disciplina=disciplina_1, aluno=aluno, valor=Decimal("8"), avaliacao="p1", ator=professor)
+    lancar_nota(turma=turma_do_outro_professor, disciplina=disciplina_2, aluno=aluno, valor=Decimal("6"), avaliacao="p1", ator=outro_professor)
+
+    notas_do_aluno = consultar_notas(usuario=aluno)
+
+    assert notas_do_aluno.count() == 2
+    assert set(notas_do_aluno.values_list("turma_id", flat=True)) == {
+        turma_do_professor.id, turma_do_outro_professor.id,
+    }
+
+
+def test_professor_nao_enxerga_nota_de_turma_de_outro_professor(
+    instituicao, professor, outro_professor, diretor, aluno
+):
+    """Isolamento: professor so monitora as proprias turmas, nao a instituicao inteira."""
+    turma_do_outro, disciplina = turma_com_disciplina(instituicao, outro_professor)
+    matricular(turma=turma_do_outro, aluno=aluno, criado_por=diretor)
+    lancar_nota(turma=turma_do_outro, disciplina=disciplina, aluno=aluno, valor=Decimal("8"), avaliacao="p1", ator=outro_professor)
+
+    notas_do_professor = consultar_notas(usuario=professor)
+
+    assert notas_do_professor.count() == 0
