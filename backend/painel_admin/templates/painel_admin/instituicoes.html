@@ -13,10 +13,17 @@
   </form>
 </section>
 <section class="card">
-  <h2>Instituições cadastradas</h2>
+  <h2>Instituições cadastradas <small>({{ pagina.paginator.count }})</small></h2>
   <table><thead><tr><th>Nome</th><th>Tipo</th><th>Documento</th><th>Status</th><th>Criada em</th><th></th></tr></thead><tbody>
-    {% for instituicao in instituicoes %}<tr><td>{{ instituicao.nome }}</td><td>{{ instituicao.get_tipo_display }}</td><td>{{ instituicao.documento|default:"—" }}</td><td>{% if instituicao.ativa %}<span class="status status-ativo">Ativa</span>{% else %}<span class="status status-inativo">Arquivada</span>{% endif %}</td><td>{{ instituicao.criado_em|date:"d/m/Y H:i" }}</td><td><a href="{% url 'painel-instituicao' instituicao.pk %}">Abrir</a></td></tr>
+    {% for instituicao in pagina %}<tr><td>{{ instituicao.nome }}</td><td>{{ instituicao.get_tipo_display }}</td><td>{{ instituicao.documento|default:"—" }}</td><td>{% if instituicao.ativa %}<span class="status status-ativo">Ativa</span>{% else %}<span class="status status-inativo">Arquivada</span>{% endif %}</td><td>{{ instituicao.criado_em|date:"d/m/Y H:i" }}</td><td><a href="{% url 'painel-instituicao' instituicao.pk %}">Abrir</a></td></tr>
     {% empty %}<tr><td colspan="6">Nenhuma instituição encontrada.</td></tr>{% endfor %}
   </tbody></table>
 </section>
+{% if pagina.paginator.num_pages > 1 %}
+<nav class="paginacao">
+  {% if pagina.has_previous %}<a href="?pagina={{ pagina.previous_page_number }}">← Anterior</a>{% endif %}
+  <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+  {% if pagina.has_next %}<a href="?pagina={{ pagina.next_page_number }}">Próxima →</a>{% endif %}
+</nav>
+{% endif %}
 {% endblock %}

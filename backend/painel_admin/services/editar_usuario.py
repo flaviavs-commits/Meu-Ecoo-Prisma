@@ -49,7 +49,13 @@ def editar_usuario(
     sobrenome = sobrenome.strip()
     if not email or not nome:
         raise UsuarioEdicaoNegada("E-mail e nome são obrigatórios.")
-    if Usuario.objects.filter(email=email).exclude(pk=alvo.pk).exists():
+    # `__iexact`, e nao igualdade exata: `normalize_email` so normaliza o
+    # dominio, entao contas antigas podem ter maiuscula na parte local e o
+    # indice unico do Postgres diferencia maiuscula de minuscula. Com igualdade
+    # exata, editar para `ana@x.com` passava por cima de um `Ana@x.com` ja
+    # existente e criava duas contas que a pessoa nao distingue no login.
+    # Mesmo criterio de `painel_admin/forms/conta_teste.py`.
+    if Usuario.objects.filter(email__iexact=email).exclude(pk=alvo.pk).exists():
         raise UsuarioEdicaoNegada("Já existe uma conta com este e-mail.")
 
     anterior = f"{alvo.email} / {alvo.perfil} / {alvo.instituicao_id} / {alvo.ativo}"

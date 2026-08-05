@@ -20,7 +20,15 @@ from .forms.editar_instituicao import InstituicaoEdicaoForm
 from .forms.editar_usuario import UsuarioEdicaoForm
 from .forms.instituicao import InstituicaoForm
 from .services.alterar_perfil import MotivoObrigatorio, PerfilInvalido, alterar_perfil
-from .services.arquivar_instituicao import ArquivamentoInstituicaoNegado, arquivar_instituicao
+from .services.arquivar_instituicao import (
+    ACAO_ARQUIVAR,
+    ACAO_DESARQUIVAR,
+    ACAO_DESATIVAR_CONTA,
+    ACAO_REATIVAR_CONTA,
+    ArquivamentoInstituicaoNegado,
+    arquivar_instituicao,
+    desarquivar_instituicao,
+)
 from .services.criar_conta_teste import ContaTesteJaExisteError, criar_conta_teste
 from .services.criar_instituicao import InstituicaoJaExisteError, criar_instituicao
 from .services.editar_instituicao import InstituicaoEdicaoNegada, editar_instituicao
@@ -31,8 +39,36 @@ from .services.zerar_creditos import SaldoJaZeradoError, zerar_creditos_usuario
 Usuario = get_user_model()
 
 
+POR_PAGINA = 25
+
+# O filtro de acoes saia de um `DISTINCT` sobre a tabela de auditoria inteira,
+# a cada carga da pagina - a tabela que mais cresce no sistema, sem indice em
+# `acao`. O conjunto e finito e conhecido no codigo, entao vem daqui.
+ACOES_AUDITADAS = (
+    "alterar_perfil",
+    "alterar_plano_instituicao",
+    ACAO_ARQUIVAR,
+    "criar_conta_teste",
+    "criar_instituicao",
+    ACAO_DESARQUIVAR,
+    ACAO_DESATIVAR_CONTA,
+    "desativar_usuario",
+    "editar_instituicao",
+    "editar_usuario",
+    ACAO_REATIVAR_CONTA,
+    "aprovar_nota",
+    "alterar_nota",
+    "oficializar_prova",
+    "zerar_creditos",
+)
+
+
 def superadmin_required(view):
     return login_required(exige_superadmin(view))
+
+
+def _paginar(request, queryset):
+    return Paginator(queryset, POR_PAGINA).get_page(request.GET.get("pagina"))
 
 
 @superadmin_required
@@ -58,9 +94,11 @@ def instituicoes(request):
             messages.success(request, f"Instituicao {instituicao.nome} criada com sucesso.")
             return redirect("painel-instituicoes")
 
+    # Paginado, nao cortado em 100: o corte silencioso fazia a 101a escola
+    # simplesmente nao existir para o superadmin, sem aviso nenhum na tela.
     contexto = {
         "formulario": formulario,
-        "instituicoes": Instituicao.objects.order_by("nome")[:100],
+        "pagina": _paginar(request, Instituicao.objects.order_by("nome")),
     }
     return render(request, "painel_admin/instituicoes.html", contexto)
 
@@ -82,8 +120,8 @@ def instituicao(request, pk):
     )
 
 
-@require_POST
 @superadmin_required
+@require_POST
 def instituicao_editar(request, pk):
     alvo = get_object_or_404(Instituicao, pk=pk)
     if alvo.tipo == TipoInstituicao.MANTENEDORA:
@@ -100,8 +138,8 @@ def instituicao_editar(request, pk):
     return redirect("painel-instituicao", pk=alvo.pk)
 
 
-@require_POST
 @superadmin_required
+@require_POST
 def instituicao_arquivar(request, pk):
     alvo = get_object_or_404(Instituicao, pk=pk)
     try:
@@ -115,6 +153,26 @@ def instituicao_arquivar(request, pk):
         return HttpResponseBadRequest(str(erro))
     messages.success(request, f"Instituição {alvo.nome} arquivada. Os dados foram preservados.")
     return redirect("painel-instituicoes")
+
+
+@superadmin_required
+@require_POST
+def instituicao_desarquivar(request, pk):
+    alvo = get_object_or_404(Instituicao, pk=pk)
+    try:
+        desarquivar_instituicao(
+            ator=request.user,
+            alvo=alvo,
+            confirmado=request.POST.get("confirmacao") == "on",
+            motivo=request.POST.get("motivo", ""),
+        )
+    except ArquivamentoInstituicaoNegado as erro:
+        return HttpResponseBadRequest(str(erro))
+    messages.success(
+        request,
+        f"Instituição {alvo.nome} reaberta. Voltaram apenas as contas que o arquivamento desativou.",
+    )
+    return redirect("painel-instituicao", pk=alvo.pk)
 
 
 @superadmin_required
@@ -150,7 +208,12 @@ def usuarios(request):
         queryset = queryset.filter(Q(email__icontains=consulta) | Q(first_name__icontains=consulta))
     if perfil in Perfil.values:
         queryset = queryset.filter(perfil=perfil)
-    contexto = {"usuarios": queryset[:100], "consulta": consulta, "perfil": perfil, "perfis": Perfil.choices}
+    contexto = {
+        "pagina": _paginar(request, queryset),
+        "consulta": consulta,
+        "perfil": perfil,
+        "perfis": Perfil.choices,
+    }
     return render(request, "painel_admin/usuarios.html", contexto)
 
 
@@ -177,8 +240,8 @@ def usuario(request, pk):
     return render(request, "painel_admin/usuario.html", contexto)
 
 
-@require_POST
 @superadmin_required
+@require_POST
 def usuario_editar(request, pk):
     alvo = get_object_or_404(Usuario.objects.select_related("instituicao"), pk=pk)
     formulario = UsuarioEdicaoForm(alvo=alvo, data=request.POST)
@@ -224,16 +287,17 @@ def registros(request):
         queryset = queryset.filter(
             Q(ator__email__icontains=consulta) | Q(objeto_id__icontains=consulta) | Q(motivo__icontains=consulta)
         )
-    acoes_disponiveis = (
-        RegistroDeAuditoria.objects.order_by("acao").values_list("acao", flat=True).distinct()
-    )
-    pagina = Paginator(queryset, 25).get_page(request.GET.get("pagina"))
-    contexto = {"pagina": pagina, "acao": acao, "consulta": consulta, "acoes": acoes_disponiveis}
+    contexto = {
+        "pagina": _paginar(request, queryset),
+        "acao": acao,
+        "consulta": consulta,
+        "acoes": ACOES_AUDITADAS,
+    }
     return render(request, "painel_admin/registros.html", contexto)
 
 
-@require_POST
 @superadmin_required
+@require_POST
 def usuario_perfil(request, pk):
     alvo = get_object_or_404(Usuario, pk=pk)
     try:
@@ -248,8 +312,8 @@ def usuario_perfil(request, pk):
     return redirect("painel-usuario", pk=alvo.pk)
 
 
-@require_POST
 @superadmin_required
+@require_POST
 def usuario_desativar(request, pk):
     alvo = get_object_or_404(Usuario, pk=pk)
     try:
@@ -264,8 +328,8 @@ def usuario_desativar(request, pk):
     return redirect("painel-usuario", pk=alvo.pk)
 
 
-@require_POST
 @superadmin_required
+@require_POST
 def usuario_zerar_creditos(request, pk):
     alvo = get_object_or_404(Usuario, pk=pk)
     try:

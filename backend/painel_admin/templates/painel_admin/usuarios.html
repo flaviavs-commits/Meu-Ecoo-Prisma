@@ -4,5 +4,12 @@
 {% block content %}
 <h1>Usuários</h1>
 <form class="filtros" method="get"><input name="q" value="{{ consulta }}" placeholder="E-mail ou nome"><select name="perfil"><option value="">Todos os perfis</option>{% for valor, rotulo in perfis %}<option value="{{ valor }}"{% if perfil == valor %} selected{% endif %}>{{ rotulo }}</option>{% endfor %}</select><button>Filtrar</button></form>
-<section class="card"><table><thead><tr><th>E-mail</th><th>Nome</th><th>Perfil</th><th>Instituição</th><th>Status</th><th></th></tr></thead><tbody>{% for usuario in usuarios %}<tr><td>{{ usuario.email }}</td><td>{{ usuario.get_full_name|default:"—" }}</td><td>{% if usuario.perfil %}<span class="badge-perfil badge-{{ usuario.perfil|lower }}">{{ usuario.get_perfil_display }}</span>{% else %}Sem perfil{% endif %}</td><td>{{ usuario.instituicao|default:"—" }}</td><td>{% if usuario.ativo %}<span class="status status-ativo">Ativo</span>{% else %}<span class="status status-inativo">Inativo</span>{% endif %}</td><td><a href="{% url 'painel-usuario' usuario.pk %}">Abrir</a></td></tr>{% empty %}<tr><td colspan="6">Nenhum usuário encontrado.</td></tr>{% endfor %}</tbody></table></section>
+<section class="card"><table><thead><tr><th>E-mail</th><th>Nome</th><th>Perfil</th><th>Instituição</th><th>Status</th><th></th></tr></thead><tbody>{% for usuario in pagina %}<tr><td>{{ usuario.email }}</td><td>{{ usuario.get_full_name|default:"—" }}</td><td>{% if usuario.perfil %}<span class="badge-perfil badge-{{ usuario.perfil|lower }}">{{ usuario.get_perfil_display }}</span>{% else %}Sem perfil{% endif %}</td><td>{{ usuario.instituicao|default:"—" }}</td><td>{% if usuario.ativo %}<span class="status status-ativo">Ativo</span>{% else %}<span class="status status-inativo">Inativo</span>{% endif %}</td><td><a href="{% url 'painel-usuario' usuario.pk %}">Abrir</a></td></tr>{% empty %}<tr><td colspan="6">Nenhum usuário encontrado.</td></tr>{% endfor %}</tbody></table></section>
+{% if pagina.paginator.num_pages > 1 %}
+<nav class="paginacao">
+  {% if pagina.has_previous %}<a href="?pagina={{ pagina.previous_page_number }}&q={{ consulta }}&perfil={{ perfil }}">← Anterior</a>{% endif %}
+  <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }} · {{ pagina.paginator.count }} contas</span>
+  {% if pagina.has_next %}<a href="?pagina={{ pagina.next_page_number }}&q={{ consulta }}&perfil={{ perfil }}">Próxima →</a>{% endif %}
+</nav>
+{% endif %}
 {% endblock %}
