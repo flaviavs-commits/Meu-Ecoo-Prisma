@@ -7,7 +7,7 @@ from .models import ChamadaIA
 class ChamadaIAAdmin(admin.ModelAdmin):
     list_display = (
         "criada_em", "instituicao", "usuario", "classe_tarefa", "modelo", "status",
-        "tokens_entrada", "tokens_saida", "creditos_debitados", "erro_codigo",
+        "fornecedor", "tokens_entrada", "tokens_saida", "percentual_debitado", "erro_codigo",
     )
     search_fields = ("instituicao__nome", "usuario__email", "modelo", "erro_codigo")
     list_filter = ("classe_tarefa", "status", "instituicao", "criada_em")

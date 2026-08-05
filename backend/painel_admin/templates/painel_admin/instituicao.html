@@ -3,7 +3,7 @@
 {% block content %}
 <a href="{% url 'painel-instituicoes' %}">← Instituições</a>
 <h1>{{ alvo.nome }}</h1>
-<section class="card"><dl><dt>Tipo</dt><dd>{{ alvo.get_tipo_display }}</dd><dt>Documento</dt><dd>{{ alvo.documento|default:"—" }}</dd><dt>Status</dt><dd>{% if alvo.ativa %}<span class="status status-ativo">Ativa</span>{% else %}<span class="status status-inativo">Arquivada</span>{% endif %}</dd></dl></section>
+<section class="card"><dl><dt>Tipo</dt><dd>{{ alvo.get_tipo_display }}</dd><dt>Documento</dt><dd>{{ alvo.documento|default:"—" }}</dd><dt>Status</dt><dd>{% if alvo.ativa %}<span class="status status-ativo">Ativa</span>{% else %}<span class="status status-inativo">Arquivada</span>{% endif %}</dd>{% if cobranca %}<dt>Plano</dt><dd>{{ cobranca.plano }} · {{ cobranca.limite_percentual_por_conta }}% por conta</dd><dt>Contas ativas</dt><dd>{{ cobranca.total_contas }}</dd><dt>Total mensal estimado</dt><dd>R$ {{ cobranca.total_mensal }}</dd>{% endif %}</dl></section>
 {% if alvo.tipo == "MANTENEDORA" %}
 <section class="card"><h2>Instituição protegida</h2><p>Vitis Souls é a mantenedora do sistema. Sua identificação e seu vínculo administrativo não podem ser alterados por este fluxo.</p></section>
 {% else %}

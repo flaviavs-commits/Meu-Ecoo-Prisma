@@ -10,7 +10,7 @@ from .excecoes import (
     ConteudoPermissaoError,
     ConteudoSemQuestoesError,
 )
-from .models import Material, OrigemConteudo, Prova, Questao, StatusConteudo
+from .models import FormatoMaterial, Material, OrigemConteudo, Prova, Questao, StatusConteudo
 
 
 def criar_prova(*, instituicao, turma, disciplina, autor, titulo, origem=OrigemConteudo.MANUAL):
@@ -26,7 +26,19 @@ def criar_prova(*, instituicao, turma, disciplina, autor, titulo, origem=OrigemC
     )
 
 
-def criar_material(*, instituicao, turma, disciplina, autor, titulo, origem=OrigemConteudo.MANUAL, arquivo=None):
+def criar_material(
+    *,
+    instituicao,
+    turma,
+    disciplina,
+    autor,
+    titulo,
+    origem=OrigemConteudo.MANUAL,
+    formato=FormatoMaterial.MATERIAL,
+    arquivo=None,
+    descricao="",
+    chamada_ia=None,
+):
     _mesma_instituicao(instituicao, turma, disciplina, autor, permitir_nulos=True)
     return Material.objects.create(
         instituicao=instituicao,
@@ -34,8 +46,11 @@ def criar_material(*, instituicao, turma, disciplina, autor, titulo, origem=Orig
         disciplina=disciplina,
         autor=autor,
         titulo=titulo,
+        descricao=descricao,
+        formato=formato,
         origem=origem,
         arquivo=arquivo,
+        chamada_ia=chamada_ia,
         status=StatusConteudo.RASCUNHO,
     )
 

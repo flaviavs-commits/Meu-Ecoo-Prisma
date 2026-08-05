@@ -32,11 +32,12 @@ class ChamadaIA(models.Model):
     classe_tarefa = models.CharField(
         max_length=10, choices=ClasseTarefa.choices, default=ClasseTarefa.TUTORIA
     )
+    fornecedor = models.CharField(max_length=80, blank=True)
     modelo = models.CharField(max_length=160, blank=True)
     tokens_entrada = models.PositiveIntegerField(default=0)
     tokens_saida = models.PositiveIntegerField(default=0)
     custo_bruto = models.DecimalField(max_digits=14, decimal_places=8, default=0)
-    creditos_debitados = models.DecimalField(max_digits=14, decimal_places=4, default=0)
+    percentual_debitado = models.DecimalField(max_digits=14, decimal_places=4, default=0)
     status = models.CharField(
         max_length=10, choices=StatusChamada.choices, default=StatusChamada.PENDENTE
     )

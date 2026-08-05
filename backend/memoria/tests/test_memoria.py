@@ -1,9 +1,6 @@
-from decimal import Decimal
-
 import pytest
 from rest_framework.test import APIClient
 
-from creditos.models import Lancamento, TipoLancamento
 from ia.gateway import GatewayIA
 from ia.provedores.falso import ProvedorFalso
 from memoria.consolidacao import compactar_memorias, consolidar_conversa
@@ -23,16 +20,6 @@ def cliente(usuario):
     api = APIClient()
     api.force_authenticate(user=usuario)
     return api
-
-
-def creditar(aluno, quantidade="20"):
-    return Lancamento.objects.create(
-        instituicao=aluno.instituicao,
-        usuario=aluno,
-        tipo=TipoLancamento.CREDITO,
-        quantidade=Decimal(quantidade),
-        motivo="carga de memoria",
-    )
 
 
 def conversa_com_mensagens(aluno):
@@ -60,7 +47,6 @@ def test_conversa_guarda_mensagens_na_ordem(aluno):
 
 
 def test_consolidacao_cria_memoria_sem_alterar_bruto(aluno):
-    creditar(aluno)
     conversa = conversa_com_mensagens(aluno)
     gateway = GatewayIA(provedor=ProvedorFalso())
 
@@ -73,15 +59,12 @@ def test_consolidacao_cria_memoria_sem_alterar_bruto(aluno):
     assert Mensagem.objects.filter(conversa=conversa).exists()
 
 
-def test_consolidacao_debita_credito_via_gateway(aluno):
-    creditar(aluno)
+def test_consolidacao_debita_percentual_via_gateway(aluno):
     conversa = conversa_com_mensagens(aluno)
 
     consolidar_conversa(conversa, gateway=GatewayIA(provedor=ProvedorFalso()))
 
-    assert Lancamento.objects.filter(
-        usuario=aluno, tipo=TipoLancamento.DEBITO
-    ).count() == 1
+    assert aluno.consumos_ia.count() == 1
 
 
 def test_recuperacao_filtra_e_respeita_teto_de_tokens(aluno):
@@ -113,7 +96,6 @@ def test_recuperacao_filtra_e_respeita_teto_de_tokens(aluno):
 
 
 def test_compactacao_cria_nova_memoria_sem_apagar_originais(aluno):
-    creditar(aluno)
     primeira = MemoriaConsolidada.objects.create(
         aluno=aluno, disciplina="matematica", topico="fracoes", resumo="Parte um"
     )

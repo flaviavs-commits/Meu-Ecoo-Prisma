@@ -13,4 +13,5 @@ class ProvedorFalso(ProvedorIA):
             tokens_saida=1,
             modelo=modelo,
             custo_bruto=Decimal("0.002"),
+            fornecedor="falso",
         )

@@ -10,6 +10,7 @@ class ResultadoProvedor:
     tokens_saida: int
     modelo: str
     custo_bruto: Decimal
+    fornecedor: str = "desconhecido"
 
 
 class ProvedorIA(ABC):

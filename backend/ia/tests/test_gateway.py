@@ -3,10 +3,10 @@ from decimal import Decimal
 import pytest
 from django.conf import settings
 
-from creditos.models import Lancamento, TipoLancamento
-from creditos.saldo import saldo_usuario
-from ia.conversao import custo_para_creditos
-from creditos.excecoes import SaldoInsuficienteError
+from limites.models import AssinaturaInstituicao, ConsumoIA, PlanoInstitucional
+from limites.servico import estado_cota
+from limites.excecoes import LimiteDeUsoExcedidoError
+from ia.conversao import custo_para_percentual
 from ia.excecoes import ProvedorIAError, ProvedorNaoConfiguradoError
 from ia.gateway import GatewayIA
 from ia.models import ChamadaIA, ClasseTarefa, StatusChamada
@@ -17,14 +17,11 @@ from ia.roteamento import modelo_para_classe
 pytestmark = pytest.mark.django_db
 
 
-def creditar(usuario, quantidade="10"):
-    return Lancamento.objects.create(
-        instituicao=usuario.instituicao,
-        usuario=usuario,
-        tipo=TipoLancamento.CREDITO,
-        quantidade=Decimal(quantidade),
-        motivo="carga de teste",
-    )
+def definir_plano(usuario, limite="100"):
+    plano = PlanoInstitucional.objects.get(codigo="PRISMA")
+    plano.limite_percentual_por_conta = Decimal(limite)
+    plano.save(update_fields=["limite_percentual_por_conta"])
+    return AssinaturaInstituicao.objects.create(instituicao=usuario.instituicao, plano=plano)
 
 
 def test_provedor_falso_devolve_resposta_deterministica():
@@ -36,8 +33,9 @@ def test_provedor_falso_devolve_resposta_deterministica():
     assert resultado.tokens_saida == 1
 
 
-def test_saldo_zero_cria_chamada_com_erro_e_nao_debita(instituicao, aluno):
-    with pytest.raises(SaldoInsuficienteError) as erro:
+def test_limite_zero_cria_chamada_com_erro_e_nao_debita(instituicao, aluno):
+    definir_plano(aluno, "0")
+    with pytest.raises(LimiteDeUsoExcedidoError) as erro:
         GatewayIA(provedor=ProvedorFalso()).chamar(
             instituicao=instituicao,
             usuario=aluno,
@@ -45,15 +43,15 @@ def test_saldo_zero_cria_chamada_com_erro_e_nao_debita(instituicao, aluno):
             prompt="duvida",
         )
 
-    assert getattr(erro.value, "codigo", None) == "saldo_insuficiente"
+    assert getattr(erro.value, "codigo", None) == "limite_uso_excedido"
     chamada = ChamadaIA.objects.get()
     assert chamada.status == StatusChamada.ERRO
-    assert chamada.erro_codigo == "saldo_insuficiente"
-    assert saldo_usuario(aluno.id) == Decimal("0")
+    assert chamada.erro_codigo == "limite_uso_excedido"
+    assert estado_cota(aluno).consumido_percentual == Decimal("0")
 
 
 def test_saldo_positivo_conclui_e_debita(instituicao, aluno):
-    creditar(aluno)
+    definir_plano(aluno)
 
     chamada = GatewayIA(provedor=ProvedorFalso()).chamar(
         instituicao=instituicao,
@@ -63,12 +61,12 @@ def test_saldo_positivo_conclui_e_debita(instituicao, aluno):
     )
 
     assert chamada.status == StatusChamada.SUCESSO
-    assert chamada.creditos_debitados > Decimal("0")
-    assert Lancamento.objects.filter(referencia=chamada, tipo=TipoLancamento.DEBITO).count() == 1
+    assert chamada.percentual_debitado > Decimal("0")
+    assert ConsumoIA.objects.filter(referencia=chamada).count() == 1
 
 
 def test_falha_do_provedor_marca_erro_sem_debito(instituicao, aluno):
-    creditar(aluno)
+    definir_plano(aluno)
 
     class ProvedorQueFalha:
         def gerar(self, prompt, modelo, timeout):
@@ -85,11 +83,11 @@ def test_falha_do_provedor_marca_erro_sem_debito(instituicao, aluno):
     chamada = ChamadaIA.objects.get()
     assert chamada.status == StatusChamada.ERRO
     assert chamada.erro_codigo == "provedor_indisponivel"
-    assert saldo_usuario(aluno.id) == Decimal("10")
+    assert estado_cota(aluno).consumido_percentual == Decimal("0")
 
 
 def test_erro_transitorio_retried_com_teto_e_debita_uma_vez(instituicao, aluno):
-    creditar(aluno)
+    definir_plano(aluno)
 
     class ProvedorTransitorio:
         tentativas = 0
@@ -118,12 +116,12 @@ def test_erro_transitorio_retried_com_teto_e_debita_uma_vez(instituicao, aluno):
 
     assert chamada.status == StatusChamada.SUCESSO
     assert provedor.tentativas == 2
-    assert Lancamento.objects.filter(referencia=chamada, tipo=TipoLancamento.DEBITO).count() == 1
+    assert ConsumoIA.objects.filter(referencia=chamada).count() == 1
 
 
-def test_conversao_arredonda_sempre_para_cima():
-    assert custo_para_creditos(
-        Decimal("0.00100001"), custo_por_credito=Decimal("0.001"), margem=Decimal("1")
+def test_conversao_para_percentual_arredonda_sempre_para_cima():
+    assert custo_para_percentual(
+        Decimal("0.00100001"), custo_dolar_por_percentual=Decimal("0.001"), margem=Decimal("1")
     ) == Decimal("1.0001")
 
 
@@ -132,7 +130,7 @@ def test_classe_de_tarefa_resolve_modelo_configurado():
 
 
 def test_retry_da_mesma_chamada_nao_duplica_debito(instituicao, aluno):
-    creditar(aluno)
+    definir_plano(aluno)
     gateway = GatewayIA(provedor=ProvedorFalso())
     chamada = gateway.chamar(
         instituicao=instituicao,
@@ -150,11 +148,11 @@ def test_retry_da_mesma_chamada_nao_duplica_debito(instituicao, aluno):
     )
 
     assert repetida.pk == chamada.pk
-    assert Lancamento.objects.filter(referencia=chamada, tipo=TipoLancamento.DEBITO).count() == 1
+    assert ConsumoIA.objects.filter(referencia=chamada).count() == 1
 
 
 def test_prompt_nao_e_persistido_nem_logado(instituicao, aluno, caplog):
-    creditar(aluno)
+    definir_plano(aluno)
     prompt = "dado sensivel de menor que nao pode aparecer"
 
     chamada = GatewayIA(provedor=ProvedorFalso()).chamar(

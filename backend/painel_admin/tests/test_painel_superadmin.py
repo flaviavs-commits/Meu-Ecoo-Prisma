@@ -9,6 +9,7 @@ from contas.auditoria import RegistroDeAuditoria
 from contas.models import Instituicao, Perfil, TipoInstituicao
 from creditos.models import Lancamento, TipoLancamento
 from creditos.saldo import saldo_usuario
+from limites.models import AssinaturaInstituicao, PlanoInstitucional
 
 
 pytestmark = pytest.mark.django_db
@@ -36,7 +37,7 @@ def test_painel_exige_superadmin():
     assert resposta.status_code == 403
 
 
-def test_superadmin_cria_instituicao_com_credito_e_auditoria():
+def test_superadmin_cria_instituicao_com_plano_e_auditoria():
     superadmin, _ = criar_contas()
     cliente = Client()
     cliente.force_login(superadmin)
@@ -46,16 +47,14 @@ def test_superadmin_cria_instituicao_com_credito_e_auditoria():
         {
             "nome": "Instituto Prisma",
             "documento": "00.000.000/0001-81",
-            "creditos_iniciais": "250.5000",
+            "plano": PlanoInstitucional.objects.get(codigo="PRISMA_PRO").pk,
         },
     )
 
     assert resposta.status_code == 302
     instituicao = Instituicao.objects.get(documento="00.000.000/0001-81")
-    lancamento = Lancamento.objects.get(instituicao=instituicao)
-    assert lancamento.tipo == TipoLancamento.CREDITO
-    assert lancamento.quantidade == Decimal("250.5000")
-    assert lancamento.criado_por == superadmin
+    assinatura = AssinaturaInstituicao.objects.get(instituicao=instituicao)
+    assert assinatura.plano.codigo == "PRISMA_PRO"
     assert RegistroDeAuditoria.objects.filter(
         ator=superadmin,
         acao="criar_instituicao",
@@ -75,7 +74,7 @@ def test_superadmin_e_vinculado_a_vitis_souls_sem_documento():
     assert superadmin.instituicao.documento is None
 
 
-def test_criacao_de_instituicao_duplicada_nao_cria_novo_ledger():
+def test_criacao_de_instituicao_duplicada_nao_cria_nova_escola():
     superadmin, _ = criar_contas()
     Instituicao.objects.create(nome="Existente", documento="00.000.000/0001-82")
     cliente = Client()
@@ -86,13 +85,13 @@ def test_criacao_de_instituicao_duplicada_nao_cria_novo_ledger():
         {
             "nome": "Duplicada",
             "documento": "00.000.000/0001-82",
-            "creditos_iniciais": "50",
+            "plano": PlanoInstitucional.objects.get(codigo="PRISMA").pk,
         },
     )
 
     assert resposta.status_code == 200
     assert Instituicao.objects.filter(documento="00.000.000/0001-82").count() == 1
-    assert Lancamento.objects.filter(quantidade=Decimal("50")).exists() is False
+    assert AssinaturaInstituicao.objects.filter(instituicao__documento="00.000.000/0001-82").count() == 0
 
 
 def test_diretor_nao_cria_instituicao_nem_conta_de_teste():

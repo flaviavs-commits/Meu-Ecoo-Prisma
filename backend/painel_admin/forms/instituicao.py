@@ -1,6 +1,6 @@
-from decimal import Decimal
-
 from django import forms
+
+from limites.models import PlanoInstitucional
 
 
 class InstituicaoForm(forms.Form):
@@ -8,12 +8,9 @@ class InstituicaoForm(forms.Form):
 
     nome = forms.CharField(label="Nome", max_length=200)
     documento = forms.CharField(label="Documento", max_length=18)
-    creditos_iniciais = forms.DecimalField(
-        label="Creditos iniciais",
-        max_digits=14,
-        decimal_places=4,
-        min_value=Decimal("0"),
-        help_text="Use zero se a instituicao receber creditos depois.",
+    plano = forms.ModelChoiceField(
+        label="Plano por conta",
+        queryset=PlanoInstitucional.objects.filter(ativo=True).order_by("preco_por_conta"),
     )
 
     def clean_nome(self):

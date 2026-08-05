@@ -11,7 +11,8 @@ from contas.auditoria import RegistroDeAuditoria
 from contas.desativacao import DesativacaoNegada, desativar_usuario
 from contas.models import Instituicao, Perfil, TipoInstituicao
 from creditos.excecoes import AlocacaoSemConfirmacaoError
-from creditos.saldo import saldo_usuario
+from limites.models import AssinaturaInstituicao
+from limites.servico import calcular_cobranca, estado_cota
 
 from .permissoes import exige_superadmin
 from .forms.conta_teste import ContaTesteForm
@@ -70,7 +71,15 @@ def instituicao(request, pk):
     formulario = InstituicaoEdicaoForm(
         initial={"nome": alvo.nome, "documento": alvo.documento or ""}
     )
-    return render(request, "painel_admin/instituicao.html", {"alvo": alvo, "formulario": formulario})
+    try:
+        cobranca = calcular_cobranca(alvo)
+    except AssinaturaInstituicao.DoesNotExist:
+        cobranca = None
+    return render(
+        request,
+        "painel_admin/instituicao.html",
+        {"alvo": alvo, "formulario": formulario, "cobranca": cobranca},
+    )
 
 
 @require_POST
@@ -162,7 +171,7 @@ def usuario(request, pk):
     contexto = {
         "alvo": alvo,
         "perfis": Perfil.choices,
-        "saldo": saldo_usuario(alvo.pk),
+        "cota": estado_cota(alvo),
         "formulario_edicao": formulario_edicao,
     }
     return render(request, "painel_admin/usuario.html", contexto)
@@ -177,7 +186,7 @@ def usuario_editar(request, pk):
         contexto = {
             "alvo": alvo,
             "perfis": Perfil.choices,
-            "saldo": saldo_usuario(alvo.pk),
+            "cota": estado_cota(alvo),
             "formulario_edicao": formulario,
         }
         return render(request, "painel_admin/usuario.html", contexto)
@@ -196,7 +205,7 @@ def usuario_editar(request, pk):
         contexto = {
             "alvo": alvo,
             "perfis": Perfil.choices,
-            "saldo": saldo_usuario(alvo.pk),
+            "cota": estado_cota(alvo),
             "formulario_edicao": formulario,
         }
         return render(request, "painel_admin/usuario.html", contexto)

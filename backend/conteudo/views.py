@@ -80,4 +80,10 @@ class MaterialDetalheView(APIView):
             material = Material.objects.get(pk=pk, instituicao_id=request.user.instituicao_id)
         except Material.DoesNotExist:
             return Response(status=404)
+        if (
+            request.user.perfil == "ALUNO"
+            and material.status != "OFICIAL"
+            and material.autor_id != request.user.id
+        ):
+            return Response(status=404)
         return Response(MaterialSerializer(material).data)

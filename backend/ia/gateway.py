@@ -4,10 +4,10 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 
-from creditos.consumo import autorizar_consumo, registrar_consumo, trava_saldo
-from creditos.excecoes import SaldoInsuficienteError
+from limites.excecoes import LimiteDeUsoExcedidoError
+from limites.servico import autorizar_uso, registrar_uso, trava_cota
 
-from .conversao import custo_para_creditos
+from .conversao import custo_para_percentual
 from .excecoes import ProvedorIAError
 from .models import ChamadaIA, StatusChamada
 from .provedores.falso import ProvedorFalso
@@ -58,32 +58,34 @@ class GatewayIA:
         )
         modelo = modelo_para_classe(classe_tarefa)
         try:
-            with trava_saldo(usuario):
-                autorizar_consumo(usuario)
+            with trava_cota(usuario):
+                autorizar_uso(usuario)
                 resultado = self._gerar_com_retry(prompt, modelo)
-                creditos = custo_para_creditos(
+                percentual = custo_para_percentual(
                     resultado.custo_bruto,
-                    custo_por_credito=settings.IA_CUSTO_POR_CREDITO,
-                    margem=settings.IA_MARGEM_CREDITOS,
+                    custo_dolar_por_percentual=settings.IA_CUSTO_DOLAR_POR_PERCENTUAL,
+                    margem=settings.IA_MARGEM_USO,
                 )
                 with transaction.atomic():
-                    registrar_consumo(
-                        instituicao=instituicao,
+                    registrar_uso(
                         usuario=usuario,
-                        quantidade=creditos,
-                        motivo=f"Uso de IA: {classe_tarefa}",
+                        percentual=percentual,
+                        fornecedor=getattr(resultado, "fornecedor", "desconhecido"),
+                        modelo=resultado.modelo,
+                        classe_tarefa=classe_tarefa,
                         referencia=chamada,
-                        criado_por=usuario,
+                        custo_bruto=resultado.custo_bruto,
                     )
                     chamada.modelo = resultado.modelo
                     chamada.tokens_entrada = resultado.tokens_entrada
                     chamada.tokens_saida = resultado.tokens_saida
                     chamada.custo_bruto = resultado.custo_bruto
-                    chamada.creditos_debitados = creditos
+                    chamada.fornecedor = getattr(resultado, "fornecedor", "desconhecido")
+                    chamada.percentual_debitado = percentual
                     chamada.status = StatusChamada.SUCESSO
                     chamada.concluida_em = timezone.now()
                     chamada.save()
-        except SaldoInsuficienteError as erro:
+        except LimiteDeUsoExcedidoError as erro:
             self._marcar_erro(chamada, erro.codigo)
             raise
         except ProvedorIAError as erro:

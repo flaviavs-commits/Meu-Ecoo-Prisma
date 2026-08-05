@@ -28,10 +28,12 @@ INSTALLED_APPS = [
     "academico",
     "ia",
     "creditos",
+    "limites",
     "core",
     "memoria",
     "arquivos",
     "conteudo",
+    "aluno",
     "painel_admin",
 ]
 
@@ -148,8 +150,10 @@ IA_MODELOS = {
     "CORRECAO": os.environ.get("IA_MODELO_CORRECAO", "modelo-correcao-local"),
     "RESUMO": os.environ.get("IA_MODELO_RESUMO", "modelo-resumo-local"),
 }
-IA_CUSTO_POR_CREDITO = Decimal(os.environ.get("IA_CUSTO_POR_CREDITO", "0.001"))
-IA_MARGEM_CREDITOS = Decimal(os.environ.get("IA_MARGEM_CREDITOS", "1.20"))
+IA_CUSTO_DOLAR_POR_PERCENTUAL = Decimal(
+    os.environ.get("IA_CUSTO_DOLAR_POR_PERCENTUAL", "0.001")
+)
+IA_MARGEM_USO = Decimal(os.environ.get("IA_MARGEM_USO", "1.20"))
 IA_TIMEOUT_SEGUNDOS = float(os.environ.get("IA_TIMEOUT_SEGUNDOS", "10"))
 ADMIN_URL = os.environ.get("DJANGO_ADMIN_URL", "backoffice").strip("/") + "/"
 
