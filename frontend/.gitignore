@@ -23,3 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Scripts de medicao pontual (Playwright, localhost fixo). Sao ferramenta
+# descartavel de quem esta investigando performance - nao fazem parte do
+# build nem do app. Ficam so na maquina de quem os escreveu.
+_*.mjs
