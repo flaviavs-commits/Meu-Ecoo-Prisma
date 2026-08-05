@@ -11,6 +11,7 @@ from academico.models import Disciplina, Falta, Matricula, Nota, Turma
 from academico.notas import (
     AcademicoPermissaoError,
     NotaForaDaFaixaError,
+    aprovar_nota,
     atualizar_nota,
     consultar_notas,
     lancar_nota,
@@ -192,8 +193,10 @@ def test_diretor_enxerga_notas_de_turmas_de_varios_professores(
     )
     matricular(turma=turma_a, aluno=aluno, criado_por=diretor)
     matricular(turma=turma_b, aluno=colega, criado_por=diretor)
-    lancar_nota(turma=turma_a, disciplina=disciplina_a, aluno=aluno, valor=Decimal("8"), avaliacao="p1", ator=professor)
-    lancar_nota(turma=turma_b, disciplina=disciplina_a, aluno=colega, valor=Decimal("9"), avaliacao="p1", ator=outro_professor)
+    nota_a = lancar_nota(turma=turma_a, disciplina=disciplina_a, aluno=aluno, valor=Decimal("8"), avaliacao="p1", ator=professor)
+    nota_b = lancar_nota(turma=turma_b, disciplina=disciplina_a, aluno=colega, valor=Decimal("9"), avaliacao="p1", ator=outro_professor)
+    aprovar_nota(nota=nota_a, ator=professor, confirmacao=True, motivo="revisao turma A")
+    aprovar_nota(nota=nota_b, ator=outro_professor, confirmacao=True, motivo="revisao turma B")
 
     notas_do_diretor = consultar_notas(usuario=diretor)
 
@@ -210,7 +213,8 @@ def test_dois_diretores_da_mesma_instituicao_enxergam_os_mesmos_dados(
     )
     turma, disciplina = turma_com_disciplina(instituicao, professor)
     matricular(turma=turma, aluno=aluno, criado_por=diretor)
-    lancar_nota(turma=turma, disciplina=disciplina, aluno=aluno, valor=Decimal("7"), avaliacao="p1", ator=professor)
+    nota = lancar_nota(turma=turma, disciplina=disciplina, aluno=aluno, valor=Decimal("7"), avaliacao="p1", ator=professor)
+    aprovar_nota(nota=nota, ator=professor, confirmacao=True, motivo="revisao")
 
     notas_diretor_1 = set(consultar_notas(usuario=diretor).values_list("id", flat=True))
     notas_diretor_2 = set(consultar_notas(usuario=outro_diretor).values_list("id", flat=True))
