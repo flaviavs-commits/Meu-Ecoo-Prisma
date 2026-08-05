@@ -826,3 +826,33 @@ Validação pública observada:
 
 **Estado final:** CONCLUÍDO e publicado; aguardando somente teste manual
 autenticado. Identidade: **Code Review**.
+
+## 19. Tier mantenedor Vitis Souls e governança cross-tenant
+
+### Decisão
+
+Foi criado um tier técnico separado dos perfis acadêmicos. A instituição
+`VITIS_SOULS` é uma mantenedora interna da empresa e não exige CPF/CNPJ. Toda
+conta superusuária deve usar o perfil `MANTENEDOR` e pertencer a essa
+instituição; a migração `0007_mantenedora_vitis_souls` corrige os superusuários
+existentes.
+
+O painel cross-tenant exige quatro condições: conta ativa, superusuário,
+perfil `MANTENEDOR` e vínculo com a Vitis Souls. O campo `is_staff`, sozinho,
+não concede esse acesso. Instituições escolares e contas de outras escolas
+podem ser monitoradas, criadas, editadas e desativadas pelo painel. A operação
+chamada de “apagar” é arquivamento lógico com confirmação, motivo, auditoria e
+preservação de dados; a exclusão física foi bloqueada no Admin completo.
+
+### Validação observada
+
+- `DATABASE_URL=sqlite:///local-test.sqlite3 .venv/bin/python manage.py check`
+  → nenhum problema;
+- `DATABASE_URL=sqlite:///local-test.sqlite3 .venv/bin/python manage.py
+  makemigrations --check --dry-run` → nenhuma mudança;
+- testes focados de onboarding e painel → `45 passed`;
+- suíte completa do backend → `156 passed, 2 skipped`;
+- `git diff --check` → sem saída.
+
+**Estado final:** CONCLUÍDO localmente; publicação e validação remota serão
+registradas após o push. Identidade: **Code Review**.

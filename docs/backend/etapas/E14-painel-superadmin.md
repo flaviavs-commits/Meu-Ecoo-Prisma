@@ -1,6 +1,6 @@
 # E14 - Painel operacional do superadmin
 
-> **Status:** CONCLUÍDA (1ª e 2ª fatia) · **Responsavel:** Painel do prisma
+> **Status:** CONCLUÍDA (1ª a 4ª fatia) · **Responsavel:** Code Review
 > **Depende de:** E04, E11 · **Destrava:** operacao interna do backend
 
 ## 1. Objetivo
@@ -12,11 +12,12 @@ servico Railway ou duplicar banco/API.
 ## 2. Decisoes
 
 - O painel sera um app Django no mesmo servico do backend, em `/painel/`.
-- O acesso inicial sera exclusivo para `is_superuser`; `is_staff` continua
-  suficiente apenas para o Django Admin existente.
-- "Tier" significa o campo `perfil` atual: `ALUNO`, `PROFESSOR` ou `DIRETOR`.
-- O superadmin pode trocar o perfil sempre que quiser. A troca exige motivo e
-  fica registrada em `RegistroDeAuditoria`.
+- O painel é exclusivo para contas ativas com `is_superuser=True`, perfil
+  `MANTENEDOR` e vínculo com a instituição mantenedora `VITIS_SOULS`.
+- O tier de controle é separado dos perfis acadêmicos: `MANTENEDOR` administra
+  a plataforma; `ALUNO`, `PROFESSOR` e `DIRETOR` usam as telas acadêmicas.
+- O mantenedor pode trocar perfis acadêmicos com motivo obrigatório e auditoria.
+  O perfil `MANTENEDOR` só pode existir em um superadmin da Vitis Souls.
 - O painel nao exibira conversa crua de aluno, senha, token ou segredo.
 - Exclusao fisica nao sera oferecida nesta primeira fatia; desativacao auditada
   e o comportamento seguro ja definido pela E11.
@@ -55,6 +56,25 @@ servico Railway ou duplicar banco/API.
   `is_superuser=False`, para que o fluxo de controle não seja confundido com
   as telas acadêmicas do produto.
 
+## 3.3 Quarta fatia — tier mantenedor e governança cross-tenant (concluída em 2026-08-05)
+
+- `Instituicao` ganhou o tipo `MANTENEDORA` e o código estável `VITIS_SOULS`.
+  A Vitis Souls não exige CPF/CNPJ; escolas continuam exigindo documento.
+- A migração `0007_mantenedora_vitis_souls` cria a Vitis Souls quando
+  necessário e vincula a ela os superusuários existentes com o perfil
+  `MANTENEDOR`.
+- O acesso cross-tenant exige simultaneamente conta ativa, superusuário,
+  perfil `MANTENEDOR` e vínculo com a Vitis Souls. `is_staff` isoladamente não
+  concede esse poder.
+- O painel permite abrir, editar e arquivar instituições escolares, editar
+  contas de outras instituições e administrar as ações já existentes de
+  perfil, créditos e acesso. Cada alteração relevante exige motivo e auditoria.
+- Arquivar uma escola desativa suas contas e preserva os registros. O Admin
+  completo também não oferece exclusão física de instituições ou usuários;
+  Vitis Souls fica protegida contra alteração por esse fluxo.
+- Contas acadêmicas não podem ser criadas na Vitis Souls e contas de teste não
+  podem receber o tier `MANTENEDOR`.
+
 ## 4. Diario de execucao
 
 - [2026-08-03] Etapa aberta por Analizar o front do Prisma - o usuario escolheu tratar tier como perfil ALUNO/PROFESSOR/DIRETOR e autorizou troca irrestrita pelo superadmin; validacao: E11 e o codigo existente foram lidos antes da implementacao.
@@ -65,6 +85,7 @@ servico Railway ou duplicar banco/API.
 - [2026-08-03] Validação Railway bloqueada - por que: após o push `53e66b2`, três tentativas com Gunicorn e uma comparação com `runserver` construíram a imagem, mas terminaram com `1/1 replicas never became healthy`, sem traceback da aplicação; como validei: logs de build do Railway e health check público HTTP 200 na réplica anterior. O dashboard informa assinatura vencida. Estado final: **BLOQUEADO** até regularizar a assinatura/infraestrutura; a configuração de produção foi restaurada para Gunicorn.
 - [2026-08-05] Painel do prisma fechou a 1ª fatia e entregou a 2ª (registros de auditoria + ações destrutivas auditadas: zerar créditos e desativar usuário) - por que: o usuário autorizou finalizar a etapa de ponta a ponta, com a assinatura Railway já regularizada; como validei: reforcei o checklist da 1ª fatia com 2 testes novos (staff não-superuser, perfil inválido) e criei 11 testes novos para a 2ª fatia; suíte completa do backend em `116 passed, 1 skipped` e `manage.py check` sem issues. Commit `2aaca78` na `main` (branch de trabalho mesclada e apagada, junto com a branch obsoleta `agent/publica-design-backend`, cujo conteúdo já estava superado pela `main`).
 - [2026-08-05] Deploy Railway destravado - por que: a assinatura foi regularizada e o deploy automático do commit `2aaca78` falhou de novo com `1/1 replicas never became healthy`; investigando via `railway` CLI, identifiquei que `DJANGO_ALLOWED_HOSTS` só tinha o domínio público, e o healthcheck interno do Railway bate no container por um Host diferente, causando `DisallowedHost` (400) tratado como "service unavailable"; como validei: ampliei `DJANGO_ALLOWED_HOSTS` (domínio público + `api.railway.internal` + `healthcheck.railway.app` + loopback + `*.up.railway.app`) via `railway variable set`, rodei `railway redeploy --from-source`, e o deploy ficou `Online` com `GET /api/v1/health/` retornando 200 e `GET /painel/` retornando 302 (login) em produção. Estado final: **CONCLUÍDA** — 1ª e 2ª fatia entregues, testadas e publicadas em produção. Próxima fatia (se houver) fica para uma nova etapa/decisão.
+- [2026-08-05] Quarta fatia concluída por Code Review - por que: a operação precisava separar o controle técnico da experiência acadêmica e permitir que a equipe Vitis Souls administrasse as instituições sem documento fiscal próprio; como implementei: criei o tipo `MANTENEDORA`, o código reservado `VITIS_SOULS`, o perfil `MANTENEDOR`, a migração de superadmins existentes, guardas de autorização cross-tenant, edição/arquivamento no painel e proteção contra exclusão física; como validei: `manage.py check`, `makemigrations --check --dry-run`, suíte focada com `45 passed` e suíte completa com `156 passed, 2 skipped`. Estado final: **CONCLUÍDA localmente; aguardando publicação automática e validação remota do deployment**.
 
 ## 5. Criterio de pronto da primeira fatia
 
@@ -95,7 +116,21 @@ servico Railway ou duplicar banco/API.
 **Estado final:** CONCLUÍDA localmente no commit `2a45e81`; aguardando apenas
 deploy e teste manual autenticado. Identidade: **Code Review**.
 
-## 8. Publicação da terceira fatia
+## 8. Critério de pronto da quarta fatia
+
+- [x] Vitis Souls é criada sem CPF/CNPJ e identificada por código estável;
+- [x] superadmins existentes são vinculados ao tier `MANTENEDOR` por migração;
+- [x] contas ativas sem o vínculo correto não entram no painel cross-tenant;
+- [x] instituições e usuários escolares podem ser editados pelo mantenedor;
+- [x] arquivamento desativa acesso, preserva dados e registra auditoria;
+- [x] exclusão física foi removida do Admin para instituições e usuários;
+- [x] contas acadêmicas não entram na Vitis Souls;
+- [x] validação automatizada local concluída.
+
+**Estado final:** CONCLUÍDA localmente; publicação automática e validação
+remota ficam registradas após o push. Identidade: **Code Review**.
+
+## 9. Publicação da terceira fatia
 
 Em 2026-08-05, os commits `2a45e81` e `7aaaa11` foram publicados em
 `origin/main`. O deployment Railway `75ac6e3d-2ba6-414b-afdc-07a6803e69c3`

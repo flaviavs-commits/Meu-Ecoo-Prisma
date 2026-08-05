@@ -169,3 +169,17 @@ externa: `/painel/instituicoes/` e `/painel/contas-teste/` respondem `302` para
 o login quando acessadas sem sessão; `/api/v1/health/` responde `200`. Estado
 final: **CONCLUÍDO e publicado; aguardando somente teste manual autenticado**.
 Identidade: **Code Review**.
+
+## 2026-08-05 · Code Review · Tier Vitis Souls
+
+Implementei o tier técnico `MANTENEDOR` e a instituição `VITIS_SOULS`. A
+instituição não exige CPF/CNPJ; a migração cria o registro e vincula os
+superadmins existentes. O painel cross-tenant agora permite monitorar,
+criar, editar e arquivar instituições/contas escolares com confirmação,
+motivo e auditoria. O Admin completo não oferece exclusão física de usuários
+ou instituições, e contas acadêmicas não podem ser criadas na Vitis Souls.
+
+Validação observada: `manage.py check`, `makemigrations --check --dry-run`,
+testes focados `45 passed` e suíte completa `156 passed, 2 skipped`. O código e
+a documentação estão prontos localmente; falta publicar e confirmar o
+deployment automático. Identidade: **Code Review**.
