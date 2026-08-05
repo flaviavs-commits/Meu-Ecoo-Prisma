@@ -76,14 +76,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden shrink-0 items-center gap-6 md:flex">
-          {/* Vai direto a tela inicial da aplicacao, nao a uma ancora */}
-          <a
-            href={ENTRADA_APP}
-            className="fonte-display text-xs font-bold tracking-[0.14em] text-texto uppercase transition-colors hover:text-marca"
-          >
-            Entrar
-          </a>
+        <div className="hidden shrink-0 items-center md:flex">
           <Button size="md" href={ENTRADA_APP}>
             Estou pronto
           </Button>
@@ -135,9 +128,6 @@ export function Header() {
             ))}
           </nav>
           <div className="mt-4 flex flex-col gap-2">
-            <Button variant="secondary" href={ENTRADA_APP}>
-              Entrar
-            </Button>
             <Button href={ENTRADA_APP}>Estou pronto</Button>
           </div>
         </div>

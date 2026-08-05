@@ -112,18 +112,26 @@ form{display:flex;flex-direction:column;gap:16px}
 .campo input::placeholder{color:#A39D8F}
 
 /* Campo de senha com botao de mostrar/ocultar embutido - o input ganha
-   padding-right extra pra o texto nao passar por baixo do botao. */
-.campo-senha{position:relative}
-.campo-senha input{padding-right:44px}
-.campo-senha .toggle-senha{
+   padding-right extra pra o texto nao passar por baixo do botao.
+
+   A caixa relativa envolve SO o input, nao o label: se .campo-senha
+   (label + input) fosse o ancestro posicionado, top:50% centralizaria
+   o botao na altura do bloco inteiro, nao na altura do input - o
+   botao ficava alto demais, colado perto do label. */
+.campo-senha-caixa{position:relative}
+/* width:100% e explicito aqui porque o input deixou de ser filho
+   direto do flex column (.campo) - antes herdava a largura total por
+   "stretch" no eixo cruzado, agora e filho de um div comum. */
+.campo-senha-caixa input{width:100%;padding-right:44px}
+.campo-senha-caixa .toggle-senha{
   position:absolute;top:50%;right:6px;transform:translateY(-50%);
   display:flex;align-items:center;justify-content:center;
   width:32px;height:32px;padding:0;border:0;border-radius:calc(var(--radius) - 2px);
   background:transparent;color:var(--texto-secundario);cursor:pointer;
   transition:color .15s var(--ease),background .15s var(--ease);
 }
-.campo-senha .toggle-senha:hover{color:var(--texto);background:var(--superficie-alt)}
-.campo-senha .toggle-senha svg{width:18px;height:18px}
+.campo-senha-caixa .toggle-senha:hover{color:var(--texto);background:var(--superficie-alt)}
+.campo-senha-caixa .toggle-senha svg{width:18px;height:18px}
 
 .linha-aux{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-top:-4px}
 .linha-aux a{color:var(--texto-secundario);text-decoration:none}
@@ -235,12 +243,14 @@ form{display:flex;flex-direction:column;gap:16px}
           <label for="email" data-i18n="conta.email">E-mail</label>
           <input id="email" type="email" placeholder="voce@escola.com.br" data-i18n-attr="placeholder:entrada.emailPlaceholder" autocomplete="email">
         </div>
-        <div class="campo campo-senha">
+        <div class="campo">
           <label for="senha" data-i18n="entrada.senha">Senha</label>
-          <input id="senha" type="password" placeholder="••••••••" autocomplete="current-password">
-          <button type="button" class="toggle-senha" id="toggle-senha" aria-label="Mostrar senha" aria-pressed="false" data-i18n-attr="aria-label:entrada.mostrarSenha">
-            <svg><use href="#e-eye"/></svg>
-          </button>
+          <div class="campo-senha-caixa">
+            <input id="senha" type="password" placeholder="••••••••" autocomplete="current-password">
+            <button type="button" class="toggle-senha" id="toggle-senha" aria-label="Mostrar senha" aria-pressed="false" data-i18n-attr="aria-label:entrada.mostrarSenha">
+              <svg><use href="#e-eye"/></svg>
+            </button>
+          </div>
         </div>
         <div class="linha-aux">
           <a href="#" data-i18n="entrada.esqueciSenha">Esqueci minha senha</a>

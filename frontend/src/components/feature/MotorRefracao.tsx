@@ -67,7 +67,7 @@ export function MotorRefracao() {
       />
 
       <div
-        className="mt-8 inline-flex flex-wrap gap-1 rounded-full border border-contorno bg-superficie p-1"
+        className="mt-8 grid grid-cols-3 gap-1 rounded-full border border-contorno bg-superficie p-1 sm:inline-grid"
         role="group"
         aria-label="Visualizar materiais por perfil"
       >
@@ -80,18 +80,24 @@ export function MotorRefracao() {
               aria-pressed={selecionado}
               onClick={() => setPerfilAtivo(perfil.id)}
               className={[
-                'flex min-h-9 items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-200',
-                selecionado
-                  ? `${perfil.tint} text-texto shadow-[0_2px_10px_-6px_rgb(26_26_26/0.4)]`
-                  : 'text-texto-secundario hover:bg-fundo hover:text-texto',
+                'relative flex min-h-9 items-center justify-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-colors duration-200 sm:min-w-[9.5rem]',
+                'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-texto',
+                selecionado ? 'text-texto' : 'text-texto-secundario hover:text-texto',
               ].join(' ')}
             >
+              {selecionado && (
+                <motion.span
+                  layoutId="perfil-indicador"
+                  className={`absolute inset-0 rounded-full ${perfil.tint} shadow-[0_2px_10px_-6px_rgb(26_26_26/0.4)]`}
+                  transition={reduzido ? { duration: 0 } : { type: 'spring', bounce: 0.2, duration: 0.5 }}
+                />
+              )}
               <span
                 aria-hidden="true"
-                className="h-2 w-2 shrink-0 rounded-full"
+                className="relative z-10 h-2 w-2 shrink-0 rounded-full"
                 style={{ backgroundColor: perfil.cor }}
               />
-              {perfil.rotulo}
+              <span className="relative z-10">{perfil.rotulo}</span>
             </button>
           )
         })}
@@ -132,7 +138,12 @@ export function MotorRefracao() {
                     setAtivo((valor) => (valor - 1 + exemplosRefracao.length) % exemplosRefracao.length)
                   }
                 }}
-                className="group flex w-full items-center justify-between gap-4 border-b border-contorno border-b-aluno bg-transparent px-0 pb-3 pt-1 text-left outline-none transition-all hover:border-b-texto focus:border-b-texto focus:ring-0"
+                className={[
+                  'group flex w-full items-center justify-between gap-4 rounded-xl border bg-fundo px-4 py-3.5 text-left outline-none transition-all duration-200 sm:px-5 sm:py-4',
+                  menuAberto
+                    ? 'border-aluno shadow-[0_10px_28px_-16px_rgb(26_26_26/0.35)]'
+                    : 'border-contorno hover:border-aluno/60 hover:shadow-[0_6px_20px_-14px_rgb(26_26_26/0.3)] focus-visible:border-aluno',
+                ].join(' ')}
               >
                 <span className="flex min-w-0 items-center gap-3">
                   <span
@@ -151,7 +162,7 @@ export function MotorRefracao() {
                 </span>
                 <span
                   aria-hidden="true"
-                  className={["flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-texto-secundario transition-all duration-200 group-hover:bg-texto/5 group-hover:text-texto", menuAberto ? "rotate-180 bg-texto/5 text-texto" : ""].join(' ')}
+                  className={["flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-texto-secundario transition-all duration-200 group-hover:bg-superficie group-hover:text-texto", menuAberto ? "rotate-180 bg-superficie text-texto" : ""].join(' ')}
                 >
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <path d="m3 5 4 4 4-4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
