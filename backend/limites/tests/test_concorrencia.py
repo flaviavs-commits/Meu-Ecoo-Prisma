@@ -10,8 +10,12 @@ from limites.excecoes import LimiteDeUsoExcedidoError
 from limites.models import AssinaturaInstituicao, PlanoInstitucional
 from limites.servico import autorizar_uso, registrar_uso, trava_cota
 
+# `serialized_rollback` repoe o estado inicial do banco depois do flush que todo
+# teste transacional faz. Sem ele, este teste leva junto o catalogo de planos
+# semeado pela migracao de dados e quebra a si mesmo ou a quem rodar depois -
+# uma falha que so aparece em PostgreSQL, ja que em SQLite ele e pulado.
 pytestmark = [
-    pytest.mark.django_db(transaction=True),
+    pytest.mark.django_db(transaction=True, serialized_rollback=True),
     pytest.mark.skipif(
         connection.vendor == "sqlite",
         reason="concorrencia exige PostgreSQL; SQLite bloqueia a tabela inteira",

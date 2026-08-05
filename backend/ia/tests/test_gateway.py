@@ -1,13 +1,20 @@
+from datetime import timedelta
 from decimal import Decimal
 
 import pytest
 from django.conf import settings
+from django.db import connection
+from django.utils import timezone
 
 from limites.models import AssinaturaInstituicao, ConsumoIA, PlanoInstitucional
 from limites.servico import estado_cota
 from limites.excecoes import LimiteDeUsoExcedidoError
 from ia.conversao import custo_para_percentual
-from ia.excecoes import ProvedorIAError, ProvedorNaoConfiguradoError
+from ia.excecoes import (
+    ChamadaConcorrenteError,
+    ProvedorIAError,
+    ProvedorNaoConfiguradoError,
+)
 from ia.gateway import GatewayIA
 from ia.models import ChamadaIA, ClasseTarefa, StatusChamada
 from ia.provedores.base import ResultadoProvedor
@@ -174,3 +181,135 @@ def test_provedor_padrao_e_falso_e_openrouter_nao_faz_rede(monkeypatch):
 
     with pytest.raises(ProvedorNaoConfiguradoError):
         GatewayIA.openrouter().provedor.gerar("prompt", "modelo", timeout=1)
+
+
+def test_chamada_que_estoura_o_limite_e_debitada_e_nao_perdida(instituicao, aluno):
+    """Regressao do achado 7: recusar o debito depois de pagar o fornecedor.
+
+    O provedor cobra caro o bastante para passar do restante do plano. Antes,
+    `registrar_uso` recusava: o custo existia no fornecedor e nao existia na
+    nossa contabilidade. Agora entra, deixa a conta negativa e barra a proxima.
+    """
+    definir_plano(aluno, "1")
+
+    class ProvedorCaro:
+        def gerar(self, prompt, modelo, timeout):
+            return ResultadoProvedor(
+                texto="ok",
+                tokens_entrada=1,
+                tokens_saida=1,
+                modelo=modelo,
+                custo_bruto=Decimal("0.005"),
+                fornecedor="caro",
+            )
+
+    chamada = GatewayIA(provedor=ProvedorCaro()).chamar(
+        instituicao=instituicao,
+        usuario=aluno,
+        classe_tarefa=ClasseTarefa.TUTORIA,
+        prompt="pergunta",
+    )
+
+    consumo = ConsumoIA.objects.get(referencia=chamada)
+    assert chamada.status == StatusChamada.SUCESSO
+    assert consumo.percentual == chamada.percentual_debitado > Decimal("1")
+    estado = estado_cota(aluno)
+    assert estado.consumido_percentual == consumo.percentual
+    assert estado.disponivel_percentual < 0
+    assert estado.bloqueado is True
+
+
+def test_segunda_chamada_e_recusada_depois_do_estouro(instituicao, aluno):
+    definir_plano(aluno, "1")
+    gateway = GatewayIA(provedor=ProvedorFalso())
+    gateway.chamar(
+        instituicao=instituicao,
+        usuario=aluno,
+        classe_tarefa=ClasseTarefa.TUTORIA,
+        prompt="primeira",
+    )
+
+    with pytest.raises(LimiteDeUsoExcedidoError):
+        gateway.chamar(
+            instituicao=instituicao,
+            usuario=aluno,
+            classe_tarefa=ClasseTarefa.TUTORIA,
+            prompt="segunda",
+        )
+
+
+def test_chamada_pendente_da_mesma_conta_recusa_a_seguinte(instituicao, aluno):
+    """Regressao: sem esse teto, N chamadas simultaneas passariam pelo portao
+    juntas (nenhuma debitou ainda) e o estouro seria do tamanho da concorrencia."""
+    definir_plano(aluno)
+    ChamadaIA.objects.create(
+        instituicao=instituicao, usuario=aluno, status=StatusChamada.PENDENTE
+    )
+
+    with pytest.raises(ChamadaConcorrenteError) as erro:
+        GatewayIA(provedor=ProvedorFalso()).chamar(
+            instituicao=instituicao,
+            usuario=aluno,
+            classe_tarefa=ClasseTarefa.TUTORIA,
+            prompt="concorrente",
+        )
+
+    assert erro.value.codigo == "chamada_em_andamento"
+    nova = ChamadaIA.objects.order_by("-pk").first()
+    assert nova.status == StatusChamada.ERRO
+    assert nova.erro_codigo == "chamada_em_andamento"
+    assert estado_cota(aluno).consumido_percentual == Decimal("0")
+
+
+def test_chamada_pendente_abandonada_nao_trava_a_conta(instituicao, aluno):
+    """Processo morto no meio da chamada nao pode bloquear a conta para sempre."""
+    definir_plano(aluno)
+    orfa = ChamadaIA.objects.create(
+        instituicao=instituicao, usuario=aluno, status=StatusChamada.PENDENTE
+    )
+    ChamadaIA.objects.filter(pk=orfa.pk).update(
+        criada_em=timezone.now() - timedelta(hours=1)
+    )
+
+    chamada = GatewayIA(provedor=ProvedorFalso()).chamar(
+        instituicao=instituicao,
+        usuario=aluno,
+        classe_tarefa=ClasseTarefa.TUTORIA,
+        prompt="depois da orfa",
+    )
+
+    assert chamada.status == StatusChamada.SUCESSO
+
+
+def test_provedor_nao_e_chamado_dentro_de_transacao(instituicao, aluno):
+    """Regressao do achado 5: a trava da cota nao pode atravessar a rede.
+
+    Uma transacao aberta durante ate tres tentativas de HTTP segurava conexao
+    do pool por dezenas de segundos por request.
+    """
+    definir_plano(aluno)
+    observado = {}
+    # A propria suite roda dentro de uma transacao, entao `in_atomic_block` e
+    # sempre True aqui. O que importa e a profundidade: se o gateway tivesse
+    # aberto uma transacao em volta da chamada, haveria um savepoint a mais.
+    profundidade_base = len(connection.savepoint_ids)
+
+    class ProvedorQueObserva:
+        def gerar(self, prompt, modelo, timeout):
+            observado["profundidade"] = len(connection.savepoint_ids)
+            return ResultadoProvedor(
+                texto="ok",
+                tokens_entrada=1,
+                tokens_saida=1,
+                modelo=modelo,
+                custo_bruto=Decimal("0.001"),
+            )
+
+    GatewayIA(provedor=ProvedorQueObserva()).chamar(
+        instituicao=instituicao,
+        usuario=aluno,
+        classe_tarefa=ClasseTarefa.TUTORIA,
+        prompt="pergunta",
+    )
+
+    assert observado["profundidade"] == profundidade_base

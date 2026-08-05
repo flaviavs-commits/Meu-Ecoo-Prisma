@@ -8,6 +8,7 @@ from django.db.models import Sum
 from contas.auditoria import RegistroDeAuditoria
 from contas.models import TipoInstituicao
 
+from .ciclo import ciclo_atual
 from .excecoes import (
     LimiteDeUsoExcedidoError,
     MotivoObrigatorioError,
@@ -24,6 +25,7 @@ from .models import (
 
 @dataclass(frozen=True)
 class EstadoCota:
+    ciclo: str
     limite_percentual: Decimal
     consumido_percentual: Decimal
     disponivel_percentual: Decimal
@@ -35,15 +37,25 @@ def obter_cota(usuario):
     return cota
 
 
-def estado_cota(usuario):
+def estado_cota(usuario, *, ciclo=None):
+    """Situacao da conta dentro de uma competencia mensal.
+
+    O plano e cobrado por conta/mes, entao o consumido e sempre o da janela
+    aberta - somar o historico inteiro deixaria a conta bloqueada para sempre
+    depois do primeiro mes cheio, com a escola sendo cobrada de novo.
+    """
+    ciclo = ciclo or ciclo_atual()
     obter_cota(usuario)
     limite = limite_da_instituicao(usuario.instituicao_id)
     consumido = (
-        ConsumoIA.objects.filter(usuario=usuario).aggregate(total=Sum("percentual"))["total"]
+        ConsumoIA.objects.filter(usuario=usuario, ciclo=ciclo).aggregate(
+            total=Sum("percentual")
+        )["total"]
         or Decimal("0")
     )
     disponivel = limite - consumido
     return EstadoCota(
+        ciclo=ciclo,
         limite_percentual=limite,
         consumido_percentual=consumido,
         disponivel_percentual=disponivel,
@@ -53,7 +65,13 @@ def estado_cota(usuario):
 
 @contextmanager
 def trava_cota(usuario):
-    """Serializa o gate e o débito da mesma conta em uma transação."""
+    """Serializa as decisoes de portao da mesma conta.
+
+    Segura a linha de `CotaUsuario` para que duas requisicoes da mesma conta
+    nao decidam ao mesmo tempo se podem comecar uma chamada. E deliberadamente
+    curta: nenhuma chamada de rede pode acontecer aqui dentro, senao a
+    transacao fica aberta pelo tempo do provedor.
+    """
     with transaction.atomic():
         cota = obter_cota(usuario)
         CotaUsuario.objects.select_for_update().get(pk=cota.pk)
@@ -61,6 +79,11 @@ def trava_cota(usuario):
 
 
 def autorizar_uso(usuario):
+    """Portao: decide se a conta pode *comecar* mais uma chamada.
+
+    E o unico ponto que recusa. Depois que o provedor foi acionado, o custo ja
+    existe e `registrar_uso` sempre grava - ver a nota la.
+    """
     estado = estado_cota(usuario)
     if estado.disponivel_percentual <= 0:
         raise LimiteDeUsoExcedidoError()
@@ -78,6 +101,17 @@ def registrar_uso(
     custo_bruto=Decimal("0"),
     metadados=None,
 ):
+    """Grava o consumo de uma chamada ja concluida. Nunca recusa.
+
+    Este e o livro-razao: o percentual so chega aqui depois que o provedor
+    respondeu, ou seja, depois que o custo virou fato. Antes, uma chamada que
+    ultrapassasse o restante do plano era recusada aqui - o fornecedor cobrava,
+    a nossa contabilidade nao registrava nada, e o dinheiro sumia em silencio.
+
+    Quem decide se a conta pode comecar uma chamada e `autorizar_uso`. Como o
+    gateway so deixa uma chamada por conta correr de cada vez, o estouro
+    maximo de um plano e uma unica chamada, e ela bloqueia a proxima.
+    """
     percentual = _percentual_positivo(percentual)
     if not fornecedor or not modelo or not classe_tarefa:
         raise ValueError("Fornecedor, modelo e classe da tarefa sao obrigatorios.")
@@ -88,11 +122,6 @@ def registrar_uso(
                 if existente.usuario_id != usuario.id:
                     raise ValueError("A chamada de IA pertence a outra conta.")
                 return existente
-            cota = obter_cota(usuario)
-            CotaUsuario.objects.select_for_update().get(pk=cota.pk)
-            estado = estado_cota(usuario)
-            if estado.consumido_percentual + percentual > estado.limite_percentual:
-                raise LimiteDeUsoExcedidoError()
             return ConsumoIA.objects.create(
                 usuario=usuario,
                 instituicao=usuario.instituicao,
@@ -100,6 +129,7 @@ def registrar_uso(
                 fornecedor=fornecedor,
                 modelo=modelo,
                 classe_tarefa=classe_tarefa,
+                ciclo=ciclo_atual(),
                 percentual=percentual,
                 custo_bruto=custo_bruto,
                 metadados=metadados or {},

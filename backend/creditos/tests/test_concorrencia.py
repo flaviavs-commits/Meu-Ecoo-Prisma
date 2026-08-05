@@ -10,8 +10,10 @@ from creditos.models import Lancamento, TipoLancamento
 from creditos.saldo import saldo_usuario
 from painel_admin.services.zerar_creditos import zerar_creditos_usuario
 
+# Ver a nota em `limites/tests/test_concorrencia.py`: teste transacional faz
+# flush e leva junto os dados criados por migracao de dados.
 pytestmark = [
-    pytest.mark.django_db(transaction=True),
+    pytest.mark.django_db(transaction=True, serialized_rollback=True),
     pytest.mark.skipif(
         connection.vendor == "sqlite",
         reason="concorrencia exige PostgreSQL; SQLite bloqueia a tabela inteira",

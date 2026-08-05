@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ia.excecoes import ChamadaConcorrenteError, ProvedorIAError
 from ia.gateway import GatewayIA
 from limites.excecoes import LimiteDeUsoExcedidoError
 
@@ -59,6 +60,16 @@ class GerarMaterialView(APIView):
             )
         except LimiteDeUsoExcedidoError as erro:
             return Response({"erro": {"codigo": erro.codigo}}, status=422)
+        except ChamadaConcorrenteError as erro:
+            return Response(
+                {"erro": {"codigo": erro.codigo, "mensagem": str(erro)}},
+                status=status.HTTP_409_CONFLICT,
+            )
+        except ProvedorIAError as erro:
+            return Response(
+                {"erro": {"codigo": erro.codigo, "mensagem": str(erro)}},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
         disciplina = Disciplina.objects.filter(
             instituicao_id=request.user.instituicao_id,
             nome__iexact=dados.get("disciplina", "").strip(),

@@ -2,6 +2,8 @@ from decimal import Decimal
 
 from django.db import models
 
+from .ciclo import TAMANHO as CICLO_TAMANHO
+
 
 # O limite do plano pode ser 171% ou 271%; o teto abaixo representa apenas o
 # maior valor que cabe no campo de consumo, não o limite comercial da conta.
@@ -78,6 +80,9 @@ class ConsumoIA(models.Model):
     fornecedor = models.CharField(max_length=80)
     modelo = models.CharField(max_length=160)
     classe_tarefa = models.CharField(max_length=20)
+    # Competencia (`YYYY-MM`) em que este consumo entra no limite do plano.
+    # Gravada no debito e nunca recalculada: ver `limites/ciclo.py`.
+    ciclo = models.CharField(max_length=CICLO_TAMANHO)
     percentual = models.DecimalField(max_digits=7, decimal_places=4)
     custo_bruto = models.DecimalField(max_digits=14, decimal_places=8, default=0)
     metadados = models.JSONField(default=dict, blank=True)
@@ -91,6 +96,9 @@ class ConsumoIA(models.Model):
             )
         ]
         indexes = [
+            # Consulta quente: somar o consumo da conta na competencia aberta.
+            models.Index(fields=["usuario", "ciclo"]),
+            models.Index(fields=["instituicao", "ciclo"]),
             models.Index(fields=["instituicao", "usuario", "criado_em"]),
             models.Index(fields=["fornecedor", "modelo", "criado_em"]),
         ]

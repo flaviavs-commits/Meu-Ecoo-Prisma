@@ -23,30 +23,36 @@ def responder_mensagem(*, conversa, conteudo, gateway=None):
     if not conteudo:
         raise ValueError("A mensagem nao pode ser vazia.")
     gateway = gateway or GatewayIA.from_settings()
+    contexto = recuperar_contexto(
+        conversa.aluno,
+        disciplina=conversa.disciplina,
+        topico=conversa.topico,
+        conversa=conversa,
+    )
+    prompt = _montar_prompt(
+        conversa,
+        contexto["texto"],
+        conteudo,
+        obter_configuracao(conversa.aluno),
+    )
+    # O gateway roda FORA de transacao. Antes, todo este bloco era um
+    # `atomic()`: alem de segurar a transacao durante a chamada de rede, uma
+    # falha revertia junto o `ChamadaIA` de erro que o proprio gateway acabara
+    # de gravar - a auditoria de falha existia pelo simulado e sumia pelo tutor.
+    chamada, texto = gateway.chamar(
+        instituicao=conversa.aluno.instituicao,
+        usuario=conversa.aluno,
+        classe_tarefa="TUTORIA",
+        prompt=prompt,
+        devolver_texto=True,
+    )
+    # As duas mensagens nascem juntas ou nao nascem: pergunta sem resposta
+    # deixaria a conversa em estado que a tela nao sabe representar.
     with transaction.atomic():
         mensagem_aluno = Mensagem.objects.create(
             conversa=conversa,
             papel=PapelMensagem.ALUNO,
             conteudo=conteudo,
-        )
-        contexto = recuperar_contexto(
-            conversa.aluno,
-            disciplina=conversa.disciplina,
-            topico=conversa.topico,
-            conversa=conversa,
-        )
-        prompt = _montar_prompt(
-            conversa,
-            contexto["texto"],
-            conteudo,
-            obter_configuracao(conversa.aluno),
-        )
-        chamada, texto = gateway.chamar(
-            instituicao=conversa.aluno.instituicao,
-            usuario=conversa.aluno,
-            classe_tarefa="TUTORIA",
-            prompt=prompt,
-            devolver_texto=True,
         )
         mensagem_tutor = Mensagem.objects.create(
             conversa=conversa,

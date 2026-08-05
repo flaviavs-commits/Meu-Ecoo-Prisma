@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ia.excecoes import ChamadaConcorrenteError
 from limites.excecoes import LimiteDeUsoExcedidoError
 
 from .models import Conversa
@@ -75,6 +76,11 @@ class MensagensConversaView(APIView):
         except LimiteDeUsoExcedidoError as erro:
             return Response(
                 {"erro": {"codigo": erro.codigo}}, status=status.HTTP_422_UNPROCESSABLE_ENTITY
+            )
+        except ChamadaConcorrenteError as erro:
+            return Response(
+                {"erro": {"codigo": erro.codigo, "mensagem": str(erro)}},
+                status=status.HTTP_409_CONFLICT,
             )
         except ValueError as erro:
             return Response({"erro": {"mensagem": str(erro)}}, status=status.HTTP_400_BAD_REQUEST)

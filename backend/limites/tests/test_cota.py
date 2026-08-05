@@ -6,6 +6,7 @@ from rest_framework.test import APIClient
 
 from contas.models import Instituicao, Perfil, TipoInstituicao
 from ia.models import ChamadaIA
+from limites.ciclo import ciclo_atual
 from limites.excecoes import LimiteDeUsoExcedidoError
 from limites.servico import (
     autorizar_uso,
@@ -22,23 +23,6 @@ from limites.models import (
 )
 
 pytestmark = pytest.mark.django_db
-
-
-@pytest.fixture
-def instituicao(db):
-    return Instituicao.objects.create(
-        nome="Escola Limites", documento="00.000.000/0001-31"
-    )
-
-
-@pytest.fixture
-def aluno(db, instituicao):
-    return get_user_model().objects.create_user(
-        email="aluno-limites@teste.com",
-        password="senha-segura-123",
-        instituicao=instituicao,
-        perfil=Perfil.ALUNO,
-    )
 
 
 @pytest.fixture
@@ -127,7 +111,14 @@ def test_gate_bloqueia_cota_esgotada(aluno):
     assert erro.value.codigo == "limite_uso_excedido"
 
 
-def test_registro_rejeita_debito_que_ultrapassa_limite(aluno):
+def test_debito_que_ultrapassa_o_limite_e_registrado_e_bloqueia_a_proxima(aluno):
+    """Regressao: recusar aqui perdia dinheiro.
+
+    O percentual so chega a `registrar_uso` depois que o provedor respondeu, ou
+    seja, depois que o custo virou fato. Recusar deixava o fornecedor cobrando
+    e a nossa contabilidade sem registro. Agora o consumo entra, a conta fica
+    negativa, e e o portao (`autorizar_uso`) que barra a chamada seguinte.
+    """
     plano = PlanoInstitucional.objects.get(codigo="PRISMA")
     plano.limite_percentual_por_conta = Decimal("10")
     plano.save(update_fields=["limite_percentual_por_conta"])
@@ -141,17 +132,21 @@ def test_registro_rejeita_debito_que_ultrapassa_limite(aluno):
         referencia=chamada(aluno),
     )
 
-    with pytest.raises(LimiteDeUsoExcedidoError):
-        registrar_uso(
-            usuario=aluno,
-            percentual=Decimal("2"),
-            fornecedor="falso",
-            modelo="modelo",
-            classe_tarefa="TUTORIA",
-            referencia=chamada(aluno),
-        )
+    registrar_uso(
+        usuario=aluno,
+        percentual=Decimal("2"),
+        fornecedor="falso",
+        modelo="modelo",
+        classe_tarefa="TUTORIA",
+        referencia=chamada(aluno),
+    )
 
-    assert estado_cota(aluno).consumido_percentual == Decimal("9")
+    estado = estado_cota(aluno)
+    assert estado.consumido_percentual == Decimal("11")
+    assert estado.disponivel_percentual == Decimal("-1")
+    assert estado.bloqueado is True
+    with pytest.raises(LimiteDeUsoExcedidoError):
+        autorizar_uso(aluno)
 
 
 def test_mesma_chamada_nao_debita_duas_vezes(aluno):
@@ -200,6 +195,7 @@ def test_aluno_consulta_apenas_a_propria_cota(aluno):
 
     assert resposta.status_code == 200
     assert resposta.data == {
+        "ciclo": ciclo_atual(),
         "limite_percentual": "100.0000",
         "consumido_percentual": "0.0000",
         "disponivel_percentual": "100.0000",

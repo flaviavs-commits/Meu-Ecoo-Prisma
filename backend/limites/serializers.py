@@ -4,7 +4,8 @@ from .models import ConsumoIA
 
 
 class EstadoCotaSerializer(serializers.Serializer):
-    limite_percentual = serializers.DecimalField(max_digits=7, decimal_places=4)
+    ciclo = serializers.CharField()
+    limite_percentual = serializers.DecimalField(max_digits=8, decimal_places=4)
     consumido_percentual = serializers.DecimalField(max_digits=14, decimal_places=4)
     disponivel_percentual = serializers.DecimalField(max_digits=14, decimal_places=4)
     bloqueado = serializers.BooleanField()
@@ -18,6 +19,7 @@ class ConsumoIASerializer(serializers.ModelSerializer):
             "fornecedor",
             "modelo",
             "classe_tarefa",
+            "ciclo",
             "percentual",
             "criado_em",
         ]
