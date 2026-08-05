@@ -19,6 +19,7 @@ __pycache__/
 .venv/
 venv/
 *.sqlite3
+/backend/staticfiles/
 
 # Node
 node_modules/
