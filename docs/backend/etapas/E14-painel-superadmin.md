@@ -155,6 +155,28 @@ proxy Vercel do health em `200`.
 **Estado final:** CONCLUÍDA e publicada; aguardando apenas teste manual
 autenticado sem reutilizar credenciais expostas. Identidade: **Code Review**.
 
+## 12. Correções da revisão (2026-08-05)
+
+A revisão de `docs/REVISAO-2026-08-05-COMMITS-DO-DIA.md` apontou quatro
+problemas no painel, todos corrigidos:
+
+- **Arquivamento irreversível (achado 10).** O `update()` em massa desativava
+  todas as contas sem registrar quais estavam ativas. Agora cada conta atingida
+  gera seu próprio `RegistroDeAuditoria`, e `desarquivar_instituicao` reativa
+  exatamente o conjunto do último arquivamento — não volta quem foi desativado
+  individualmente entre ciclos, nem quem foi transferido de escola. Nova rota
+  `painel-instituicao-desarquivar`.
+- **Listas truncadas em 100 (achado 9).** `instituicoes` e `usuarios` agora
+  paginam em 25, com contagem total visível.
+- **`DISTINCT` na auditoria (achado 16).** O filtro de ações virou a constante
+  `ACOES_AUDITADAS`, em vez de varrer a tabela a cada carga da página.
+- **Ordem dos decoradores (sugestão 18).** `@superadmin_required` passou a vir
+  antes de `@require_POST` nas 6 rotas destrutivas, para que um `GET` anônimo
+  vá ao login em vez de receber `405` confirmando a rota.
+
+Validação: SQLite `231 passed, 3 skipped`; PostgreSQL `234 passed`;
+`manage.py check` e `makemigrations --check --dry-run` limpos.
+
 ## 11. Redeploy final
 
 O commit documental `0ed484a` acionou o redeploy automático final

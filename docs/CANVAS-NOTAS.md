@@ -225,3 +225,159 @@ Validação observada: `manage.py check`, migrações sem mudanças, `git diff
 continua instalado por compatibilidade histórica, sem participação no novo
 fluxo. Estado final: **CONCLUÍDO localmente; aguardando integração do
 frontend e validação remota**. Identidade: **Code Review**.
+
+## 2026-08-05 · Code review · Revisão de todos os commits do dia
+
+Fiz a revisão técnica de `2aaca78^..HEAD` (38 commits, 123 arquivos) a pedido
+da usuária. **Nada foi corrigido e nenhum arquivo do repositório foi alterado**
+— só criei
+[`docs/REVISAO-2026-08-05-COMMITS-DO-DIA.md`](REVISAO-2026-08-05-COMMITS-DO-DIA.md)
+com os achados, e esta nota.
+
+Três bloqueantes, todos em regra de negócio (não em arquitetura):
+
+1. `limites/servico.py:38-51` — o consumo percentual nunca reinicia. O plano é
+   mensal, mas `estado_cota` soma todo `ConsumoIA` desde sempre. Confirmei com
+   teste: consumo de 60 dias atrás continua bloqueando a conta.
+2. `academico/notas.py:145-152` — diretor passou a ver só `oficial=True` e não
+   existe migração de backfill. `git log -S "oficial = True"` confirma que só o
+   commit de hoje seta esse campo, ou seja, toda nota existente fica invisível
+   ao diretor no deploy.
+3. `conteudo/simulados.py:22-54` — simulado debita chamada de IA, descarta o
+   resultado e gera questões placeholder com `gabarito="A"` em todas; o
+   percentual falso alimenta `progresso_por_materia` do dashboard.
+
+Confirmei também que o `189 passed, 3 skipped` do E15 **confere** (rodei aqui
+com SQLite). Mas os 3 skips são os testes de concorrência, que é exatamente a
+garantia de que os achados 1 e 5 dependem — nunca foram exercitados.
+
+**Recado para quem for mexer:** os arquivos citados são de vários agentes
+(`limites/`, `academico/`, `conteudo/`, `painel_admin/`, `frontend/vercel.json`,
+`frontend/api/painel.ts`). Não toquei em nenhum. Se alguém for corrigir, avise
+aqui antes. Também não commitei nada — a `main` local já estava 4 commits à
+frente da `origin/main` antes de eu começar.
+
+Estado da revisão: entregue. Ver a seção seguinte para as correções.
+
+## 2026-08-05 · Code review · Correção dos três bloqueantes
+
+A usuária autorizou corrigir. Os três estão consertados e validados localmente.
+
+**Arquivos que toquei** (avisando porque são de vários agentes):
+`limites/{ciclo.py,models.py,servico.py,serializers.py}` + migração
+`limites/0003_consumo_ciclo`; migração `academico/0003_notas_existentes_oficiais`
+(só migração, não mexi em `academico/notas.py` nem em `views.py`);
+`conteudo/{questoes_ia.py,simulados.py,simulado_views.py,excecoes.py}`;
+`ia/provedores/{falso.py,roteiros.py}`. Testes novos em
+`limites/tests/test_ciclo.py` e `conteudo/tests/test_questoes_ia.py`.
+**Não toquei** em `painel_admin/`, `contas/`, `authenticacao/`, `frontend/` nem
+em `academico/notas.py` — os achados que envolvem esses arquivos continuam
+abertos.
+
+O que mudou, em uma linha cada:
+
+1. `ConsumoIA` ganhou `ciclo` (`YYYY-MM`) gravado no débito, e `estado_cota`
+   passou a somar só a competência aberta. A migração faz backfill em lote a
+   partir de `criado_em`.
+2. Migração de dados marca `oficial=True` nas notas que já existiam — elas já
+   eram visíveis ao diretor antes da regra nova.
+3. O simulado passou a ler as questões da resposta do modelo, via contrato de
+   saída estruturada. Saída fora do contrato agora dá `503` e não cria nada,
+   em vez de fabricar questão com gabarito fixo. O provedor falso honra o
+   contrato para dev/teste continuarem funcionando.
+
+Validação: suíte `213 passed, 3 skipped` (era `189 passed, 3 skipped`; 24
+testes novos), `manage.py check` limpo, `makemigrations --check --dry-run` sem
+pendências, `git diff --check` sem saída. A migração de notas foi verificada à
+mão num SQLite temporário (0 → 1 nota oficial), porque migração de dados não
+tem teste automático viável aqui.
+
+**Atenção para quem for publicar:** há duas migrações novas
+(`limites/0003`, `academico/0003`) que rodam no predeploy do Railway. A de
+notas é um `UPDATE` único; a de limites percorre `ConsumoIA` em lotes. Nada foi
+commitado nem publicado por mim.
+
+Estado desta etapa: concluída. Ver a seção seguinte.
+
+## 2026-08-05 · Code review · Importantes 5, 6, 7 e a suíte em PostgreSQL
+
+Segunda rodada de correções, autorizada pela usuária.
+
+**Arquivos que toquei:** `ia/{gateway.py,excecoes.py}`, `limites/servico.py`,
+`memoria/{tutor.py,views.py}`, `conteudo/{simulado_views.py,material_views.py}`,
+`limites/tests/{conftest.py,test_concorrencia.py}`,
+`creditos/tests/test_concorrencia.py`, `ia/tests/test_gateway.py`. Continuo
+**sem tocar** em `painel_admin/`, `contas/`, `authenticacao/` e `frontend/`.
+
+1. **Custo pago e débito recusado (achado 7).** `registrar_uso` virou
+   livro-razão: grava sempre, porque o percentual só chega lá depois de o
+   provedor ter cobrado. Quem recusa é o portão (`autorizar_uso`), antes da
+   chamada. **Isso muda uma regra de produto** que estava no E15: em vez de
+   "rejeita débito que ultrapassa o restante", agora é "admite estouro de no
+   máximo uma chamada, registra, e bloqueia a próxima".
+2. **Transação atravessando a rede (achados 5 e 6).** O gateway virou três
+   fases: portão (transação curta com a trava), provedor (sem transação),
+   débito (transação curta). O `atomic()` do tutor encolheu para envolver só as
+   duas mensagens. De quebra, o `ChamadaIA` de erro deixou de ser revertido
+   pelo chamador.
+3. **Teto de uma chamada por conta** (`409 chamada_em_andamento`), necessário
+   porque tirar a trava de cima da chamada externa deixaria N requisições
+   simultâneas passarem pelo portão juntas.
+
+**O achado mais surpreendente foi de teste.** Achei um Postgres local e tentei
+rodar os testes de concorrência, que estão sempre pulados. Descobri que
+`limites/tests/test_concorrencia.py` **nunca rodou em lugar nenhum**: pedia
+`instituicao`/`aluno`, fixtures que viviam dentro de `test_cota.py` e não são
+visíveis de outro módulo. O `skipif` de SQLite escondia um `ERROR`. Os dois
+módulos transacionais também levavam o catálogo de planos junto no flush.
+Corrigido com `limites/tests/conftest.py` e `serialized_rollback=True`.
+
+**Resultado: a suíte roda inteira em PostgreSQL pela primeira vez —
+`221 passed`, zero skips.** Em SQLite: `218 passed, 3 skipped`. Também rodei
+`manage.py check`, `makemigrations --check --dry-run` e `git diff --check`,
+todos limpos. Criei e removi um banco `prisma_revisao_temp` no Postgres local.
+
+Quem quiser reproduzir o run de Postgres:
+`DATABASE_URL="postgres://<user>@localhost:5432/<banco>" pytest -q`.
+
+Continuam abertos os importantes 4, 8, 9, 10, 12, 13, 14 e 16. O **12**
+(allowlist do proxy / domínio hardcoded no `vercel.json`) precisa de decisão da
+usuária antes de código, porque mexe em roteamento de produção — não vou
+alterar isso sem aviso, ainda mais com o histórico de deploy registrado acima.
+
+Estado desta etapa: concluída. Ver a seção seguinte.
+
+## 2026-08-05 · Code review · Painel + agenda, e publicação de tudo
+
+Terceira rodada de correções e **publicação**. A usuária pediu para subir tudo.
+
+Corrigidos: **10** (arquivamento de instituição agora é auditado por conta e
+reversível, com rota `painel-instituicao-desarquivar`), **9** (paginação em
+instituições e usuários — o corte em 100 escondia registros sem aviso), **16**
+(`DISTINCT` na auditoria virou constante), **18** (ordem dos decoradores nas 6
+rotas destrutivas), **14** (e-mail comparado com `__iexact` na edição) e **8**
+(fuso no filtro da agenda).
+
+**⚠️ Aviso de deploy — leiam antes de mexer no Railway.** Publiquei em
+`origin/main`, o que dispara o deploy automático. Vão junto **duas migrações
+novas** que rodam no predeploy:
+
+- `limites/0003_consumo_ciclo` — adiciona `ConsumoIA.ciclo` e faz backfill em
+  lotes de 2000 a partir de `criado_em`;
+- `academico/0003_notas_existentes_oficiais` — um `UPDATE` marcando
+  `oficial=True` nas notas que já existiam.
+
+O push também levou os 4 commits que já estavam locais antes de eu começar
+(`f57a38c`..`94b7ae6`, limites percentuais e APIs do aluno) — não eram meus,
+mas estavam na `main` local e não dava para subir o resto sem eles.
+
+Validação antes de subir: SQLite `231 passed, 3 skipped`; **PostgreSQL
+`234 passed`, zero skips**; `manage.py check`, `makemigrations --check
+--dry-run` e `git diff --check` limpos.
+
+**Continuam abertos** os achados 4 (contrato de erro), 13 (`perfil != "ALUNO"`
+em 12 views) e 12 (allowlist do proxy / domínio hardcoded no `vercel.json`). O
+**12 não foi tocado de propósito**: mexe em roteamento de produção e precisa de
+decisão da usuária. Se alguém for pegar isso, avise aqui antes.
+
+Estado final: **CONCLUÍDO e publicado**. Identidade: **Code review**.

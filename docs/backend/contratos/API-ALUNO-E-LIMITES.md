@@ -21,12 +21,26 @@ Exemplo de `GET /limites/uso/`:
 
 ```json
 {
+  "ciclo": "2026-08",
   "limite_percentual": "171.0000",
   "consumido_percentual": "12.3456",
   "disponivel_percentual": "158.6544",
   "bloqueado": false
 }
 ```
+
+### Competência mensal
+
+O plano é cobrado por conta/mês, então o percentual é contado dentro de uma
+**competência** (`ciclo`, no formato `YYYY-MM`, mês-calendário em UTC). O
+consumo de um mês não é somado ao do mês seguinte: na virada, `consumido_percentual`
+volta a zero e a conta destrava sozinha.
+
+Cada `ConsumoIA` grava a competência no momento do débito e nunca a recalcula —
+o registro continua *append-only* e auditável, e mudar a regra de janela no
+futuro não reescreve retroativamente o que já foi cobrado. `GET
+/limites/uso/historico/` expõe `ciclo` em cada item. A regra vive em
+`backend/limites/ciclo.py`.
 
 O PATCH do plano recebe `{ "plano": "PRISMA_PRO", "motivo": "upgrade" }`.
 Motivo vazio retorna `400`. Usuário acadêmico retorna `403`, instituição
@@ -60,6 +74,20 @@ mensagem de tutor é gravada sem uma chamada de IA concluída.
 Geração sem limite retorna `422`. Rascunho de outro aluno e simulado de outro
 usuário retornam `404`, evitando confirmação de existência entre tenants.
 
+### Origem das questões do simulado
+
+As questões vêm **exclusivamente** da resposta do modelo, num contrato de saída
+estruturada (`{"questoes": [{"enunciado", "alternativas", "gabarito"}]}`,
+declarado no próprio prompt). Se o provedor não honrar o contrato — JSON
+inválido, quantidade diferente da pedida, alternativa vazia, gabarito fora de
+`A–D` — **nenhum simulado é criado** e a rota responde `503` com código
+`simulado_indisponivel`. Falha do provedor responde `503` com `erro_provedor`.
+
+O percentual já debitado permanece registrado nesses casos: a chamada
+aconteceu e custou. Fabricar questão para "aproveitar" o débito é exatamente o
+que produzia simulado com gabarito fixo. A correção comentada por questão ainda
+não é persistida — `correcao_comentada` hoje só chega ao prompt.
+
 ## Dashboard e agenda
 
 | Método e rota | Permissão | Resultado |
@@ -69,6 +97,17 @@ usuário retornam `404`, evitando confirmação de existência entre tenants.
 | `PATCH /aluno/agenda/{id}/` | aluno dono | altera/conclui item próprio |
 
 Filtros `de` e `ate` da agenda usam ISO-8601. Data inválida retorna `400`.
+
+## Uma chamada de IA por conta de cada vez
+
+Toda rota que aciona o gateway (tutor, geração de material, geração de
+simulado) responde `409` com código `chamada_em_andamento` se a conta já tiver
+uma chamada em curso. É o teto que mantém o estouro do plano limitado a uma
+única chamada: o portão de limite lê o consumido, e chamadas simultâneas ainda
+não debitaram. Chamada pendente mais velha que a janela de abandono é tratada
+como órfã, para que um processo morto no meio não trave a conta.
+
+Falha do provedor responde `503` (`erro_provedor`) nas três rotas.
 
 ## Contabilidade técnica
 
