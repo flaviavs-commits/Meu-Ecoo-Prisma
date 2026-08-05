@@ -113,8 +113,7 @@ export const recursos: Recurso[] = [
  * institucional (ver `creditos`). O aluno começa no mínimo e pode
  * subir de plano quando quiser, sem depender da escola.
  *
- * Preço e volume de tokens ainda não definidos: "x" é placeholder,
- * não publique com valor real até a precificação fechar.
+ * Preços definidos pela Flávia: 68,97 / 78,97 / 88,97.
  */
 export const planos: {
   etiqueta: string
@@ -134,7 +133,7 @@ export const planos: {
       id: 'prisma',
       nome: 'Prisma',
       resumo: 'Para testar o tutor e organizar os estudos',
-      preco: 'R$ 39,99',
+      preco: 'R$ 68,97',
       periodo: '/mês',
       destaque: null,
       itens: [
@@ -148,7 +147,7 @@ export const planos: {
       id: 'prisma-pro',
       nome: 'Prisma Pro',
       resumo: 'Para quem estuda todo dia e não quer esperar',
-      preco: 'R$ 64,99',
+      preco: 'R$ 78,97',
       periodo: '/mês',
       destaque: 'recomendado',
       itens: [
@@ -163,7 +162,7 @@ export const planos: {
       id: 'prisma-ultra',
       nome: 'Prisma Ultra',
       resumo: 'Para quem quer o tutor no limite',
-      preco: 'R$ 99,99',
+      preco: 'R$ 88,97',
       periodo: '/mês',
       destaque: 'premium',
       itens: [
@@ -195,9 +194,9 @@ export const creditos: Creditos = {
 export const comparativoPlanos: ComparativoPlanos = {
   titulo: 'Quanto mais o plano, mais barato o limite de uso',
   linhas: [
-    { plano: 'Prisma', preco: 'R$ 39,99', limite: 100, economia: 'referência' },
-    { plano: 'Prisma Pro', preco: 'R$ 64,99', limite: 171, economia: '5%' },
-    { plano: 'Prisma Ultra', preco: 'R$ 99,99', limite: 271, economia: '7,7%' },
+    { plano: 'Prisma', preco: 'R$ 68,97', limite: 100, economia: 'referência' },
+    { plano: 'Prisma Pro', preco: 'R$ 78,97', limite: 171, economia: '33%' },
+    { plano: 'Prisma Ultra', preco: 'R$ 88,97', limite: 271, economia: '52,4%' },
   ],
   apoio: 'Economia por unidade de limite de uso, comparada ao Prisma.',
 }
