@@ -34,6 +34,20 @@ da SPA e `api/proxy.ts` faz a ponte same-origin para a API publica do Railway.
 O favicon Prisma e publicado em SVG, PNG e ICO para cobrir navegadores e
 clientes que procuram o caminho tradicional `/favicon.ico`.
 
+`api/proxy.ts` so encaminha as rotas explicitamente listadas em sua propria
+allowlist (`health/`, `auth/login/`, `auth/refresh/`, `auth/eu/`,
+`auth/logout/`), cada uma com o metodo HTTP permitido - isso existe alem do
+que `vercel.json` ja restringe, porque uma chamada direta a
+`/api/proxy?path=...` bypassaria aquele encaminhamento se a funcao nao
+validasse de novo. A origem da API vem de `PRISMA_API_ORIGIN` (variavel de
+ambiente do projeto na Vercel, nao do `.env` do Vite - essa variavel roda no
+servidor da funcao, nunca no bundle do navegador); enquanto ela nao estiver
+configurada la, o codigo cai num fallback com o dominio Railway atual, so
+para nao quebrar producao. Configurar `PRISMA_API_ORIGIN` no painel da Vercel
+(Project Settings > Environment Variables) e o passo que falta para remover
+esse fallback e trocar de dominio Railway (ex.: recriacao do servico) sem
+editar codigo.
+
 Para publicar manualmente:
 
 ```bash
