@@ -3,9 +3,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
+from django.contrib.auth import login as auth_login
 
 from .serializers import LoginSerializer, EuSerializer
 from .throttles import LoginRateThrottle
@@ -17,7 +19,19 @@ class LoginView(TokenObtainPairView):
     throttle_classes = [LoginRateThrottle]
 
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as erro:
+            raise InvalidToken(erro.args[0]) from erro
+
+        # O painel administrativo usa a sessão nativa do Django. Criá-la
+        # somente para superadmin mantém as contas acadêmicas no contrato JWT
+        # e permite que o login público encaminhe o administrador ao painel.
+        if serializer.user.is_superuser:
+            auth_login(request, serializer.user)
+
+        response = Response(serializer.validated_data, status=status.HTTP_200_OK)
         refresh = response.data.pop("refresh", None)
         if refresh:
             response.set_cookie(

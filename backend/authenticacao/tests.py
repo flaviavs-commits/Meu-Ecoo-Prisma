@@ -42,6 +42,33 @@ def test_login_invalido_tem_mensagem_generica():
     assert errado.data == inexistente.data
 
 
+def test_login_de_superadmin_cria_sessao_do_painel():
+    admin = get_user_model().objects.create_superuser(
+        email="admin@prisma.test", password="senha-segura-123"
+    )
+    cliente = APIClient()
+
+    resposta = cliente.post(
+        "/api/v1/auth/login/",
+        {"email": admin.email, "password": "senha-segura-123"},
+    )
+
+    assert resposta.status_code == 200
+    assert "sessionid" in resposta.cookies
+    assert cliente.get("/painel/").status_code == 200
+
+
+def test_login_academico_nao_cria_sessao_do_painel():
+    pessoa = usuario()
+    resposta = APIClient().post(
+        "/api/v1/auth/login/",
+        {"email": pessoa.email, "password": "senha-segura-123"},
+    )
+
+    assert resposta.status_code == 200
+    assert "sessionid" not in resposta.cookies
+
+
 def test_rota_eu_exige_token():
     resposta = APIClient().get("/api/v1/auth/eu/")
     assert resposta.status_code == 401
@@ -54,7 +81,8 @@ def test_eu_retorna_identidade_sem_dados_sensiveis():
     cliente.credentials(HTTP_AUTHORIZATION=f"Bearer {login.data['access']}")
     resposta = cliente.get("/api/v1/auth/eu/")
     assert resposta.status_code == 200
-    assert set(resposta.data) == {"id", "nome", "perfil", "instituicao_id"}
+    assert set(resposta.data) == {"id", "nome", "perfil", "instituicao_id", "is_superuser"}
+    assert resposta.data["is_superuser"] is False
 
 
 def test_refresh_usa_cookie_e_rotaciona_token():

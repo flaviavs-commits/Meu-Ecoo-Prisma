@@ -31,6 +31,10 @@ emitido pelo backend.
 O frontend esta publicado em `https://frontend-three-ecru-55.vercel.app`. O
 build de producao usa `VITE_API_URL=/api/v1`; `vercel.json` encaminha as rotas
 da SPA e `api/proxy.ts` faz a ponte same-origin para a API publica do Railway.
+O login de superadmin cria tambem a sessao Django e encaminha para `/painel/`.
+As rotas `/painel/`, `/backoffice/` e `/static/` passam por `api/painel.ts`,
+com allowlist de prefixo e metodo, para que o painel continue no mesmo dominio
+do login e receba os cookies de sessao corretamente.
 O favicon Prisma e publicado em SVG, PNG e ICO para cobrir navegadores e
 clientes que procuram o caminho tradicional `/favicon.ico`.
 
@@ -47,6 +51,11 @@ para nao quebrar producao. Configurar `PRISMA_API_ORIGIN` no painel da Vercel
 (Project Settings > Environment Variables) e o passo que falta para remover
 esse fallback e trocar de dominio Railway (ex.: recriacao do servico) sem
 editar codigo.
+
+Como o painel possui formularios POST protegidos por CSRF, o ambiente Django
+de producao tambem precisa ter a origem publica da Vercel em
+`DJANGO_CSRF_TRUSTED_ORIGINS`. Sem essa variavel, a pagina pode abrir, mas
+login e acoes administrativas serao recusados pelo middleware CSRF.
 
 Para publicar manualmente:
 

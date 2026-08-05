@@ -25,6 +25,26 @@
       "destination": "/api/proxy?path=auth/logout/"
     },
     {
+      "source": "/painel",
+      "destination": "/api/painel?path=painel/"
+    },
+    {
+      "source": "/painel/:path*",
+      "destination": "/api/painel?path=painel/:path*"
+    },
+    {
+      "source": "/backoffice",
+      "destination": "/api/painel?path=backoffice/"
+    },
+    {
+      "source": "/backoffice/:path*",
+      "destination": "/api/painel?path=backoffice/:path*"
+    },
+    {
+      "source": "/static/:path*",
+      "destination": "/api/painel?path=static/:path*"
+    },
+    {
       "source": "/entrar",
       "destination": "/app/login.html"
     }

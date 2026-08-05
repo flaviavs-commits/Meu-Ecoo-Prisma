@@ -104,3 +104,20 @@ e `npm run build` passaram. Os dois skips são os testes de concorrência que
 exigem PostgreSQL. Não alterei Railway/Vercel neste turno; deploy e validação
 remota ficaram registrados como pendência operacional no plano e no `IA.md`.
 Estado final: **CONCLUÍDO localmente**. Identidade: **Code Review**.
+
+## 2026-08-05 · Code Review · Login do superadmin
+
+A captura mostrou que a autenticação funcionava, mas a conta administrativa
+parava no frontend porque `perfil=null` não tinha destino e o login JWT não
+criava sessão para o painel Django. Corrigi o contrato: superadmin recebe
+`sessionid`, a identidade expõe `is_superuser`, o login encaminha para
+`/painel/`, e a Vercel ganhou `api/painel.ts` com allowlist para `/painel/`,
+`/backoffice/` e `/static/`, incluindo cookies e redirects.
+
+Validação observada: autenticação `11 passed`; suíte backend `142 passed, 2
+skipped`; `manage.py check`; migrações sem mudanças; frontend lint/build;
+JSON da Vercel; e três cenários do proxy compilado com esbuild/Node. Não houve
+deploy neste turno. A configuração operacional de
+`DJANGO_CSRF_TRUSTED_ORIGINS` com a origem pública da Vercel e a validação
+remota continuam pendentes. Estado final: **CONCLUÍDO localmente; aguardando
+deploy/configuração operacional**. Identidade: **Code Review**.

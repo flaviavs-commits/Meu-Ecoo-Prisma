@@ -24,3 +24,4 @@ class EuSerializer(serializers.Serializer):
     nome = serializers.CharField(source="get_full_name")
     perfil = serializers.CharField()
     instituicao_id = serializers.IntegerField(allow_null=True)
+    is_superuser = serializers.BooleanField()

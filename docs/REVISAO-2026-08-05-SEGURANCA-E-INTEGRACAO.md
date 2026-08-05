@@ -688,3 +688,50 @@ instalada e o build contém os destinos `/app/*.html`.
 
 **Estado final:** CONCLUÍDO localmente; sem bloqueio de código. Aguardando
 somente validação remota/configuração operacional fora deste turno.
+
+## 14. Login administrativo autenticava, mas não chegava ao painel
+
+### Diagnóstico
+
+A produção retornou sucesso no login e carregou `/auth/eu/`, mas a conta
+administrativa tinha `perfil=null`. O frontend só conhecia os destinos
+acadêmicos e exibia “Esta conta não tem perfil...”. Além disso, o endpoint JWT
+não criava a sessão Django exigida por `/painel/`, e a Vercel não encaminhava as
+rotas HTML do painel.
+
+### Correção aplicada
+
+- `LoginView` cria sessão Django somente quando o usuário autenticado é
+  `is_superuser`; contas acadêmicas continuam apenas no fluxo JWT.
+- `EuSerializer` expõe `is_superuser` e `login.html` encaminha esse usuário para
+  `/painel/`.
+- `frontend/api/painel.ts` implementa uma ponte same-origin separada, com
+  allowlist de prefixo/método para `/painel/`, `/backoffice/` e `/static/`,
+  preservando cookies, redirects e cabeçalhos necessários.
+- `vercel.json` publica os rewrites do painel. A API continua com sua própria
+  allowlist, sem transformar o proxy em encaminhamento genérico.
+- `frontend/README.md` registra a exigência operacional de incluir a origem
+  pública da Vercel em `DJANGO_CSRF_TRUSTED_ORIGINS` no ambiente Django.
+
+### Validação observada
+
+- `DATABASE_URL=sqlite:///local-test.sqlite3 .venv/bin/pytest -q`
+  → `142 passed, 2 skipped`.
+- `authenticacao/tests.py` → `11 passed`, incluindo criação de sessão para
+  superadmin e ausência de sessão administrativa para usuário acadêmico.
+- `manage.py check` e `makemigrations --check --dry-run --noinput` sem erros.
+- `npm run lint` e `npm run build` concluídos.
+- JSON de `vercel.json` válido; bundle do proxy testado com cenários de rota
+  fora da allowlist (404), método inválido (405) e encaminhamento válido.
+- `git diff --check` sem saída.
+
+### Limite operacional
+
+Não houve deploy da alteração neste turno. Para o login funcionar na URL
+publicada, ainda é necessário publicar frontend/backend e configurar
+`DJANGO_CSRF_TRUSTED_ORIGINS` com a origem pública da Vercel; depois disso, o
+fluxo deve ser validado remotamente. A senha exibida na captura deve ser
+rotacionada.
+
+**Estado final:** CONCLUÍDO localmente; aguardando deploy/configuração
+operacional. Identidade: **Code Review**.

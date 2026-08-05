@@ -310,10 +310,11 @@ form{display:flex;flex-direction:column;gap:16px}
       // nao para `/app/aluno.html`.
       var destinos = {ALUNO: '/app/aluno.html', PROFESSOR: '/app/professor.html', DIRETOR: '/app/diretor.html'};
       var destino = destinos[usuario.perfil];
-      // Conta sem perfil de aluno/professor/diretor (ex.: superadmin, que usa
-      // o painel Django em `/painel/`) nao tem tela nesta aplicacao. Dizer isso
-      // e melhor que redirecionar para a landing publica, que parecia "o login
-      // nao funcionou".
+      // O login do superadmin tambem cria a sessao Django; o painel passa pela
+      // ponte same-origin da Vercel, entao o cookie chega ao proximo request.
+      if (usuario.is_superuser) { location.href = '/painel/'; return; }
+      // Conta sem perfil de aluno/professor/diretor nao tem tela nesta
+      // aplicacao. O perfil explicito evita enviar contas comuns ao painel.
       if (!destino) { mostrarErro('Esta conta nao tem perfil de acesso a esta aplicacao.'); return; }
       location.href = destino;
     } catch (causa) {
