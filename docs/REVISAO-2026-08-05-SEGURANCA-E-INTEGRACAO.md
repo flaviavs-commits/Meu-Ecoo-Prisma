@@ -875,6 +875,54 @@ Validação pública observada:
 **Estado final:** CONCLUÍDO e publicado; aguardando apenas teste manual
 autenticado sem reutilizar credenciais expostas. Identidade: **Code Review**.
 
+## 22. Limite percentual por instituição e primeira API do aluno
+
+### Decisão consolidada
+
+O produto não usa créditos como unidade comercial. Cada instituição contrata
+um plano; o valor mensal é o preço por conta multiplicado pela quantidade de
+contas acadêmicas ativas (`ALUNO`, `PROFESSOR` e `DIRETOR`). Todas essas contas
+recebem o mesmo limite percentual do plano:
+
+| Plano | Preço por conta/mês | Limite |
+|---|---:|---:|
+| Prisma | R$ 68,97 | 100% |
+| Prisma Pro | R$ 78,97 | 171% |
+| Prisma Ultra | R$ 88,97 | 271% |
+
+Vitis Souls é a mantenedora interna e não recebe assinatura comercial.
+
+### Implementação
+
+- `limites` mantém catálogo, assinatura institucional, cota de trava e
+  consumo append-only por fornecedor/modelo/tarefa;
+- o gateway converte custo técnico em percentual, é idempotente por chamada e
+  bloqueia o débito que ultrapassaria o limite restante;
+- o mantenedor troca o plano com motivo e auditoria, sem alterar a cota
+  individual de cada conta;
+- foram adicionadas APIs do aluno para dashboard, agenda, tutor, materiais e
+  simulados, com isolamento de tenant e proprietário;
+- os contratos estão em `docs/backend/contratos/API-ALUNO-E-LIMITES.md` e a
+  etapa está registrada como E15;
+- o legado `creditos` continua instalado apenas para compatibilidade de dados e
+  testes históricos. Não é usado pelo gateway novo, pelo painel de instituição
+  ou pelas APIs do aluno; sua remoção física fica para uma migração própria.
+
+### Validação observada
+
+- `DATABASE_URL=sqlite:///local-test.sqlite3 .venv/bin/python manage.py check`
+  → nenhum problema;
+- `DATABASE_URL=sqlite:///local-test.sqlite3 .venv/bin/python manage.py
+  makemigrations --check --dry-run --noinput` → nenhuma mudança;
+- `DATABASE_URL=sqlite:///local-test.sqlite3 .venv/bin/pytest -q` → `189
+  passed, 3 skipped`;
+- `git diff --check` → sem saída;
+- o terceiro skip é o teste de concorrência da cota, executável somente em
+  PostgreSQL porque SQLite bloqueia a tabela inteira.
+
+**Estado final:** CONCLUÍDO localmente; aguardando integração do frontend e
+validação remota do deployment. Identidade: **Code Review**.
+
 ## 21. Redeploy final do tier Vitis Souls
 
 O commit documental `0ed484a` também foi publicado pelo deploy automático. O

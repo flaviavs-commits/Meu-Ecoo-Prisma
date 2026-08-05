@@ -203,3 +203,25 @@ Nova checagem pública confirmou API health `200`, painel e subrotas em `302`
 sem sessão, Admin login `200`, Vercel painel `302` e Vercel health `200`.
 Estado final: **CONCLUÍDO e publicado; aguardando apenas teste manual
 autenticado sem reutilizar credenciais expostas**. Identidade: **Code Review**.
+
+## 2026-08-05 · Code Review · Limites por plano e backend do aluno
+
+Implementei a regra institucional de uso: o plano é contratado pela escola,
+calculado por conta acadêmica ativa e compartilhado igualmente por alunos,
+professores e diretores. O catálogo inicial é Prisma `100%`/R$ 68,97, Prisma
+Pro `171%`/R$ 78,97 e Prisma Ultra `271%`/R$ 88,97 por conta/mês. O gateway
+agora registra percentual por chamada, com idempotência, trava transacional e
+recusa de débito que ultrapassa o restante. Vitis Souls permanece como tier
+mantenedor sem plano comercial.
+
+Também foram entregues as APIs locais do aluno: dashboard, agenda, tutor com
+configuração, materiais gerados e simulados com gabarito protegido. Os novos
+contratos estão em `docs/backend/contratos/API-ALUNO-E-LIMITES.md` e a etapa
+E15 em `docs/backend/etapas/E15-limite-percentual-e-api-aluno.md`.
+
+Validação observada: `manage.py check`, migrações sem mudanças, `git diff
+--check` e suíte backend `189 passed, 3 skipped` com SQLite. O skip adicional
+é o teste de corrida do limite, reservado a PostgreSQL. O legado `creditos`
+continua instalado por compatibilidade histórica, sem participação no novo
+fluxo. Estado final: **CONCLUÍDO localmente; aguardando integração do
+frontend e validação remota**. Identidade: **Code Review**.

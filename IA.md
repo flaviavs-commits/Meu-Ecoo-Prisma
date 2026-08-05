@@ -514,7 +514,8 @@ Nao verificado nesta sessao: FPS das animacoes, comportamento em telas pequenas 
 - [x] Fase 0: backend Django + login por e-mail e senha entregue localmente em `/api/v1/auth/`; o frontend usa `/entrar`, recebe a identidade e mantem o access token somente em memoria.
 - [x] Sessao inicial integrada: refresh em cookie HttpOnly, logout com blacklist e CORS com credenciais para Vite local. Falta conectar a identidade as telas estaticas de `/app/`.
 - [ ] Conferir FPS real das animacoes em navegador, sobretudo em maquina modesta.
-- [ ] Fase 1: gateway OpenRouter + modulo de creditos + primeira ferramenta de IA.
+- [x] Fase 1 (backend local): gateway de IA, contabilidade percentual por conta,
+  tutor, materiais e simulados; a chamada real ao OpenRouter continua pendente.
 - [x] Definir estrategia de testes e comando de validacao objetiva: Vitest no cliente API, `pytest` no backend, mais lint/build.
 - [ ] Substituir os depoimentos placeholder por relatos reais coletados na instituicao.
 - [ ] Ligar os CTAs (`#comecar`, `#entrar`) as telas reais quando a autenticacao existir.
@@ -569,3 +570,5 @@ Quando este arquivo crescer demais, mova os registros mais antigos (sem editar) 
 [2026-08-05] **Porta minima do frontend ajustada para 5176**: por solicitacao do usuario, o fallback do HUD passou de 5173 para 5176, e portas salvas ou digitadas abaixo de 5176 sao descartadas/recusadas. O backend continua em 8000.
 
 [2026-08-05] **Vite direto alinhado ao HUD**: `frontend/vite.config.ts` agora inicia o `npm run dev` direto em 5176; como `strictPort` permanece desligado, o Vite sobe para a proxima porta livre se 5176 estiver ocupada. Assim, nenhum dos dois caminhos normais do frontend usa 5173 como ponto de partida.
+
+[2026-08-05] **Limite percentual e backend do aluno por Code Review:** o modelo comercial foi fechado como plano institucional por conta ativa (`ALUNO` + `PROFESSOR` + `DIRETOR`), com preço por conta e o mesmo limite percentual para todas as contas acadêmicas da instituição. O catálogo inicial é Prisma `100%` por R$ 68,97, Prisma Pro `171%` por R$ 78,97 e Prisma Ultra `271%` por R$ 88,97. O gateway deixou de debitar créditos: converte o custo técnico do fornecedor em percentual, registra o consumo em ledger append-only, é idempotente por chamada e impede ultrapassar o limite dentro de trava transacional. A primeira API de aluno foi entregue para dashboard, agenda, tutor/memória, materiais e simulados, com isolamento de tenant e proprietário. A Vitis Souls não recebe plano comercial. O app `creditos` permanece apenas como compatibilidade histórica até uma migração/remoção dedicada; ele não participa do novo gateway, painel de instituição ou APIs do aluno. Validação: `manage.py check`, `makemigrations --check --dry-run --noinput`, `git diff --check` e suíte backend com SQLite `189 passed, 3 skipped`; o terceiro skip é a concorrência do novo limite, que exige PostgreSQL. Estado final: **CONCLUÍDO localmente; aguardando integração do frontend e validação remota do deployment**. Identidade: **Code Review**.
