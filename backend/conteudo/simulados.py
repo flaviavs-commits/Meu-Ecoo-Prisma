@@ -6,6 +6,7 @@ from django.utils import timezone
 from ia.gateway import GatewayIA
 
 from .models import QuestaoSimulado, Simulado, StatusSimulado
+from .questoes_ia import interpretar_questoes, montar_prompt
 
 
 def gerar_simulado(
@@ -19,15 +20,24 @@ def gerar_simulado(
     gateway=None,
 ):
     gateway = gateway or GatewayIA.from_settings()
-    chamada = gateway.chamar(
+    chamada, texto = gateway.chamar(
         instituicao=aluno.instituicao,
         usuario=aluno,
         classe_tarefa="GERACAO",
-        prompt=(
-            f"Gere {quantidade} questoes de {disciplina} no estilo {estilo}. "
-            f"Foco nas dificuldades: {foco_dificuldades}."
+        prompt=montar_prompt(
+            disciplina=disciplina,
+            estilo=estilo,
+            quantidade=quantidade,
+            foco_dificuldades=foco_dificuldades,
+            correcao_comentada=correcao_comentada,
         ),
+        devolver_texto=True,
     )
+    # Fora da transacao de proposito: se o modelo nao honrar o contrato, nada
+    # e criado e o erro sobe. O consumo ja debitado permanece porque a chamada
+    # realmente aconteceu e realmente custou - inventar questao para "aproveitar"
+    # o debito e o que este servico fazia antes.
+    questoes = interpretar_questoes(texto, quantidade=quantidade)
     with transaction.atomic():
         simulado = Simulado.objects.create(
             instituicao=aluno.instituicao,
@@ -39,19 +49,16 @@ def gerar_simulado(
             correcao_comentada=correcao_comentada,
             chamada_ia=chamada,
         )
-        for ordem in range(1, quantidade + 1):
-            QuestaoSimulado.objects.create(
+        QuestaoSimulado.objects.bulk_create(
+            QuestaoSimulado(
                 simulado=simulado,
                 ordem=ordem,
-                enunciado=f"{disciplina}: questão {ordem} gerada para estudo.",
-                alternativas=[
-                    "Alternativa A",
-                    "Alternativa B",
-                    "Alternativa C",
-                    "Alternativa D",
-                ],
-                gabarito="A",
+                enunciado=questao.enunciado,
+                alternativas=questao.alternativas,
+                gabarito=questao.gabarito,
             )
+            for ordem, questao in enumerate(questoes, start=1)
+        )
     return simulado
 
 

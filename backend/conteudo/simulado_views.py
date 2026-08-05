@@ -5,8 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ia.excecoes import ChamadaConcorrenteError, ProvedorIAError
 from limites.excecoes import LimiteDeUsoExcedidoError
 
+from .excecoes import SimuladoIndisponivelError
 from .models import Simulado
 from .serializers import (
     GerarSimuladoSerializer,
@@ -44,6 +46,19 @@ class GerarSimuladoView(APIView):
             simulado = gerar_simulado(aluno=request.user, **serializer.validated_data)
         except LimiteDeUsoExcedidoError as erro:
             return Response({"erro": {"codigo": erro.codigo}}, status=422)
+        except ChamadaConcorrenteError as erro:
+            return Response(
+                {"erro": {"codigo": erro.codigo, "mensagem": str(erro)}},
+                status=status.HTTP_409_CONFLICT,
+            )
+        except (SimuladoIndisponivelError, ProvedorIAError) as erro:
+            # Sem questoes utilizaveis o simulado nao e criado. Antes disso
+            # cair aqui, o servico fabricava questao generica com gabarito
+            # fixo e devolvia 201 como se tivesse dado certo.
+            return Response(
+                {"erro": {"codigo": erro.codigo, "mensagem": str(erro)}},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
         return Response(SimuladoSerializer(simulado).data, status=status.HTTP_201_CREATED)
 
 

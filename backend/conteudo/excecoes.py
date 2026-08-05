@@ -20,3 +20,9 @@ class ConteudoPermissaoError(Exception):
 
 class ConteudoForaDaInstituicaoError(Exception):
     codigo = "fora_da_instituicao"
+
+
+class SimuladoIndisponivelError(Exception):
+    """O provedor nao devolveu questoes utilizaveis; nenhum simulado e criado."""
+
+    codigo = "simulado_indisponivel"

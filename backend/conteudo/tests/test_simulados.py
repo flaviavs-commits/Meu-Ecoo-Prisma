@@ -76,10 +76,11 @@ def test_aluno_responde_e_finaliza_com_percentual(aluno):
     )
     simulado_id = resposta.data["id"]
     questao_id = resposta.data["questoes"][0]["id"]
+    gabarito = Simulado.objects.get(pk=simulado_id).questoes.first().gabarito
 
     marcar = cliente(aluno).post(
         f"/api/v1/conteudo/simulados/{simulado_id}/questoes/{questao_id}/responder/",
-        {"alternativa": "A"},
+        {"alternativa": gabarito},
         format="json",
     )
     finalizar = cliente(aluno).post(
@@ -91,8 +92,31 @@ def test_aluno_responde_e_finaliza_com_percentual(aluno):
     assert marcar.status_code == 200
     assert finalizar.status_code == 200
     assert finalizar.data["resultado_percentual"] == "100.0000"
-    assert finalizar.data["questoes"][0]["gabarito"] == "A"
+    assert finalizar.data["questoes"][0]["gabarito"] == gabarito
     assert Simulado.objects.get(pk=simulado_id).status == StatusSimulado.CONCLUIDO
+
+
+def test_marcar_sempre_a_mesma_alternativa_nao_zera_o_simulado(aluno):
+    """Regressao: com `gabarito="A"` em todas as questoes, responder "A" em tudo
+    dava 100% e esse percentual ia para o progresso por materia do dashboard."""
+    resposta = cliente(aluno).post(
+        "/api/v1/conteudo/simulados/gerar/",
+        {"disciplina": "História", "quantidade": 4},
+        format="json",
+    )
+    simulado_id = resposta.data["id"]
+    for questao in resposta.data["questoes"]:
+        cliente(aluno).post(
+            f"/api/v1/conteudo/simulados/{simulado_id}/questoes/{questao['id']}/responder/",
+            {"alternativa": "A"},
+            format="json",
+        )
+
+    finalizar = cliente(aluno).post(
+        f"/api/v1/conteudo/simulados/{simulado_id}/finalizar/", {}, format="json"
+    )
+
+    assert finalizar.data["resultado_percentual"] == "25.0000"
 
 
 def test_aluno_nao_acessa_simulado_de_outro_tenant(aluno, outro_aluno):
