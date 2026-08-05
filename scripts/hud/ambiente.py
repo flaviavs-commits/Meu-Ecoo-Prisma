@@ -73,7 +73,7 @@ def e_vite_do_prisma(porta: int) -> bool:
 
     `porta_em_uso` so sabe que ha algo escutando - nao quem. Duas
     janelas de projetos diferentes podem disputar a mesma porta padrao
-    (5173), e abrir o navegador nesse caso mostraria a landing page
+    (porta padrão), e abrir o navegador nesse caso mostraria a landing page
     errada sem nenhum aviso. O marcador em `/__prisma_dev_marker`
     (`frontend/vite.config.ts`) e a unica fonte confiavel disso.
 

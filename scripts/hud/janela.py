@@ -13,7 +13,8 @@ import tkinter as tk
 
 from .acoes import AcoesMixin
 from .backend import BackendMixin
-from .caminhos import PORTA_BACKEND_PADRAO, PORTA_PADRAO
+from .caminhos import PORTA_BACKEND_PADRAO
+from .configuracao_porta import carregar_porta_frontend
 from .console import ConsoleMixin
 from .fontes import preparar_fontes
 from .layout import LayoutMixin
@@ -28,7 +29,7 @@ class Hud(LayoutMixin, StatusMixin, ConsoleMixin, BackendMixin, AcoesMixin):
 
     def __init__(self, raiz: tk.Tk) -> None:
         self.raiz = raiz
-        self.porta = PORTA_PADRAO
+        self.porta = carregar_porta_frontend()
         self.porta_backend = PORTA_BACKEND_PADRAO
         self.servidor: subprocess.Popen[str] | None = None
         self.backend: subprocess.Popen[str] | None = None

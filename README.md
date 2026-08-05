@@ -170,8 +170,13 @@ npm install
 npm run dev
 ```
 
-O site fica em `http://localhost:5173` (ou na porta exibida pelo Vite se a
-porta padrao estiver ocupada).
+O HUD reutiliza a ultima porta escolhida no card **Porta frontend**. Na
+primeira execucao, ou se a configuracao local nao existir, a porta inicial e
+`5176`; somente portas a partir de `5176` sao aceitas e a escolha fica salva
+para as proximas aberturas.
+O site fica em `http://localhost:<porta-configurada>`.
+Rodando `npm run dev` diretamente, o Vite tambem começa em `5176` e procura a
+proxima porta livre se necessario.
 
 O login da landing fica em `/entrar` e usa `VITE_API_URL` (padrao:
 `http://127.0.0.1:8000/api/v1`) para conversar com o backend Django. O token de

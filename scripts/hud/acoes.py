@@ -12,7 +12,8 @@ import webbrowser
 from pathlib import Path
 
 from .ambiente import dependencias_instaladas, e_vite_do_prisma, npm, porta_em_uso, portas_em_escuta
-from .caminhos import FRONTEND, RAIZ, SINCRONIZAR_APP
+from .caminhos import FRONTEND, PORTA_FRONTEND_MINIMA, RAIZ, SINCRONIZAR_APP
+from .configuracao_porta import salvar_porta_frontend
 from .processos import SAIDA_SUBPROCESSO, encerrar_arvore, encerrar_pid
 from .tokens import ICONES
 from .widgets import Modal, PainelPortas
@@ -222,14 +223,14 @@ class AcoesMixin:
             "Onde o Vite vai servir a landing.",
             confirmar="Salvar",
             valor_inicial=str(self.porta),
-            dica="Entre 1024 e 65535. Enter confirma, Esc cancela.",
+            dica=f"Entre {PORTA_FRONTEND_MINIMA} e 65535. Enter confirma, Esc cancela.",
         )
         escolha = modal.esperar()
         if escolha is None:
             return
 
         texto = escolha.strip()
-        if not texto.isdigit() or not 1024 <= int(texto) <= 65535:
+        if not texto.isdigit() or not PORTA_FRONTEND_MINIMA <= int(texto) <= 65535:
             self._escrever(f"Porta inválida: {texto or '(vazio)'}", "erro")
             self._toast_mostrar("Porta inválida", False)
             return
@@ -238,8 +239,18 @@ class AcoesMixin:
         self.cards["porta"].definir_conteudo(
             ICONES["porta"], "Porta frontend", f"Atual: {self.porta}"
         )
-        self._escrever(f"Porta definida para {self.porta}.", "ok")
-        self._toast_mostrar(f"Porta {self.porta}")
+        if salvar_porta_frontend(self.porta):
+            self._escrever(
+                f"Porta definida para {self.porta}. Ela sera reutilizada na proxima abertura.",
+                "ok",
+            )
+            self._toast_mostrar(f"Porta {self.porta} salva")
+        else:
+            self._escrever(
+                f"Porta definida para {self.porta}, mas nao foi possivel salva-la.",
+                "erro",
+            )
+            self._toast_mostrar("Porta definida sem persistencia", False)
 
     def acao_fechar_porta(self) -> None:
         """Abre o painel com todas as portas em uso, para encerrar qualquer uma."""

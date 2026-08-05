@@ -8,6 +8,7 @@ responsabilidade:
     desenho.py    primitivas de Canvas (cor, canto redondo, marca)
     processos.py  abrir, ler e encerrar subprocesso
     ambiente.py   npm, dependencias, telas e porta
+    configuracao_porta.py   ultima porta escolhida pelo usuario
     fontes.py     resolve a tipografia disponivel
     widgets/      cada widget desenhado em seu arquivo
     layout.py     monta a janela
