@@ -33,8 +33,8 @@
       "destination": "/api/painel?path=painel/"
     },
     {
-      "source": "/painel/:path*",
-      "destination": "/api/painel?path=painel/:path*"
+      "source": "^/painel/(.*)$",
+      "destination": "/api/painel?path=painel/$1"
     },
     {
       "source": "/backoffice",
@@ -45,12 +45,12 @@
       "destination": "/api/painel?path=backoffice/"
     },
     {
-      "source": "/backoffice/:path*",
-      "destination": "/api/painel?path=backoffice/:path*"
+      "source": "^/backoffice/(.*)$",
+      "destination": "/api/painel?path=backoffice/$1"
     },
     {
-      "source": "/static/:path*",
-      "destination": "/api/painel?path=static/:path*"
+      "source": "^/static/(.*)$",
+      "destination": "/api/painel?path=static/$1"
     },
     {
       "source": "/entrar",
