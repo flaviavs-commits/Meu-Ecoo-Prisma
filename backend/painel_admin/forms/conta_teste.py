@@ -1,7 +1,12 @@
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 
-from contas.models import Instituicao, Perfil, Usuario
+from contas.models import Instituicao, Perfil, TipoInstituicao, Usuario
+
+
+PERFIS_ACADEMICOS = tuple(
+    escolha for escolha in Perfil.choices if escolha[0] != Perfil.MANTENEDOR
+)
 
 
 class ContaTesteForm(forms.Form):
@@ -12,10 +17,13 @@ class ContaTesteForm(forms.Form):
     last_name = forms.CharField(label="Sobrenome", max_length=150, required=False)
     instituicao = forms.ModelChoiceField(
         label="Instituicao",
-        queryset=Instituicao.objects.filter(ativa=True).order_by("nome"),
+        queryset=Instituicao.objects.filter(
+            ativa=True,
+            tipo=TipoInstituicao.ESCOLA,
+        ).order_by("nome"),
         empty_label="Selecione uma instituicao",
     )
-    perfil = forms.ChoiceField(label="Perfil", choices=Perfil.choices)
+    perfil = forms.ChoiceField(label="Perfil", choices=PERFIS_ACADEMICOS)
     password1 = forms.CharField(
         label="Senha",
         min_length=10,
@@ -38,7 +46,7 @@ class ContaTesteForm(forms.Form):
 
     def clean_perfil(self):
         perfil = self.cleaned_data["perfil"]
-        if perfil not in Perfil.values:
+        if perfil not in {Perfil.ALUNO, Perfil.PROFESSOR, Perfil.DIRETOR}:
             raise forms.ValidationError("Selecione um perfil academico valido.")
         return perfil
 

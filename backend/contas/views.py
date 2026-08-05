@@ -16,7 +16,7 @@ class DesativarUsuarioView(APIView):
         # So o superadmin enxerga fora do proprio tenant. Antes esta guarda era
         # `is_staff`, o que deixava qualquer conta com a flag alcancar usuario
         # de outra instituicao (o 404 abaixo e o que protege o tenant).
-        if not request.user.is_superuser:
+        if not request.user.eh_mantenedor:
             queryset = queryset.filter(instituicao_id=request.user.instituicao_id)
         alvo = get_object_or_404(queryset)
         try:

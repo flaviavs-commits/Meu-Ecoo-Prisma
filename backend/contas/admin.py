@@ -4,14 +4,14 @@ from django.db.models import Count
 
 from .auditoria import RegistroDeAuditoria
 from .forms import UsuarioChangeForm, UsuarioCreationForm
-from .models import ConviteProfessor, Instituicao, Usuario
+from .models import ConviteProfessor, Instituicao, TipoInstituicao, Usuario
 
 
 @admin.register(Instituicao)
 class InstituicaoAdmin(admin.ModelAdmin):
-    list_display = ("nome", "documento", "ativa", "saldo", "quantidade_usuarios", "criado_em")
-    search_fields = ("nome", "documento")
-    list_filter = ("ativa",)
+    list_display = ("nome", "codigo", "tipo", "documento", "ativa", "saldo", "quantidade_usuarios", "criado_em")
+    search_fields = ("nome", "codigo", "documento")
+    list_filter = ("tipo", "ativa")
     readonly_fields = ("criado_em", "atualizado_em")
 
     def get_queryset(self, request):
@@ -26,6 +26,14 @@ class InstituicaoAdmin(admin.ModelAdmin):
         from creditos.saldo import saldo_instituicao
 
         return saldo_instituicao(obj.pk)
+
+    def has_change_permission(self, request, obj=None):
+        if obj and obj.tipo == TipoInstituicao.MANTENEDORA:
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Usuario)
@@ -54,6 +62,14 @@ class UsuarioAdmin(UserAdmin):
     @admin.display(boolean=True, description="Consentimento pendente")
     def consentimento_pendente(self, obj):
         return obj.e_menor and obj.consentimento_responsavel_em is None
+
+    def has_change_permission(self, request, obj=None):
+        if obj and request and obj.pk == request.user.pk:
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(ConviteProfessor)

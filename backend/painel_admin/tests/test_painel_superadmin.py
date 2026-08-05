@@ -6,7 +6,7 @@ from django.test import Client
 from django.urls import reverse
 
 from contas.auditoria import RegistroDeAuditoria
-from contas.models import Instituicao, Perfil
+from contas.models import Instituicao, Perfil, TipoInstituicao
 from creditos.models import Lancamento, TipoLancamento
 from creditos.saldo import saldo_usuario
 
@@ -62,6 +62,17 @@ def test_superadmin_cria_instituicao_com_credito_e_auditoria():
         objeto_tipo="Instituicao",
         objeto_id=str(instituicao.pk),
     ).exists()
+
+
+def test_superadmin_e_vinculado_a_vitis_souls_sem_documento():
+    superadmin, _ = criar_contas()
+
+    superadmin.refresh_from_db()
+    assert superadmin.eh_mantenedor is True
+    assert superadmin.perfil == Perfil.MANTENEDOR
+    assert superadmin.instituicao.codigo == "VITIS_SOULS"
+    assert superadmin.instituicao.tipo == TipoInstituicao.MANTENEDORA
+    assert superadmin.instituicao.documento is None
 
 
 def test_criacao_de_instituicao_duplicada_nao_cria_novo_ledger():
@@ -149,6 +160,139 @@ def test_conta_de_teste_com_senha_fraca_faz_rollback():
 
     assert resposta.status_code == 200
     assert get_user_model().objects.filter(email="aluno.teste@escola.test").exists() is False
+
+
+def test_conta_de_teste_nao_pode_usar_tier_mantenedor():
+    superadmin, aluno = criar_contas()
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    resposta = cliente.post(
+        reverse("painel-contas-teste"),
+        {
+            "email": "mantenedor.teste@escola.test",
+            "first_name": "Mantenedor",
+            "last_name": "Invalido",
+            "instituicao": aluno.instituicao.pk,
+            "perfil": Perfil.MANTENEDOR,
+            "password1": "Senha-de-teste-12345",
+            "password2": "Senha-de-teste-12345",
+        },
+    )
+
+    assert resposta.status_code == 200
+    assert get_user_model().objects.filter(email="mantenedor.teste@escola.test").exists() is False
+
+
+def test_conta_de_teste_nao_pode_ser_criada_na_vitis_souls():
+    superadmin, _ = criar_contas()
+    vitis = superadmin.instituicao
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    resposta = cliente.post(
+        reverse("painel-contas-teste"),
+        {
+            "email": "academico@vitis.test",
+            "first_name": "Conta",
+            "last_name": "Inválida",
+            "instituicao": vitis.pk,
+            "perfil": Perfil.ALUNO,
+            "password1": "Senha-de-teste-12345",
+            "password2": "Senha-de-teste-12345",
+        },
+    )
+
+    assert resposta.status_code == 200
+    assert get_user_model().objects.filter(email="academico@vitis.test").exists() is False
+
+
+def test_mantenedor_inativo_nao_acessa_painel():
+    superadmin, _ = criar_contas()
+    superadmin.ativo = False
+    superadmin.save(update_fields=["ativo", "atualizado_em"])
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    assert cliente.get(reverse("painel-dashboard")).status_code == 403
+
+
+def test_superadmin_edita_instituicao_cross_tenant_com_auditoria():
+    superadmin, _ = criar_contas()
+    escola = Instituicao.objects.create(nome="Escola Antiga", documento="00.000.000/0001-83")
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    resposta = cliente.post(
+        reverse("painel-instituicao-editar", kwargs={"pk": escola.pk}),
+        {
+            "nome": "Escola Atualizada",
+            "documento": "00.000.000/0001-84",
+            "motivo": "correcao cadastral",
+        },
+    )
+
+    assert resposta.status_code == 302
+    escola.refresh_from_db()
+    assert escola.nome == "Escola Atualizada"
+    assert escola.documento == "00.000.000/0001-84"
+    assert RegistroDeAuditoria.objects.filter(
+        ator=superadmin, acao="editar_instituicao", objeto_id=str(escola.pk)
+    ).exists()
+
+
+def test_superadmin_arquiva_instituicao_desativa_contas_preserva_dados():
+    superadmin, _ = criar_contas()
+    escola = Instituicao.objects.create(nome="Escola Arquivada", documento="00.000.000/0001-85")
+    aluno = get_user_model().objects.create_user(
+        email="aluno-arquivado@escola.test", password="senha-segura-123",
+        instituicao=escola, perfil=Perfil.ALUNO,
+    )
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    resposta = cliente.post(
+        reverse("painel-instituicao-arquivar", kwargs={"pk": escola.pk}),
+        {"confirmacao": "on", "motivo": "encerramento do contrato"},
+    )
+
+    assert resposta.status_code == 302
+    escola.refresh_from_db()
+    aluno.refresh_from_db()
+    assert escola.ativa is False
+    assert aluno.is_active is False
+    assert get_user_model().objects.filter(pk=aluno.pk).exists()
+    assert RegistroDeAuditoria.objects.filter(
+        ator=superadmin, acao="arquivar_instituicao", objeto_id=str(escola.pk)
+    ).exists()
+
+
+def test_superadmin_edita_usuario_de_outra_instituicao():
+    superadmin, aluno = criar_contas()
+    outra = Instituicao.objects.create(nome="Outra Escola", documento="00.000.000/0001-86")
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    resposta = cliente.post(
+        reverse("painel-usuario-editar", kwargs={"pk": aluno.pk}),
+        {
+            "email": "aluno-atualizado@outra.test",
+            "first_name": "Ana Atualizada",
+            "last_name": "Teste",
+            "instituicao": outra.pk,
+            "perfil": Perfil.ALUNO,
+            "ativo": "on",
+            "motivo": "transferencia de instituicao",
+        },
+    )
+
+    assert resposta.status_code == 302
+    aluno.refresh_from_db()
+    assert aluno.email == "aluno-atualizado@outra.test"
+    assert aluno.instituicao == outra
+    assert RegistroDeAuditoria.objects.filter(
+        ator=superadmin, acao="editar_usuario", objeto_id=str(aluno.pk)
+    ).exists()
 
 
 def test_visitante_sem_login_e_redirecionado_para_login_do_admin_e_nao_404():

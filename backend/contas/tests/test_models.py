@@ -2,9 +2,10 @@ from datetime import date, timedelta
 
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 
-from contas.models import Instituicao, Perfil
+from contas.models import Instituicao, Perfil, TipoInstituicao
 
 
 @pytest.mark.django_db
@@ -33,3 +34,24 @@ def test_e_menor_considera_aniversario():
     assert usuario.e_menor is False
     usuario.data_nascimento = hoje.replace(year=hoje.year - 18) + timedelta(days=1)
     assert usuario.e_menor is True
+
+
+@pytest.mark.django_db
+def test_mantenedora_exige_o_codigo_reservado_da_vitis_souls():
+    mantenedora = Instituicao(
+        nome="Outra Mantenedora",
+        tipo=TipoInstituicao.MANTENEDORA,
+        documento=None,
+        codigo="OUTRA",
+    )
+
+    with pytest.raises(ValidationError):
+        mantenedora.full_clean()
+
+    vitis = Instituicao(
+        nome="Vitis Souls",
+        tipo=TipoInstituicao.MANTENEDORA,
+        documento=None,
+        codigo="VITIS_SOULS",
+    )
+    vitis.full_clean()

@@ -12,7 +12,7 @@ from rest_framework.test import APIClient
 
 from contas.auditoria import RegistroDeAuditoria
 from contas.convites import ConviteProfessor, convite_professor
-from contas.models import Instituicao, Perfil
+from contas.models import Instituicao, Perfil, TipoInstituicao
 from creditos.models import Lancamento, TipoLancamento
 
 
@@ -83,6 +83,29 @@ def test_diretor_nao_tem_senha_utilizavel_nem_acesso_ao_admin():
 
     assert diretor.is_staff is False
     assert admin.site.has_permission(type("Request", (), {"user": diretor})()) is False
+
+
+def test_superuser_manager_vincula_tier_mantenedor_a_vitis_souls():
+    equipe = get_user_model().objects.create_superuser(
+        email="equipe-vitis@interno.test", password="senha-segura-123"
+    )
+
+    assert equipe.perfil == Perfil.MANTENEDOR
+    assert equipe.instituicao.codigo == "VITIS_SOULS"
+    assert equipe.instituicao.tipo == TipoInstituicao.MANTENEDORA
+    assert equipe.instituicao.documento is None
+
+
+def test_admin_preserva_vitis_e_nao_oferece_exclusao_fisica():
+    equipe = get_user_model().objects.create_superuser(
+        email="equipe-admin@interno.test", password="senha-segura-123"
+    )
+    instituicao_admin = admin.site._registry[Instituicao]
+    usuario_admin = admin.site._registry[get_user_model()]
+
+    assert instituicao_admin.has_change_permission(None, equipe.instituicao) is False
+    assert instituicao_admin.has_delete_permission(None, equipe.instituicao) is False
+    assert usuario_admin.has_delete_permission(None, equipe) is False
 
 
 def test_lancamento_e_auditoria_sao_somente_leitura_no_admin():

@@ -18,7 +18,7 @@ def _pode_desativar(ator, alvo) -> bool:
     usuario de QUALQUER instituicao. O superadmin e o unico papel cross-tenant
     do produto; diretor manda so na propria instituicao.
     """
-    if ator.is_superuser:
+    if ator.eh_mantenedor:
         return True
     return (
         ator.perfil == "DIRETOR"

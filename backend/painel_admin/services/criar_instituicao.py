@@ -16,8 +16,8 @@ def criar_instituicao(*, nome: str, documento: str, creditos_iniciais: Decimal, 
     """Cria uma instituicao e, se informado, seu credito inicial de forma atomica."""
     nome_limpo = nome.strip()
     documento_limpo = documento.strip()
-    if not ator.is_active or not ator.is_superuser:
-        raise PermissionError("Somente um superadmin ativo pode criar instituicoes.")
+    if not ator.eh_mantenedor:
+        raise PermissionError("Somente um mantenedor Vitis Souls ativo pode criar instituicoes.")
     if not nome_limpo or not documento_limpo:
         raise ValueError("Nome e documento da instituicao sao obrigatorios.")
     if creditos_iniciais < 0:
