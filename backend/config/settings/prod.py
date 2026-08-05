@@ -7,6 +7,14 @@ from .base import *  # noqa: F401,F403
 DEBUG = False
 CORS_ALLOW_CREDENTIALS = True
 
+# So em prod: serve estatico (admin, DRF, painel_admin) via Whitenoise,
+# logo depois do SecurityMiddleware, como a doc do Whitenoise recomenda.
+MIDDLEWARE = [
+    MIDDLEWARE[0],
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    *MIDDLEWARE[1:],
+]
+
 ALLOWED_HOSTS = [
     host
     for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")

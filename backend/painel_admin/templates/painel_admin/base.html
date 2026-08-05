@@ -1,6 +1,13 @@
 {% load static %}<!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{% block title %}Painel Prisma{% endblock %}</title><link rel="stylesheet" href="{% static 'painel_admin/painel.css' %}"></head>
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Painel Prisma{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="{% static 'painel_admin/painel.css' %}">
+</head>
 <body>
   <header class="topo"><a href="{% url 'painel-dashboard' %}">Prisma Admin</a><span>{{ request.user.email }}</span><a href="{% url 'admin:logout' %}">Sair</a></header>
   <nav class="nav"><a href="{% url 'painel-dashboard' %}">Visão geral</a><a href="{% url 'painel-usuarios' %}">Usuários</a><a href="{% url 'painel-registros' %}">Registros</a><a href="{% url 'admin:index' %}">Admin completo</a></nav>

@@ -37,7 +37,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # "whitenoise.middleware.WhiteNoiseMiddleware" entra so em prod.py:
+    # em dev o runserver ja serve estatico via staticfiles, e o Whitenoise
+    # avisa (warning) quando STATIC_ROOT/collectstatic ainda nao existe.
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "contas.admin_rate_limit.AdminLoginRateLimitMiddleware",

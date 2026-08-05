@@ -1,2 +1,105 @@
-:root{font-family:Inter,system-ui,sans-serif;color:#202020;background:#f7f5ee}*{box-sizing:border-box}body{margin:0}.topo{display:flex;align-items:center;gap:24px;padding:18px 5%;background:#1a1a1a;color:#fff}.topo a:first-child{margin-right:auto;font-weight:700}.topo a{color:inherit;text-decoration:none}.nav{display:flex;gap:20px;padding:14px 5%;border-bottom:1px solid #d5cfc0;background:#fffdf8}.nav a{color:#1a1a1a}.conteudo{max-width:1180px;margin:0 auto;padding:40px 5%}h1{font-size:34px}h2{font-size:20px}.metricas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}.metricas div,.card{background:#fffdf8;border:1px solid #d5cfc0;border-radius:12px;padding:20px}.metricas strong,.metricas span{display:block}.metricas strong{font-size:32px}.metricas span{color:#5c5a55}.card{overflow:auto;margin:20px 0}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;border-bottom:1px solid #e5e0d5;white-space:nowrap}.filtros{display:flex;gap:10px;margin:20px 0}.filtros input,.filtros select,select,textarea{font:inherit;border:1px solid #aaa493;border-radius:6px;padding:10px;background:#fff}.filtros input{flex:1}button{border:0;border-radius:999px;padding:11px 18px;background:#1a1a1a;color:#fff;cursor:pointer}label{display:grid;gap:6px;margin:14px 0;max-width:420px}textarea{min-height:90px;resize:vertical}dt{font-weight:700;margin-top:12px}dd{margin:3px 0;color:#5c5a55}.card-perigo{border-color:#c0392b}.card-perigo h2{color:#c0392b}.botao-perigo{background:#c0392b}
-@media(max-width:640px){.metricas{grid-template-columns:1fr}.filtros{flex-direction:column}.topo{gap:12px;font-size:13px}}
+/*
+  Painel do superadmin - usa os tokens oficiais do design system do Prisma
+  (ver frontend/src/index.css). Cor de acento cheio so identifica perfil de
+  usuario (regra 1); estado (ativo/inativo/perigo) usa tom proprio (regra 3);
+  acao primaria e grafite, nunca terracota (regra 4).
+*/
+:root{
+  --color-cream:#f7f5ee;
+  --color-graphite:#1a1a1a;
+  --color-terracotta:#c85a3c;
+  --color-olive:#6a8550;
+  --color-lavender:#7b78c8;
+  --color-terracotta-tint:#f0ddd4;
+  --color-olive-tint:#e3e8da;
+  --color-lavender-tint:#e5e4f2;
+  --color-fundo:var(--color-cream);
+  --color-superficie:#fffdf8;
+  --color-superficie-alt:#f0ece1;
+  --color-texto:var(--color-graphite);
+  --color-texto-secundario:#5c5a55;
+  --color-borda:#d5cfc0;
+  --color-primaria:var(--color-graphite);
+  --color-primaria-forte:#000000;
+  --color-marca:var(--color-terracotta);
+  --color-sucesso:#3d7d4f;
+  --color-alerta:#c8913c;
+  --color-erro:#b83c2e;
+  --color-aluno:var(--color-lavender);
+  --color-professor:var(--color-terracotta);
+  --color-diretor:var(--color-olive);
+  --font-sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-display:"Josefin Sans","Inter",ui-sans-serif,system-ui,sans-serif;
+  --radius-lg:.375rem;
+  --radius-xl:.5rem;
+  --radius-2xl:.625rem;
+  --ease-suave:cubic-bezier(.4,0,.2,1);
+  font-family:var(--font-sans);
+  color:var(--color-texto);
+  background:var(--color-fundo);
+}
+*{box-sizing:border-box}
+body{margin:0;-webkit-font-smoothing:antialiased}
+
+h1,h2,h3{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.08em;line-height:1.15;margin:0 0 .5em}
+h1{font-size:28px}
+h2{font-size:17px}
+
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:2px solid var(--color-primaria);outline-offset:2px;border-radius:6px}
+
+.topo{display:flex;align-items:center;gap:24px;padding:18px 5%;background:var(--color-graphite);color:#fff}
+.topo a:first-child{margin-right:auto;font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;color:#fff}
+.topo a{color:inherit;text-decoration:none;opacity:.85}
+.topo a:hover{opacity:1}
+.topo span{color:var(--color-terracotta-tint);font-size:14px}
+
+.nav{display:flex;gap:20px;padding:14px 5%;border-bottom:1px solid var(--color-borda);background:var(--color-superficie)}
+.nav a{color:var(--color-texto);text-decoration:none;font-weight:500;font-size:14px}
+.nav a:hover{color:var(--color-marca)}
+
+.conteudo{max-width:1180px;margin:0 auto;padding:40px 5%}
+
+.metricas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}
+.metricas div,.card{background:var(--color-superficie);border:1px solid var(--color-borda);border-radius:var(--radius-xl);padding:20px}
+.metricas strong,.metricas span{display:block}
+.metricas strong{font-family:var(--font-display);font-size:32px}
+.metricas span{color:var(--color-texto-secundario);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+
+.card{overflow:auto;margin:20px 0}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:12px;border-bottom:1px solid var(--color-superficie-alt);white-space:nowrap}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--color-texto-secundario)}
+
+.filtros{display:flex;gap:10px;margin:20px 0}
+.filtros input{flex:1}
+input,select,textarea{font:inherit;border:1px solid #aaa493;border-radius:var(--radius-lg);padding:10px;background:#fff;color:var(--color-texto)}
+label{display:grid;gap:6px;margin:14px 0;max-width:420px}
+textarea{min-height:90px;resize:vertical}
+
+button{border:0;border-radius:var(--radius-lg);padding:11px 20px;background:var(--color-primaria);color:#fff;font-weight:600;cursor:pointer}
+button:hover{background:var(--color-primaria-forte)}
+
+dt{font-weight:700;margin-top:12px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--color-texto-secundario)}
+dd{margin:3px 0 0}
+
+/* Estado (regra 3): tom proprio, fora da paleta de perfil */
+.status{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid transparent}
+.status-ativo{color:var(--color-sucesso);border-color:var(--color-sucesso);background:color-mix(in srgb, var(--color-sucesso) 12%, transparent)}
+.status-inativo{color:var(--color-erro);border-color:var(--color-erro);background:color-mix(in srgb, var(--color-erro) 12%, transparent)}
+
+/* Perfil de usuario (regra 1): acento cheio so aparece aqui */
+.badge-perfil{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid currentColor}
+.badge-aluno{color:var(--color-aluno);background:var(--color-lavender-tint)}
+.badge-professor{color:var(--color-professor);background:var(--color-terracotta-tint)}
+.badge-diretor{color:var(--color-diretor);background:var(--color-olive-tint)}
+
+.card-perigo{border-color:var(--color-erro)}
+.card-perigo h2{color:var(--color-erro)}
+.botao-perigo{background:var(--color-erro)}
+.botao-perigo:hover{background:#8f2d22}
+
+@media(max-width:640px){
+  .metricas{grid-template-columns:1fr}
+  .filtros{flex-direction:column}
+  .topo{gap:12px;font-size:13px}
+}
