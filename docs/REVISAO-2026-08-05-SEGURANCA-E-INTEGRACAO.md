@@ -755,3 +755,24 @@ dependem de `DJANGO_CSRF_TRUSTED_ORIGINS` conter a origem pública da Vercel.
 
 **Estado final:** CONCLUÍDO; rota publicada e aguardando somente teste manual
 autenticado. Identidade: **Code Review**.
+
+## 16. Subrotas do painel com barra final
+
+O 404 restante apareceu em `/painel/usuarios/` e `/painel/registros/`. A
+Vercel encaminhava a variante sem barra, mas o Django redirecionava para a
+variante canônica com barra e o segundo request não tinha rewrite.
+
+O commit `78d260b` adicionou os padrões `/painel/:path*/` e
+`/backoffice/:path*/`, foi publicado em `origin/main` e validado remotamente:
+
+- `/painel/usuarios/` → `302` para o login quando sem sessão;
+- `/painel/registros/` → `302` para o login quando sem sessão;
+- `/backoffice/login/` → `200`;
+- `/static/admin/css/base.css` → `200`.
+
+O `302` é o comportamento esperado para a chamada sem cookie; após autenticar
+no fluxo do superadmin, as mesmas subrotas devem entregar o painel. Não foi
+enviada a senha exibida na captura.
+
+**Estado final:** CONCLUÍDO; subrotas publicadas e aguardando somente teste
+manual autenticado. Identidade: **Code Review**.

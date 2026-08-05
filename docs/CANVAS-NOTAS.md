@@ -131,3 +131,15 @@ explícitas para `/painel/` e `/backoffice/`, publiquei o commit `ce58c92` em
 login Django. Não enviei a senha que apareceu na captura. Estado final:
 **CONCLUÍDO; rota publicada, aguardando somente teste manual autenticado**.
 Identidade: **Code Review**.
+
+## 2026-08-05 · Code Review · Subrotas administrativas
+
+O 404 restante vinha da barra final: `/painel/usuarios` era encaminhado,
+mas o Django redirecionava para `/painel/usuarios/`, cujo wildcard não estava
+declarado. O commit `78d260b` adicionou os padrões `/painel/:path*/` e
+`/backoffice/:path*/` e foi publicado em `origin/main`.
+
+Validação remota: `/painel/usuarios/` e `/painel/registros/` retornam 302 para
+login sem sessão; `/backoffice/login/` retorna 200; estáticos retornam 200.
+Estado final: **CONCLUÍDO; subrotas publicadas, aguardando somente teste
+manual autenticado**. Identidade: **Code Review**.
