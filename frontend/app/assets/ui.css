@@ -125,9 +125,26 @@ kbd{font-family:inherit;font-size:10px;color:var(--ink-3);border:1px solid var(-
   display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;
   padding:calc(10px + env(safe-area-inset-top)) 14px calc(10px + env(safe-area-inset-bottom));position:sticky;top:0;z-index:50;overflow:visible;
 }
-.brand{display:flex;align-items:center;gap:9px;font-weight:680;font-size:13.5px;letter-spacing:-.01em;text-decoration:none;color:var(--side-ink)}
-.brand .mark{width:29px;height:29px;border-radius:9px;background:var(--green);display:grid;place-items:center;color:#fff;flex:none}
-.brand .mark svg{width:14px;height:14px}
+/* Marca igual a da landing (LogoComNome em src/components/ui/Logo.tsx e o
+   cabecalho de index.html/login.html): simbolo em traco solto ao lado do
+   wordmark em caixa alta com tracking largo.
+
+   Antes o simbolo vinha encaixotado num quadrado lavanda com o nome em
+   minusculas - a mesma marca lida de dois jeitos entre landing e app. O
+   lavanda continua sendo o acento do perfil aluno (nav ativo, avatar,
+   foco); o que sai daqui e so o quadrado, nao a cor da identidade. */
+.brand{
+  display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--side-ink);
+  font-family:'Josefin Sans','Inter',sans-serif;font-weight:700;font-size:19px;
+  letter-spacing:.16em;text-transform:uppercase;
+}
+.brand .mark{display:grid;place-items:center;color:var(--side-ink);flex:none}
+/* 30px = mesmo tamanho do LogoComNome da landing. O stroke de 1.6 do
+   simbolo escala junto com o viewBox, entao desenhar menor engrossaria
+   o traco em relacao ao wordmark e fecharia o "V" da base. */
+.brand .mark svg{width:30px;height:30px}
+/* Sufixo de perfil (" · Aluno"): escondido enquanto a barra esta
+   horizontal (mobile), reaparece na barra lateral - ver media query. */
 .brand span{display:none}
 .nlabel{display:none}
 .nav{display:flex;flex-direction:row;gap:2px;overflow-x:auto;width:100%;order:9;padding-top:8px;scrollbar-width:none}
@@ -199,7 +216,14 @@ kbd{font-family:inherit;font-size:10px;color:var(--ink-3);border:1px solid var(-
     overflow:hidden;
   }
   .brand{padding:0 8px 14px}
-  .brand span{display:block;color:var(--side-ink-3);font-weight:500;font-size:11.5px}
+  /* O sufixo de perfil e um rotulo, nao parte do wordmark: desfaz a caixa
+     alta, o tracking largo e a Josefin herdados do .brand para nao ler
+     como continuacao de "PRISMA". */
+  .brand span{
+    display:block;color:var(--side-ink-3);font-weight:500;font-size:11.5px;
+    font-family:'Inter',-apple-system,'Segoe UI',sans-serif;
+    letter-spacing:-.01em;text-transform:none;
+  }
   .nlabel{display:block;font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--side-ink-3);padding:14px 10px 6px;margin:0}
   .nav{flex-direction:column;overflow-x:visible;width:auto;order:0;padding-top:0}
   .nav a{padding:7.5px 10px}
