@@ -28,9 +28,9 @@ const porPerfil = {
 } as const
 
 const perfisDemo = [
-  { id: 'aluno', rotulo: 'Ver como aluno' },
-  { id: 'professor', rotulo: 'Ver como professor' },
-  { id: 'diretor', rotulo: 'Ver como diretor' },
+  { id: 'aluno', rotulo: 'Ver como aluno', cor: 'var(--color-aluno)', tint: 'bg-aluno-tint' },
+  { id: 'professor', rotulo: 'Ver como professor', cor: 'var(--color-professor)', tint: 'bg-professor-tint' },
+  { id: 'diretor', rotulo: 'Ver como diretor', cor: 'var(--color-diretor)', tint: 'bg-diretor-tint' },
 ] as const
 
 /**
@@ -66,7 +66,11 @@ export function MotorRefracao() {
         clima="aluno"
       />
 
-      <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Visualizar materiais por perfil">
+      <div
+        className="mt-8 inline-flex flex-wrap gap-1 rounded-full border border-contorno bg-superficie p-1"
+        role="group"
+        aria-label="Visualizar materiais por perfil"
+      >
         {perfisDemo.map((perfil) => {
           const selecionado = perfil.id === perfilAtivo
           return (
@@ -76,12 +80,17 @@ export function MotorRefracao() {
               aria-pressed={selecionado}
               onClick={() => setPerfilAtivo(perfil.id)}
               className={[
-                'min-h-11 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200',
+                'flex min-h-9 items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-200',
                 selecionado
-                  ? 'border-texto bg-texto text-fundo shadow-[0_6px_18px_-12px_rgb(26_26_26/0.6)]'
-                  : 'border-contorno bg-superficie text-texto-secundario hover:border-texto/50 hover:text-texto',
+                  ? `${perfil.tint} text-texto shadow-[0_2px_10px_-6px_rgb(26_26_26/0.4)]`
+                  : 'text-texto-secundario hover:bg-fundo hover:text-texto',
               ].join(' ')}
             >
+              <span
+                aria-hidden="true"
+                className="h-2 w-2 shrink-0 rounded-full"
+                style={{ backgroundColor: perfil.cor }}
+              />
               {perfil.rotulo}
             </button>
           )

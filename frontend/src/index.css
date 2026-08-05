@@ -103,6 +103,11 @@
   --color-professor: var(--color-terracotta);
   --color-diretor: var(--color-olive);
 
+  /* Tint do perfil: fundo de selecao com contraste seguro para texto grafite */
+  --color-aluno-tint: var(--color-lavender-tint);
+  --color-professor-tint: var(--color-terracotta-tint);
+  --color-diretor-tint: var(--color-olive-tint);
+
   /* Tipografia */
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
