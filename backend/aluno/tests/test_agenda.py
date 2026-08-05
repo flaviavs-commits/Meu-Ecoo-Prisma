@@ -55,3 +55,29 @@ def test_filtro_de_agenda_invalido_retorna_400(aluno):
 
     assert resposta.status_code == 400
     assert "Data de agenda invalida" in resposta.data["erro"]["mensagem"]
+
+
+def test_filtro_de_data_nao_usa_datetime_naive(aluno, recwarn):
+    """Regressao: `datetime.fromisoformat` devolvia naive com `USE_TZ=True`,
+    emitindo `RuntimeWarning` a cada request e deixando o fuso implicito."""
+    import warnings
+
+    warnings.simplefilter("always")
+    resposta = cliente(aluno).get("/api/v1/aluno/agenda/?de=2026-08-01&ate=2026-08-31")
+
+    assert resposta.status_code == 200
+    assert not [aviso for aviso in recwarn if "naive datetime" in str(aviso.message)]
+
+
+def test_filtro_aceita_data_pura_e_data_com_fuso(aluno):
+    apenas_data = cliente(aluno).get("/api/v1/aluno/agenda/?de=2026-08-01")
+    com_fuso = cliente(aluno).get("/api/v1/aluno/agenda/?de=2026-08-01T00:00:00Z")
+
+    assert apenas_data.status_code == 200
+    assert com_fuso.status_code == 200
+
+
+def test_filtro_com_data_invalida_responde_400(aluno):
+    resposta = cliente(aluno).get("/api/v1/aluno/agenda/?de=nao-e-data")
+
+    assert resposta.status_code == 400

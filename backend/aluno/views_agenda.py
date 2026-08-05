@@ -1,5 +1,7 @@
-from datetime import datetime
+from datetime import datetime, time
 
+from django.utils import timezone
+from django.utils.dateparse import parse_date, parse_datetime
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -53,7 +55,23 @@ class AgendaEstudoDetalheView(APIView):
 
 
 def _data(valor):
-    try:
-        return datetime.fromisoformat(valor)
-    except ValueError as erro:
-        raise ValueError("Data de agenda invalida.") from erro
+    """Converte o filtro ISO-8601 num datetime com fuso.
+
+    `datetime.fromisoformat` devolve naive quando a string nao traz offset. Com
+    `USE_TZ=True` isso fazia o Django emitir `RuntimeWarning` a cada request e
+    interpretar a data num fuso implicito - e `API-CONVENCOES.md` exige
+    ISO-8601 em UTC. Data sem fuso passa a ser lida explicitamente no fuso do
+    projeto, em vez de por acidente.
+    """
+    momento = parse_datetime(valor) or _do_dia(valor)
+    if timezone.is_naive(momento):
+        return timezone.make_aware(momento)
+    return momento
+
+
+def _do_dia(valor):
+    """Aceita `YYYY-MM-DD` puro, que `parse_datetime` recusa."""
+    data = parse_date(valor)
+    if data is None:
+        raise ValueError("Data de agenda invalida.")
+    return datetime.combine(data, time.min)
