@@ -158,4 +158,4 @@ Validação observada: `pytest painel_admin/tests/test_painel_superadmin.py -q`
 → `21 passed`; `manage.py check` sem issues; `makemigrations --check
 --dry-run` sem mudanças; `git diff --check` sem saída. Não alterei Railway ou
 Vercel neste turno. Estado final: **CONCLUÍDO localmente; aguardando
-deploy e teste manual autenticado**. Commit: `3bd40f0`. Identidade: **Code Review**.
+deploy e teste manual autenticado**. Commit: `2a45e81`. Identidade: **Code Review**.

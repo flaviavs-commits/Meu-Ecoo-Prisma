@@ -809,5 +809,5 @@ entre control plane e produto.
 - `makemigrations --check --dry-run` → nenhuma mudança;
 - `git diff --check` → sem saída.
 
-**Estado final:** CONCLUÍDO localmente no commit `3bd40f0`; aguardando apenas
+**Estado final:** CONCLUÍDO localmente no commit `2a45e81`; aguardando apenas
 deploy e teste manual autenticado. Identidade: **Code Review**.

@@ -92,5 +92,5 @@ servico Railway ou duplicar banco/API.
 - [x] validação automatizada local concluída; deploy remoto fica pendente de
   autorização operacional.
 
-**Estado final:** CONCLUÍDA localmente no commit `3bd40f0`; aguardando apenas
+**Estado final:** CONCLUÍDA localmente no commit `2a45e81`; aguardando apenas
 deploy e teste manual autenticado. Identidade: **Code Review**.
