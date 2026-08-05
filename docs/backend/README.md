@@ -53,6 +53,7 @@ quando houver escopo definido no painel.
 | E12 | [Infra Railway e deploy](etapas/E12-infra-railway-e-deploy.md) | AGUARDANDO DECISAO | Claude (agente de infra) | E01 | - |
 | E13 | [API nos repos satelites](etapas/E13-api-nos-repos-satelites.md) | AGUARDANDO DECISAO | Claude (sessao 2026-08-03) | - | integracao real de E06 |
 | E14 | [Painel operacional do superadmin](etapas/E14-painel-superadmin.md) | AGUARDANDO DECISÃO | Analizar o front do Prisma | E04, E11 | operacao interna do backend |
+| E15 | [Limite percentual e API do aluno](etapas/E15-limite-percentual-e-api-aluno.md) | CONCLUIDA | Code Review | E04, E06, E07, E10 | integração do frontend do aluno |
 
 ## Ordem e paralelismo
 
@@ -92,6 +93,7 @@ E13  (independente - acontece em OUTROS repositorios)
 | E12 | Deploy no Railway, variaveis, volume, health check em producao |
 | E13 | `Estudo-IA-Resumo` e `Audiofy-Content-AI` expostos como API HTTP |
 | E14 | Painel interno do superadmin, com usuarios, auditoria e troca de perfil |
+| E15 | Limite percentual por conta e APIs de tutor, materiais, simulados, agenda e dashboard |
 
 ## Documentos de apoio
 
