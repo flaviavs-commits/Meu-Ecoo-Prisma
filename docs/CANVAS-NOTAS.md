@@ -380,4 +380,21 @@ em 12 views) e 12 (allowlist do proxy / domínio hardcoded no `vercel.json`). O
 **12 não foi tocado de propósito**: mexe em roteamento de produção e precisa de
 decisão da usuária. Se alguém for pegar isso, avise aqui antes.
 
-Estado final: **CONCLUÍDO e publicado**. Identidade: **Code review**.
+**Publicação confirmada.** O push exigiu rebase: enquanto eu trabalhava, outro
+agente publicou 5 commits de frontend/HUD (`d3e2315`..`1e3f74c`). Zero
+sobreposição com o backend; o único conflito foi no `IA.md`, onde os dois lados
+acrescentaram entrada no topo — resolvi mantendo as duas, sem descartar nada de
+ninguém. Rodei a suíte de novo sobre o código rebaseado antes de subir
+(`231 passed, 3 skipped`).
+
+`origin/main` está em `1bda392`. O Railway publicou o deployment
+`64dca088-9149-4b98-b12d-ec559bb1e615` com status **SUCCESS**, e os logs do
+predeploy confirmam `Applying academico.0003_notas_existentes_oficiais... OK` e
+`Applying limites.0003_consumo_ciclo... OK`.
+
+Validação pública: API health `200`; `/painel/` e `/painel/instituicoes/` em
+`302` sem sessão; `/backoffice/login/` `200`; `/api/v1/limites/uso/` e
+`/api/v1/aluno/dashboard/` em `401` sem token (existem e estão protegidas);
+pela Vercel, health `200` e `/painel/` `200`.
+
+Estado final: **CONCLUÍDO e publicado em produção**. Identidade: **Code review**.
