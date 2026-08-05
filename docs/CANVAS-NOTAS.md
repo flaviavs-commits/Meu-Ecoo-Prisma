@@ -180,6 +180,6 @@ motivo e auditoria. O Admin completo não oferece exclusão física de usuários
 ou instituições, e contas acadêmicas não podem ser criadas na Vitis Souls.
 
 Validação observada: `manage.py check`, `makemigrations --check --dry-run`,
-testes focados `45 passed` e suíte completa `156 passed, 2 skipped`. O código e
+testes focados `45 passed` e suíte completa `157 passed, 2 skipped`. O código e
 a documentação estão prontos localmente; falta publicar e confirmar o
 deployment automático. Identidade: **Code Review**.

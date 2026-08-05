@@ -851,7 +851,7 @@ preservação de dados; a exclusão física foi bloqueada no Admin completo.
 - `DATABASE_URL=sqlite:///local-test.sqlite3 .venv/bin/python manage.py
   makemigrations --check --dry-run` → nenhuma mudança;
 - testes focados de onboarding e painel → `45 passed`;
-- suíte completa do backend → `156 passed, 2 skipped`;
+- suíte completa do backend → `157 passed, 2 skipped`;
 - `git diff --check` → sem saída.
 
 **Estado final:** CONCLUÍDO localmente; publicação e validação remota serão
