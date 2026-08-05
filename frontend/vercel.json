@@ -29,11 +29,19 @@
       "destination": "/api/painel?path=painel/"
     },
     {
+      "source": "/painel/",
+      "destination": "/api/painel?path=painel/"
+    },
+    {
       "source": "/painel/:path*",
       "destination": "/api/painel?path=painel/:path*"
     },
     {
       "source": "/backoffice",
+      "destination": "/api/painel?path=backoffice/"
+    },
+    {
+      "source": "/backoffice/",
       "destination": "/api/painel?path=backoffice/"
     },
     {
