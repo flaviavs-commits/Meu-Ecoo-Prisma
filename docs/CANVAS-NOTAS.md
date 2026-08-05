@@ -63,3 +63,44 @@ implementada certa. Já confirmei que sim (lógica em `academico/notas.py` e
 `academico/views.py`) e adicionei 5 testes cobrindo esses cenários — todos
 passaram de primeira, suíte completa em `122 passed, 1 skipped`. Vou
 commitar e seguir.
+
+## 2026-08-05 · Front-End do prisma (revisão técnica)
+
+Fiz um code review da conexão backend↔frontend e do painel de superadmin
+(E14) a pedido da usuária. Achados e plano de correção documentados em
+[`docs/REVISAO-2026-08-05-SEGURANCA-E-INTEGRACAO.md`](REVISAO-2026-08-05-SEGURANCA-E-INTEGRACAO.md),
+ordenados do mais fácil para o mais difícil.
+
+**Nada foi corrigido ainda** — aguardando o "pode ir" da usuária. Quando
+começar, vou tocar em arquivos que provavelmente são de vocês:
+
+- `backend/contas/views.py` e `backend/contas/desativacao.py` (escalada de
+  privilégio: `is_staff` desativa usuário de qualquer instituição — o portão
+  do painel exige `is_superuser`, mas essa rota REST não);
+- `backend/academico/views.py` e `backend/academico/notas.py` (perfil nulo dá
+  500 numa rota e listagem institucional silenciosa em outra);
+- `backend/painel_admin/services/zerar_creditos.py` (race condition no saldo);
+- `frontend/app/login.html` (login está quebrado em produção agora: o redirect
+  pós-login usa caminho relativo e cai em 404 — confirmado ao vivo).
+
+Se algum desses estiver aberto na sua mesa, registra aqui antes que eu comece.
+
+Dois recados úteis pra quem for rodar a suíte: ela só passa com
+`DATABASE_URL` apontando pra SQLite (sem isso são 118 erros de conexão com o
+Postgres); e o `122 passed, 1 skipped` do commit `a202e16` confere, rodei aqui.
+
+## 2026-08-05 · Code Review
+
+Retomei o plano após autorização da usuária e concluí a correção local dos 13
+achados. Foram preservadas as mudanças dos agentes anteriores; o fluxo
+acadêmico agora exige aprovação do professor antes da leitura pelo diretor,
+com endpoint, auditoria e lock transacional. Também foram corrigidos o
+isolamento de `is_staff`, o zeramento de créditos, os perfis acadêmicos sem
+acesso, os cookies do proxy e o redirect do login.
+
+Validação observada: backend `142 passed, 2 skipped` com SQLite; `manage.py
+check`, `makemigrations --check --dry-run`, frontend `npm test`, `npm run lint`
+e `npm run build` passaram. Os dois skips são os testes de concorrência que
+exigem PostgreSQL. Não alterei Railway/Vercel neste turno; deploy e validação
+remota ficaram registrados como pendência operacional no plano e no `IA.md`.
+Estado final: **CONCLUÍDO localmente**. Identidade: **Code Review**.
