@@ -32,9 +32,17 @@ function origemDaApi(): string {
 
 function copiarCabecalhos(resposta: Response): Headers {
   const cabecalhos = new Headers()
-  for (const nome of ['cache-control', 'content-type', 'location', 'vary', 'set-cookie']) {
+  for (const nome of ['cache-control', 'content-type', 'location', 'vary']) {
     const valor = resposta.headers.get(nome)
     if (valor) cabecalhos.set(nome, valor)
+  }
+  // `set-cookie` precisa de tratamento proprio: `headers.get('set-cookie')`
+  // junta TODOS os cookies numa string so, separada por virgula, e reenviar
+  // isso como um header unico corrompe todos eles. Hoje o backend manda so um
+  // cookie (`refresh_token`), entao o bug e latente - mas no dia em que entrar
+  // um `csrftoken` a autenticacao quebraria sem apontar para este arquivo.
+  for (const cookie of resposta.headers.getSetCookie()) {
+    cabecalhos.append('set-cookie', cookie)
   }
   return cabecalhos
 }

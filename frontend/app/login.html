@@ -304,8 +304,18 @@ form{display:flex;flex-direction:column;gap:16px}
       var identidade = await fetch(apiBase + '/auth/eu/', {headers: {Authorization: 'Bearer ' + corpo.access}, credentials: 'include'});
       if (!identidade.ok) throw new Error('Falha ao carregar a identidade.');
       var usuario = await identidade.json();
-      var destinos = {ALUNO: 'aluno.html', PROFESSOR: 'professor.html', DIRETOR: 'diretor.html'};
-      location.href = destinos[usuario.perfil] || 'index.html';
+      // Caminhos absolutos, nao relativos: `vercel.json` faz um rewrite de
+      // `/entrar` para `/app/login.html`, entao a URL na barra continua sendo
+      // `/entrar` e um caminho relativo resolveria para `/aluno.html` (404),
+      // nao para `/app/aluno.html`.
+      var destinos = {ALUNO: '/app/aluno.html', PROFESSOR: '/app/professor.html', DIRETOR: '/app/diretor.html'};
+      var destino = destinos[usuario.perfil];
+      // Conta sem perfil de aluno/professor/diretor (ex.: superadmin, que usa
+      // o painel Django em `/painel/`) nao tem tela nesta aplicacao. Dizer isso
+      // e melhor que redirecionar para a landing publica, que parecia "o login
+      // nao funcionou".
+      if (!destino) { mostrarErro('Esta conta nao tem perfil de acesso a esta aplicacao.'); return; }
+      location.href = destino;
     } catch (causa) {
       mostrarErro(causa.message === 'Failed to fetch' ? 'Nao foi possivel conectar ao servidor. Tente novamente.' : 'Nao foi possivel concluir o login. Tente novamente.');
     } finally { botaoEntrar.disabled = false; }
