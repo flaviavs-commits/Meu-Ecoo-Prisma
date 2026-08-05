@@ -36,6 +36,18 @@ def test_painel_exige_superadmin():
     assert resposta.status_code == 403
 
 
+def test_visitante_sem_login_e_redirecionado_para_login_do_admin_e_nao_404():
+    cliente = Client()
+
+    resposta = cliente.get(reverse("painel-dashboard"))
+
+    assert resposta.status_code == 302
+    assert resposta.url.startswith(reverse("admin:login"))
+
+    resposta_login = cliente.get(resposta.url)
+    assert resposta_login.status_code == 200
+
+
 def test_staff_nao_superadmin_nao_acessa_painel():
     escola = Instituicao.objects.create(nome="Escola staff", documento="00.000.000/0001-71")
     staff = get_user_model().objects.create_user(
