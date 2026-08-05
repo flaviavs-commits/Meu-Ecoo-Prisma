@@ -1,6 +1,13 @@
 @import "tailwindcss";
 
 /*
+  Fontes servidas do proprio dominio (ver scripts/baixar-fontes.mjs).
+  Antes vinham por <link> para fonts.googleapis.com, que bloqueava a
+  primeira pintura e exigia DNS/TLS para dois dominios externos.
+*/
+@import "./fontes/fontes.css";
+
+/*
   Tokens de design do Prisma.
   Exigidos por doktor SystemDesign/core/DESIGN_SYSTEM_FRONTEND.md, secao 4.
   Altere cor aqui, nunca hardcoded no componente.
