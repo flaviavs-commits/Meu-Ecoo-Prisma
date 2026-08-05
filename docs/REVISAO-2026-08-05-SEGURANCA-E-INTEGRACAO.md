@@ -776,3 +776,38 @@ enviada a senha exibida na captura.
 
 **Estado final:** CONCLUÍDO; subrotas publicadas e aguardando somente teste
 manual autenticado. Identidade: **Code Review**.
+
+## 17. Instituições e contas de teste no painel do superadmin
+
+### Decisão de fluxo de login
+
+O superusuário não deve ser tratado como aluno, professor ou diretor: ele é a
+conta de controle cross-tenant da plataforma. Por isso, o login o encaminha ao
+`/painel/`. As telas acadêmicas desenvolvidas pelo André são acessadas com uma
+conta de teste criada para o perfil correspondente. Isso evita que uma conta
+sem instituição seja mascarada como usuário acadêmico e mantém a separação
+entre control plane e produto.
+
+### Entrega
+
+- `/painel/instituicoes/` cria instituição com documento único e crédito
+  inicial opcional;
+- `/painel/contas-teste/` cria conta ativa vinculada a instituição ativa, com
+  perfil `ALUNO`, `PROFESSOR` ou `DIRETOR`;
+- ambas as operações são exclusivas do superadmin, usam serviço transacional e
+  registram `RegistroDeAuditoria`;
+- contas de teste têm senha armazenada somente como hash e recebem
+  `is_staff=False` e `is_superuser=False` explicitamente;
+- duplicidade, senha fraca, perfil inválido e instituição inativa são
+  rejeitados sem criação parcial.
+
+### Validação observada
+
+- `DATABASE_URL=sqlite:///local-test.sqlite3 .venv/bin/pytest -q
+  painel_admin/tests/test_painel_superadmin.py` → `21 passed`;
+- `manage.py check` → nenhum problema;
+- `makemigrations --check --dry-run` → nenhuma mudança;
+- `git diff --check` → sem saída.
+
+**Estado final:** CONCLUÍDO localmente no commit `3bd40f0`; aguardando apenas
+deploy e teste manual autenticado. Identidade: **Code Review**.

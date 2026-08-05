@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -13,7 +14,11 @@ from creditos.excecoes import AlocacaoSemConfirmacaoError
 from creditos.saldo import saldo_usuario
 
 from .permissoes import exige_superadmin
+from .forms.conta_teste import ContaTesteForm
+from .forms.instituicao import InstituicaoForm
 from .services.alterar_perfil import MotivoObrigatorio, PerfilInvalido, alterar_perfil
+from .services.criar_conta_teste import ContaTesteJaExisteError, criar_conta_teste
+from .services.criar_instituicao import InstituicaoJaExisteError, criar_instituicao
 from .services.zerar_creditos import SaldoJaZeradoError, zerar_creditos_usuario
 
 
@@ -33,6 +38,49 @@ def dashboard(request):
         "recentes": RegistroDeAuditoria.objects.select_related("ator").order_by("-criado_em")[:12],
     }
     return render(request, "painel_admin/dashboard.html", contexto)
+
+
+@superadmin_required
+def instituicoes(request):
+    formulario = InstituicaoForm(request.POST or None)
+    if request.method == "POST" and formulario.is_valid():
+        try:
+            instituicao = criar_instituicao(ator=request.user, **formulario.cleaned_data)
+        except (InstituicaoJaExisteError, ValueError) as erro:
+            formulario.add_error("documento", str(erro))
+        else:
+            messages.success(request, f"Instituicao {instituicao.nome} criada com sucesso.")
+            return redirect("painel-instituicoes")
+
+    contexto = {
+        "formulario": formulario,
+        "instituicoes": Instituicao.objects.order_by("nome")[:100],
+    }
+    return render(request, "painel_admin/instituicoes.html", contexto)
+
+
+@superadmin_required
+def contas_teste(request):
+    formulario = ContaTesteForm(request.POST or None)
+    if request.method == "POST" and formulario.is_valid():
+        dados = formulario.cleaned_data.copy()
+        senha = dados.pop("password1")
+        dados.pop("password2")
+        dados["nome"] = dados.pop("first_name")
+        dados["sobrenome"] = dados.pop("last_name")
+        try:
+            conta = criar_conta_teste(ator=request.user, senha=senha, **dados)
+        except (ContaTesteJaExisteError, ValueError) as erro:
+            formulario.add_error("email", str(erro))
+        else:
+            messages.success(
+                request,
+                f"Conta de teste criada: {conta.email}. A senha nao sera exibida novamente.",
+            )
+            return redirect("painel-contas-teste")
+
+    contexto = {"formulario": formulario}
+    return render(request, "painel_admin/contas_teste.html", contexto)
 
 
 @superadmin_required

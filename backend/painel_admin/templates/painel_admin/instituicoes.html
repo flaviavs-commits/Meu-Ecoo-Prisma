@@ -1,0 +1,22 @@
+{% extends "painel_admin/base.html" %}
+{% block title %}Instituições · Prisma Admin{% endblock %}
+{% block content %}
+<h1>Instituições</h1>
+<p class="intro">Abra uma instituição no ambiente do Prisma. A operação e o crédito inicial ficam registrados na auditoria.</p>
+<section class="card">
+  <h2>Criar instituição</h2>
+  <form method="post" class="formulario-painel">
+    {% csrf_token %}
+    {{ formulario.non_field_errors }}
+    {% for campo in formulario %}<label>{{ campo.label }}{{ campo }}{% if campo.help_text %}<small>{{ campo.help_text }}</small>{% endif %}{% for erro in campo.errors %}<span class="erro-campo">{{ erro }}</span>{% endfor %}</label>{% endfor %}
+    <button type="submit">Criar instituição</button>
+  </form>
+</section>
+<section class="card">
+  <h2>Instituições cadastradas</h2>
+  <table><thead><tr><th>Nome</th><th>Documento</th><th>Status</th><th>Criada em</th></tr></thead><tbody>
+    {% for instituicao in instituicoes %}<tr><td>{{ instituicao.nome }}</td><td>{{ instituicao.documento }}</td><td>{% if instituicao.ativa %}<span class="status status-ativo">Ativa</span>{% else %}<span class="status status-inativo">Inativa</span>{% endif %}</td><td>{{ instituicao.criado_em|date:"d/m/Y H:i" }}</td></tr>
+    {% empty %}<tr><td colspan="4">Nenhuma instituição encontrada.</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "painel_admin/base.html" %}
+{% block title %}Contas de teste · Prisma Admin{% endblock %}
+{% block content %}
+<h1>Contas de teste</h1>
+<p class="intro">Crie uma conta acadêmica ativa para validar as telas de aluno, professor ou diretor. Contas de teste nunca recebem acesso administrativo.</p>
+<section class="card">
+  <h2>Criar conta</h2>
+  <form method="post" class="formulario-painel">
+    {% csrf_token %}
+    {{ formulario.non_field_errors }}
+    {% for campo in formulario %}<label>{{ campo.label }}{{ campo }}{% if campo.help_text %}<small>{{ campo.help_text }}</small>{% endif %}{% for erro in campo.errors %}<span class="erro-campo">{{ erro }}</span>{% endfor %}</label>{% endfor %}
+    <button type="submit">Criar conta de teste</button>
+  </form>
+</section>
+{% endblock %}

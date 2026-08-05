@@ -57,6 +57,10 @@ h2{font-size:17px}
 .nav a{color:var(--color-texto);text-decoration:none;font-weight:500;font-size:14px}
 .nav a:hover{color:var(--color-marca)}
 
+.mensagens{max-width:1180px;margin:18px auto 0;padding:0 5%}
+.mensagem{margin:0;padding:12px 16px;border:1px solid var(--color-sucesso);border-radius:var(--radius-lg);color:var(--color-sucesso);background:color-mix(in srgb,var(--color-sucesso) 10%,white)}
+.intro{max-width:70ch;color:var(--color-texto-secundario)}
+
 .conteudo{max-width:1180px;margin:0 auto;padding:40px 5%}
 
 .metricas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}
@@ -75,6 +79,10 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--colo
 input,select,textarea{font:inherit;border:1px solid #aaa493;border-radius:var(--radius-lg);padding:10px;background:#fff;color:var(--color-texto)}
 label{display:grid;gap:6px;margin:14px 0;max-width:420px}
 textarea{min-height:90px;resize:vertical}
+label small{color:var(--color-texto-secundario);font-size:12px}
+.erro-campo{color:var(--color-erro);font-size:13px}
+.formulario-painel{max-width:460px}
+.formulario-painel ul.errorlist{margin:0;color:var(--color-erro);padding-left:18px;font-size:13px}
 
 button{border:0;border-radius:var(--radius-lg);padding:11px 20px;background:var(--color-primaria);color:#fff;font-weight:600;cursor:pointer}
 button:hover{background:var(--color-primaria-forte)}

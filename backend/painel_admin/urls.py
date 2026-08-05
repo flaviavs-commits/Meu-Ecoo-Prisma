@@ -1,7 +1,9 @@
 from django.urls import path
 
 from .views import (
+    contas_teste,
     dashboard,
+    instituicoes,
     registros,
     usuario,
     usuario_desativar,
@@ -13,6 +15,8 @@ from .views import (
 
 urlpatterns = [
     path("", dashboard, name="painel-dashboard"),
+    path("instituicoes/", instituicoes, name="painel-instituicoes"),
+    path("contas-teste/", contas_teste, name="painel-contas-teste"),
     path("usuarios/", usuarios, name="painel-usuarios"),
     path("usuarios/<int:pk>/", usuario, name="painel-usuario"),
     path("usuarios/<int:pk>/perfil/", usuario_perfil, name="painel-usuario-perfil"),

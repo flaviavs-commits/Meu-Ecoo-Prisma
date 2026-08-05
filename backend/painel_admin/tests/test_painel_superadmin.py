@@ -36,6 +36,121 @@ def test_painel_exige_superadmin():
     assert resposta.status_code == 403
 
 
+def test_superadmin_cria_instituicao_com_credito_e_auditoria():
+    superadmin, _ = criar_contas()
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    resposta = cliente.post(
+        reverse("painel-instituicoes"),
+        {
+            "nome": "Instituto Prisma",
+            "documento": "00.000.000/0001-81",
+            "creditos_iniciais": "250.5000",
+        },
+    )
+
+    assert resposta.status_code == 302
+    instituicao = Instituicao.objects.get(documento="00.000.000/0001-81")
+    lancamento = Lancamento.objects.get(instituicao=instituicao)
+    assert lancamento.tipo == TipoLancamento.CREDITO
+    assert lancamento.quantidade == Decimal("250.5000")
+    assert lancamento.criado_por == superadmin
+    assert RegistroDeAuditoria.objects.filter(
+        ator=superadmin,
+        acao="criar_instituicao",
+        objeto_tipo="Instituicao",
+        objeto_id=str(instituicao.pk),
+    ).exists()
+
+
+def test_criacao_de_instituicao_duplicada_nao_cria_novo_ledger():
+    superadmin, _ = criar_contas()
+    Instituicao.objects.create(nome="Existente", documento="00.000.000/0001-82")
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    resposta = cliente.post(
+        reverse("painel-instituicoes"),
+        {
+            "nome": "Duplicada",
+            "documento": "00.000.000/0001-82",
+            "creditos_iniciais": "50",
+        },
+    )
+
+    assert resposta.status_code == 200
+    assert Instituicao.objects.filter(documento="00.000.000/0001-82").count() == 1
+    assert Lancamento.objects.filter(quantidade=Decimal("50")).exists() is False
+
+
+def test_diretor_nao_cria_instituicao_nem_conta_de_teste():
+    _, aluno = criar_contas()
+    cliente = Client()
+    cliente.force_login(aluno)
+
+    assert cliente.post(reverse("painel-instituicoes"), {}).status_code == 403
+    assert cliente.post(reverse("painel-contas-teste"), {}).status_code == 403
+
+
+def test_superadmin_cria_conta_de_teste_academica_sem_privilegios():
+    superadmin, aluno = criar_contas()
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    resposta = cliente.post(
+        reverse("painel-contas-teste"),
+        {
+            "email": "professor.teste@escola.test",
+            "first_name": "Professor",
+            "last_name": "Teste",
+            "instituicao": aluno.instituicao.pk,
+            "perfil": Perfil.PROFESSOR,
+            "password1": "Senha-de-teste-12345",
+            "password2": "Senha-de-teste-12345",
+        },
+    )
+
+    assert resposta.status_code == 302
+    conta = get_user_model().objects.get(email="professor.teste@escola.test")
+    assert conta.check_password("Senha-de-teste-12345") is True
+    assert conta.first_name == "Professor"
+    assert conta.instituicao == aluno.instituicao
+    assert conta.perfil == Perfil.PROFESSOR
+    assert conta.ativo is True
+    assert conta.is_active is True
+    assert conta.is_staff is False
+    assert conta.is_superuser is False
+    assert RegistroDeAuditoria.objects.filter(
+        ator=superadmin,
+        acao="criar_conta_teste",
+        objeto_tipo="Usuario",
+        objeto_id=str(conta.pk),
+    ).exists()
+
+
+def test_conta_de_teste_com_senha_fraca_faz_rollback():
+    superadmin, aluno = criar_contas()
+    cliente = Client()
+    cliente.force_login(superadmin)
+
+    resposta = cliente.post(
+        reverse("painel-contas-teste"),
+        {
+            "email": "aluno.teste@escola.test",
+            "first_name": "Aluno",
+            "last_name": "Teste",
+            "instituicao": aluno.instituicao.pk,
+            "perfil": Perfil.ALUNO,
+            "password1": "123",
+            "password2": "123",
+        },
+    )
+
+    assert resposta.status_code == 200
+    assert get_user_model().objects.filter(email="aluno.teste@escola.test").exists() is False
+
+
 def test_visitante_sem_login_e_redirecionado_para_login_do_admin_e_nao_404():
     cliente = Client()
 

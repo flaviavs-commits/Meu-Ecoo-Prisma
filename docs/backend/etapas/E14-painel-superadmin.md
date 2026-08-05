@@ -43,6 +43,18 @@ servico Railway ou duplicar banco/API.
   destrutivos, cada um com confirmação client-side (`confirm()`) além da
   confirmação server-side obrigatória.
 
+## 3.2 Terceira fatia (concluída em 2026-08-05)
+
+- `/painel/instituicoes/`: criação de instituição com documento único e
+  crédito inicial opcional no ledger append-only;
+- `/painel/contas-teste/`: criação de contas acadêmicas ativas para os perfis
+  `ALUNO`, `PROFESSOR` e `DIRETOR`, sempre vinculadas a uma instituição ativa;
+- criação de instituições e contas de teste protegida por superadmin, com
+  transação, validação de senha e registro em `RegistroDeAuditoria`;
+- contas de teste recebem explicitamente `is_staff=False` e
+  `is_superuser=False`, para que o fluxo de controle não seja confundido com
+  as telas acadêmicas do produto.
+
 ## 4. Diario de execucao
 
 - [2026-08-03] Etapa aberta por Analizar o front do Prisma - o usuario escolheu tratar tier como perfil ALUNO/PROFESSOR/DIRETOR e autorizou troca irrestrita pelo superadmin; validacao: E11 e o codigo existente foram lidos antes da implementacao.
@@ -68,3 +80,17 @@ servico Railway ou duplicar banco/API.
 - [x] ações destrutivas (zerar créditos, remover da instituição) com confirmação + motivo + auditoria;
 - [x] suíte completa do backend passando (`116 passed, 1 skipped`);
 - [x] publicado e validado em produção no Railway.
+
+## 7. Critério de pronto da terceira fatia
+
+- [x] superadmin consegue abrir o formulário de instituições;
+- [x] superadmin consegue abrir o formulário de contas de teste;
+- [x] documento e e-mail duplicados são rejeitados sem duplicação;
+- [x] senha e perfis acadêmicos são validados;
+- [x] ledger inicial e auditoria são gravados na mesma transação;
+- [x] contas de teste não recebem flags de staff ou superuser;
+- [x] validação automatizada local concluída; deploy remoto fica pendente de
+  autorização operacional.
+
+**Estado final:** CONCLUÍDA localmente no commit `3bd40f0`; aguardando apenas
+deploy e teste manual autenticado. Identidade: **Code Review**.

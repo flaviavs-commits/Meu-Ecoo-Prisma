@@ -123,6 +123,14 @@ O Admin interno fica em `DJANGO_ADMIN_URL` (padrao local: `/backoffice/`),
 fora de `/admin/`, e exige `is_staff`. Diretores de escola nao recebem acesso
 ao Admin.
 
+O superusuario entra pelo login em `/painel/`, que e a area de controle da
+plataforma. Nessa area, os atalhos **Instituicoes** e **Contas teste** permitem
+criar uma instituicao com credito inicial e contas academicas ativas para
+validar as telas de aluno, professor e diretor. Cada operacao e transacional,
+auditada e nao concede privilegios administrativos a conta de teste. Depois de
+criar uma conta, use o e-mail e a senha definidos em `/entrar`; o perfil da
+conta determina a tela academica aberta.
+
 ## Como rodar
 
 Requisitos: Node.js 20+ e Python 3.10+.

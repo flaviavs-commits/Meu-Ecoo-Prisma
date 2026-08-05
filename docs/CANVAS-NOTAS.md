@@ -7,7 +7,7 @@ aqui e deixe um registro do que você está fazendo.
 
 ## 2026-08-05 · Painel do prisma
 
-**Em andamento:** ajustando o visual do `painel_admin` (Django, `/painel/`)
+**Concluído:** ajuste visual do `painel_admin` (Django, `/painel/`)
 para usar os tokens oficiais do design system do Prisma
 (`frontend/src/index.css`: creme/grafite/terracota/oliva/lavanda, Josefin
 Sans nos títulos, Inter no corpo). Arquivos tocados:
@@ -143,3 +143,19 @@ Validação remota: `/painel/usuarios/` e `/painel/registros/` retornam 302 para
 login sem sessão; `/backoffice/login/` retorna 200; estáticos retornam 200.
 Estado final: **CONCLUÍDO; subrotas publicadas, aguardando somente teste
 manual autenticado**. Identidade: **Code Review**.
+
+## 2026-08-05 · Code Review · Instituições e contas de teste
+
+O fluxo foi separado em duas superfícies: o superusuário entra no painel de
+controle porque não possui um perfil acadêmico; as telas do André continuam
+sendo abertas pelas contas `ALUNO`, `PROFESSOR` e `DIRETOR`. O painel ganhou
+criação de instituições e contas de teste, ambas exclusivas do superadmin,
+transacionais e auditadas. Instituições aceitam crédito inicial no ledger
+append-only; contas recebem senha validada, instituição ativa e flags
+`is_staff=False`/`is_superuser=False`.
+
+Validação observada: `pytest painel_admin/tests/test_painel_superadmin.py -q`
+→ `21 passed`; `manage.py check` sem issues; `makemigrations --check
+--dry-run` sem mudanças; `git diff --check` sem saída. Não alterei Railway ou
+Vercel neste turno. Estado final: **CONCLUÍDO localmente; aguardando
+deploy e teste manual autenticado**. Commit: `3bd40f0`. Identidade: **Code Review**.
