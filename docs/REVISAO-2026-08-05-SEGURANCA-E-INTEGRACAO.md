@@ -735,3 +735,23 @@ rotacionada.
 
 **Estado final:** CONCLUÍDO localmente; aguardando deploy/configuração
 operacional. Identidade: **Code Review**.
+
+## 15. Correção do 404 publicado em `/painel/`
+
+Após a publicação do fluxo administrativo, a URL `/painel/` retornou 404 da
+Vercel. A chamada direta ao proxy (`/api/painel?path=painel/`) já retornava
+200, isolando o defeito no rewrite: `/painel/:path*` não cobria a rota com a
+barra final nesse projeto.
+
+Foram adicionados rewrites explícitos para `/painel/` e `/backoffice/` no
+`frontend/vercel.json`. O commit `ce58c92` foi publicado em `origin/main`.
+Validação remota após o deploy: `GET
+https://frontend-three-ecru-55.vercel.app/painel/` → `200`, com HTML da tela
+de login do Django; o proxy direto continuou retornando `200`.
+
+Não foi realizado login manual com a senha visível na captura. O usuário deve
+rotacionar essa senha e testar novamente; as ações POST do painel também
+dependem de `DJANGO_CSRF_TRUSTED_ORIGINS` conter a origem pública da Vercel.
+
+**Estado final:** CONCLUÍDO; rota publicada e aguardando somente teste manual
+autenticado. Identidade: **Code Review**.

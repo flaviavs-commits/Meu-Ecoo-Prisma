@@ -121,3 +121,13 @@ deploy neste turno. A configuração operacional de
 `DJANGO_CSRF_TRUSTED_ORIGINS` com a origem pública da Vercel e a validação
 remota continuam pendentes. Estado final: **CONCLUÍDO localmente; aguardando
 deploy/configuração operacional**. Identidade: **Code Review**.
+
+## 2026-08-05 · Code Review · Rewrite publicado
+
+O primeiro deploy do fluxo do superadmin ainda respondia 404 em `/painel/`
+porque a regra wildcard da Vercel não cobria a barra final. Adicionei regras
+explícitas para `/painel/` e `/backoffice/`, publiquei o commit `ce58c92` em
+`origin/main` e confirmei remotamente `GET /painel/` com HTTP 200 e a tela de
+login Django. Não enviei a senha que apareceu na captura. Estado final:
+**CONCLUÍDO; rota publicada, aguardando somente teste manual autenticado**.
+Identidade: **Code Review**.
