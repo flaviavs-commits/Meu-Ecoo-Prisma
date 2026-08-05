@@ -131,6 +131,12 @@ auditada e nao concede privilegios administrativos a conta de teste. Depois de
 criar uma conta, use o e-mail e a senha definidos em `/entrar`; o perfil da
 conta determina a tela academica aberta.
 
+Superadmins pertencem à instituição técnica **Vitis Souls** (`VITIS_SOULS`),
+que não exige CPF/CNPJ, e usam o tier `MANTENEDOR`. Esse tier monitora e
+administra as demais instituições e contas no painel. Escolas podem ser
+editadas ou arquivadas; o arquivamento desativa acessos e preserva os dados,
+sem exclusão física.
+
 ## Como rodar
 
 Requisitos: Node.js 20+ e Python 3.10+.
