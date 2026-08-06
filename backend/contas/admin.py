@@ -4,7 +4,7 @@ from django.db.models import Count
 
 from .auditoria import RegistroDeAuditoria
 from .forms import UsuarioChangeForm, UsuarioCreationForm
-from .models import ConviteProfessor, Instituicao, TipoInstituicao, Usuario
+from .models import TIPOS_INTERNOS, ConviteProfessor, Instituicao, TipoInstituicao, Usuario
 
 
 @admin.register(Instituicao)
@@ -28,7 +28,7 @@ class InstituicaoAdmin(admin.ModelAdmin):
         return saldo_instituicao(obj.pk)
 
     def has_change_permission(self, request, obj=None):
-        if obj and obj.tipo == TipoInstituicao.MANTENEDORA:
+        if obj and obj.tipo in TIPOS_INTERNOS:
             return False
         return super().has_change_permission(request, obj)
 

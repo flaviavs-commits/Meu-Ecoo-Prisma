@@ -4,8 +4,8 @@
 <a href="{% url 'painel-instituicoes' %}">← Instituições</a>
 <h1>{{ alvo.nome }}</h1>
 <section class="card"><dl><dt>Tipo</dt><dd>{{ alvo.get_tipo_display }}</dd><dt>Documento</dt><dd>{{ alvo.documento|default:"—" }}</dd><dt>Status</dt><dd>{% if alvo.ativa %}<span class="status status-ativo">Ativa</span>{% else %}<span class="status status-inativo">Arquivada</span>{% endif %}</dd>{% if cobranca %}<dt>Plano</dt><dd>{{ cobranca.plano }} · {{ cobranca.limite_percentual_por_conta }}% por conta</dd><dt>Contas ativas</dt><dd>{{ cobranca.total_contas }}</dd><dt>Total mensal estimado</dt><dd>R$ {{ cobranca.total_mensal }}</dd>{% endif %}</dl></section>
-{% if alvo.tipo == "MANTENEDORA" %}
-<section class="card"><h2>Instituição protegida</h2><p>Vitis Souls é a mantenedora do sistema. Sua identificação e seu vínculo administrativo não podem ser alterados por este fluxo.</p></section>
+{% if alvo.tipo == "PROVEDORA" %}
+<section class="card"><h2>Instituição protegida</h2><p>Vitis Souls é a provedora do sistema. Sua identificação e seu vínculo administrativo não podem ser alterados por este fluxo.</p></section>
 {% else %}
 <section class="card"><h2>Editar instituição</h2><form method="post" action="{% url 'painel-instituicao-editar' alvo.pk %}" class="formulario-painel">{% csrf_token %}{{ formulario.non_field_errors }}{% for campo in formulario %}<label>{{ campo.label }}{{ campo }}{% for erro in campo.errors %}<span class="erro-campo">{{ erro }}</span>{% endfor %}</label>{% endfor %}<label>Motivo<textarea name="motivo" required minlength="3"></textarea></label><button type="submit">Salvar alterações</button></form></section>
 {% if alvo.ativa %}

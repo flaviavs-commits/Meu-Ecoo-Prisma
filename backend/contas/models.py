@@ -12,12 +12,35 @@ class Perfil(models.TextChoices):
     ALUNO = "ALUNO", "Aluno"
     PROFESSOR = "PROFESSOR", "Professor"
     DIRETOR = "DIRETOR", "Diretor"
-    MANTENEDOR = "MANTENEDOR", "Mantenedor Vitis Souls"
+    ADMINISTRADOR = "ADMINISTRADOR", "Administrador Prisma"
+    PROVIDER = "PROVIDER", "Provider Vitis Souls"
+
+
+# Perfis da equipe: nao pertencem a uma instituicao-cliente e por isso nao
+# entram no isolamento por `instituicao_id` que rege os demais.
+PERFIS_INTERNOS = frozenset({Perfil.ADMINISTRADOR, Perfil.PROVIDER})
 
 
 class TipoInstituicao(models.TextChoices):
     ESCOLA = "ESCOLA", "Escola"
-    MANTENEDORA = "MANTENEDORA", "Mantenedora"
+    PRISMA = "PRISMA", "Prisma (staff interno)"
+    PROVEDORA = "PROVEDORA", "Provedora"
+
+
+CODIGO_PROVEDORA = "VITIS_SOULS"
+CODIGO_PRISMA = "PRISMA"
+
+# Nao sao instituicao-cliente: nao contratam plano e nao hospedam conta
+# academica. Cada tipo interno aceita exatamente um perfil interno.
+PERFIL_POR_TIPO_INTERNO = {
+    TipoInstituicao.PROVEDORA: Perfil.PROVIDER,
+    TipoInstituicao.PRISMA: Perfil.ADMINISTRADOR,
+}
+TIPOS_INTERNOS = frozenset(PERFIL_POR_TIPO_INTERNO)
+CODIGO_POR_TIPO_INTERNO = {
+    TipoInstituicao.PROVEDORA: CODIGO_PROVEDORA,
+    TipoInstituicao.PRISMA: CODIGO_PRISMA,
+}
 
 
 class Instituicao(models.Model):
@@ -36,8 +59,18 @@ class Instituicao(models.Model):
     def clean(self):
         if self.tipo == TipoInstituicao.ESCOLA and not self.documento:
             raise ValidationError({"documento": "Escolas precisam de documento."})
-        if self.tipo == TipoInstituicao.MANTENEDORA and self.codigo != "VITIS_SOULS":
-            raise ValidationError({"codigo": "A mantenedora reservada do sistema é Vitis Souls."})
+        # Cada tipo interno tem um unico registro reservado, identificado pelo
+        # codigo: e o que impede uma escola-cliente de se passar por equipe.
+        codigo_reservado = CODIGO_POR_TIPO_INTERNO.get(self.tipo)
+        if codigo_reservado and self.codigo != codigo_reservado:
+            raise ValidationError(
+                {"codigo": f"A instituição interna do tipo {self.tipo} usa o código {codigo_reservado}."}
+            )
+
+    @property
+    def eh_interna(self):
+        """Instituição da equipe (Vitis Souls ou Prisma), não instituição-cliente."""
+        return self.tipo in TIPOS_INTERNOS
 
     def __str__(self):
         return self.nome
@@ -69,16 +102,16 @@ class UsuarioManager(BaseUserManager):
                 codigo="VITIS_SOULS",
                 defaults={
                     "nome": "Vitis Souls",
-                    "tipo": TipoInstituicao.MANTENEDORA,
+                    "tipo": TipoInstituicao.PROVEDORA,
                     "documento": None,
                 },
             )
             extra_fields["instituicao"] = instituicao
-        if instituicao.tipo != TipoInstituicao.MANTENEDORA or instituicao.codigo != "VITIS_SOULS":
+        if instituicao.tipo != TipoInstituicao.PROVEDORA or instituicao.codigo != "VITIS_SOULS":
             raise ValueError("Superusuario precisa pertencer à Vitis Souls.")
-        extra_fields.setdefault("perfil", Perfil.MANTENEDOR)
-        if extra_fields["perfil"] != Perfil.MANTENEDOR:
-            raise ValueError("Superusuario precisa usar o perfil MANTENEDOR.")
+        extra_fields.setdefault("perfil", Perfil.PROVIDER)
+        if extra_fields["perfil"] != Perfil.PROVIDER:
+            raise ValueError("Superusuario precisa usar o perfil PROVIDER.")
         return self.create_user(email, password, **extra_fields)
 
 
@@ -89,7 +122,7 @@ class Usuario(AbstractUser):
     )
     username = None
     email = models.EmailField(unique=True)
-    perfil = models.CharField(max_length=10, choices=Perfil.choices, null=True, blank=True)
+    perfil = models.CharField(max_length=20, choices=Perfil.choices, null=True, blank=True)
     data_nascimento = models.DateField(null=True, blank=True)
     responsavel_nome = models.CharField(max_length=200, blank=True)
     responsavel_contato = models.CharField(max_length=200, blank=True)
@@ -116,38 +149,77 @@ class Usuario(AbstractUser):
         super().clean()
         instituicao = self.instituicao if self.instituicao_id else None
         if self.is_superuser and not (
-            self.perfil == Perfil.MANTENEDOR
+            self.perfil == Perfil.PROVIDER
             and instituicao
             and instituicao.codigo == "VITIS_SOULS"
-            and instituicao.tipo == TipoInstituicao.MANTENEDORA
+            and instituicao.tipo == TipoInstituicao.PROVEDORA
         ):
-            raise ValidationError("Superusuarios precisam ser mantenedores da Vitis Souls.")
-        if instituicao and instituicao.tipo == TipoInstituicao.MANTENEDORA and not (
-            self.is_superuser and self.perfil == Perfil.MANTENEDOR
-        ):
-            raise ValidationError("A Vitis Souls só pode ter contas mantenedoras.")
+            raise ValidationError("Superusuario precisa ser um provider da Vitis Souls.")
+        # Cada instituicao interna hospeda so o seu perfil: Vitis Souls guarda o
+        # PROVIDER (acesso irrestrito) e Prisma guarda o ADMINISTRADOR (staff
+        # de operacao, sem superusuario).
+        if instituicao and instituicao.tipo in TIPOS_INTERNOS:
+            esperado = PERFIL_POR_TIPO_INTERNO[instituicao.tipo]
+            if self.perfil != esperado:
+                raise ValidationError(
+                    f"A instituição {instituicao.nome} só aceita contas de perfil {esperado}."
+                )
+        elif self.perfil in PERFIS_INTERNOS:
+            raise ValidationError("Perfil da equipe exige uma instituição interna.")
+        if self.perfil == Perfil.ADMINISTRADOR and self.is_superuser:
+            raise ValidationError(
+                "O ADMINISTRADOR é staff de operação, não superadmin: use PROVIDER."
+            )
 
     @property
-    def eh_mantenedor(self):
+    def eh_provider(self):
         return bool(
             self.ativo
             and self.is_active
             and self.is_superuser
-            and self.perfil == Perfil.MANTENEDOR
+            and self.perfil == Perfil.PROVIDER
             and self.instituicao_id
-            and self.instituicao.codigo == "VITIS_SOULS"
-            and self.instituicao.tipo == TipoInstituicao.MANTENEDORA
+            and self.instituicao.codigo == CODIGO_PROVEDORA
+            and self.instituicao.tipo == TipoInstituicao.PROVEDORA
         )
+
+    @property
+    def eh_administrador(self):
+        """Staff interno da Prisma: opera sobre usuario e monitoramento.
+
+        Diferente do provider em profundidade, nao em alcance: enxerga as
+        instituicoes-cliente, mas nao carrega `is_superuser` nem escreve nas
+        entidades de dominio (turmas, conteudo, creditos, planos).
+        """
+        return bool(
+            self.ativo
+            and self.is_active
+            and not self.is_superuser
+            and self.perfil == Perfil.ADMINISTRADOR
+            and self.instituicao_id
+            and self.instituicao.codigo == CODIGO_PRISMA
+            and self.instituicao.tipo == TipoInstituicao.PRISMA
+        )
+
+    @property
+    def eh_staff_interno(self):
+        """Pertence a equipe da Vitis Souls, em qualquer um dos dois tiers."""
+        return self.eh_provider or self.eh_administrador
 
 
 from .convites import ConviteProfessor
 
 
 __all__ = [
+    "CODIGO_PROVEDORA",
+    "CODIGO_PRISMA",
     "ConviteProfessor",
     "Instituicao",
     "ModeloDaInstituicao",
+    "PERFIS_INTERNOS",
+    "PERFIL_POR_TIPO_INTERNO",
     "Perfil",
+    "TIPOS_INTERNOS",
     "TipoInstituicao",
     "Usuario",
 ]

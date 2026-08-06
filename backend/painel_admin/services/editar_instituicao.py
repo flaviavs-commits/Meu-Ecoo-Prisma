@@ -1,7 +1,7 @@
 from django.db import IntegrityError, transaction
 
 from contas.auditoria import RegistroDeAuditoria
-from contas.models import Instituicao, TipoInstituicao, Usuario
+from contas.models import TIPOS_INTERNOS, Instituicao, TipoInstituicao, Usuario
 
 
 class InstituicaoEdicaoNegada(ValueError):
@@ -10,10 +10,10 @@ class InstituicaoEdicaoNegada(ValueError):
 
 @transaction.atomic
 def editar_instituicao(*, alvo: Instituicao, ator: Usuario, nome: str, documento: str, motivo: str):
-    if not ator.eh_mantenedor:
-        raise PermissionError("Somente um mantenedor Vitis Souls pode editar instituições.")
-    if alvo.tipo == TipoInstituicao.MANTENEDORA:
-        raise InstituicaoEdicaoNegada("A instituição Vitis Souls não pode ser alterada por este fluxo.")
+    if not ator.eh_provider:
+        raise PermissionError("Somente um provider Vitis Souls pode editar instituições.")
+    if alvo.tipo in TIPOS_INTERNOS:
+        raise InstituicaoEdicaoNegada("Instituição interna da equipe não é alterada por este fluxo.")
     nome = nome.strip()
     documento = documento.strip()
     motivo = str(motivo or "").strip()

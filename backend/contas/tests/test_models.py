@@ -37,16 +37,16 @@ def test_e_menor_considera_aniversario():
 
 
 @pytest.mark.django_db
-def test_mantenedora_exige_o_codigo_reservado_da_vitis_souls():
-    mantenedora = Instituicao(
-        nome="Outra Mantenedora",
-        tipo=TipoInstituicao.MANTENEDORA,
+def test_provedora_exige_o_codigo_reservado_da_vitis_souls():
+    provedora = Instituicao(
+        nome="Outra Provedora",
+        tipo=TipoInstituicao.PROVEDORA,
         documento=None,
         codigo="OUTRA",
     )
 
     with pytest.raises(ValidationError):
-        mantenedora.full_clean()
+        provedora.full_clean()
 
     vitis = Instituicao.objects.get(codigo="VITIS_SOULS")
     vitis.full_clean()

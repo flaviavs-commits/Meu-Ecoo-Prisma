@@ -2,7 +2,7 @@ from django.db import IntegrityError, transaction
 from django.contrib.auth.password_validation import validate_password
 
 from contas.auditoria import RegistroDeAuditoria
-from contas.models import Instituicao, Perfil, TipoInstituicao, Usuario
+from contas.models import TIPOS_INTERNOS, Instituicao, Perfil, TipoInstituicao, Usuario
 
 
 class ContaTesteJaExisteError(ValueError):
@@ -21,12 +21,12 @@ def criar_conta_teste(
     ator: Usuario,
 ):
     """Cria uma conta academica ativa, sem privilegios administrativos, de forma atomica."""
-    if not ator.eh_mantenedor:
-        raise PermissionError("Somente um mantenedor Vitis Souls ativo pode criar contas de teste.")
+    if not ator.eh_provider:
+        raise PermissionError("Somente um provider Vitis Souls ativo pode criar contas de teste.")
     if not instituicao.ativa:
         raise ValueError("A instituicao precisa estar ativa.")
-    if instituicao.tipo == TipoInstituicao.MANTENEDORA:
-        raise ValueError("Contas de teste acadêmicas não pertencem à Vitis Souls.")
+    if instituicao.tipo in TIPOS_INTERNOS:
+        raise ValueError("Contas de teste acadêmicas não pertencem à equipe interna.")
     if perfil not in {Perfil.ALUNO, Perfil.PROFESSOR, Perfil.DIRETOR}:
         raise ValueError("Perfil academico invalido.")
     usuario_para_validacao = Usuario(email=email, first_name=nome, last_name=sobrenome)

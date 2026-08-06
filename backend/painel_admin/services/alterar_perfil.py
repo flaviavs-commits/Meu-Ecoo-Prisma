@@ -1,7 +1,14 @@
 from django.db import transaction
 
 from contas.auditoria import RegistroDeAuditoria
-from contas.models import Perfil, TipoInstituicao, Usuario
+from contas.models import (
+    CODIGO_PROVEDORA,
+    CODIGO_PRISMA,
+    TIPOS_INTERNOS,
+    Perfil,
+    TipoInstituicao,
+    Usuario,
+)
 
 
 class PerfilInvalido(ValueError):
@@ -14,21 +21,32 @@ class MotivoObrigatorio(ValueError):
 
 @transaction.atomic
 def alterar_perfil(*, alvo: Usuario, ator: Usuario, perfil: str, motivo: str) -> Usuario:
-    if not ator.eh_mantenedor:
-        raise PermissionError("Somente um mantenedor Vitis Souls pode alterar perfis.")
+    if not ator.eh_provider:
+        raise PermissionError("Somente um provider Vitis Souls pode alterar perfis.")
     if perfil not in Perfil.values:
         raise PerfilInvalido("Perfil invalido.")
-    if alvo.is_superuser and perfil != Perfil.MANTENEDOR:
-        raise PerfilInvalido("Um superadmin precisa permanecer como MANTENEDOR.")
-    if perfil == Perfil.MANTENEDOR and not (
+    if alvo.is_superuser and perfil != Perfil.PROVIDER:
+        raise PerfilInvalido("Um superadmin precisa permanecer como PROVIDER.")
+    if perfil == Perfil.PROVIDER and not (
         alvo.is_superuser
         and alvo.instituicao_id
-        and alvo.instituicao.codigo == "VITIS_SOULS"
-        and alvo.instituicao.tipo == TipoInstituicao.MANTENEDORA
+        and alvo.instituicao.codigo == CODIGO_PROVEDORA
+        and alvo.instituicao.tipo == TipoInstituicao.PROVEDORA
     ):
-        raise PerfilInvalido("MANTENEDOR exige superadmin vinculado a uma mantenedora.")
-    if perfil != Perfil.MANTENEDOR and alvo.instituicao_id and alvo.instituicao.tipo == TipoInstituicao.MANTENEDORA:
-        raise PerfilInvalido("Contas acadêmicas não podem pertencer à Vitis Souls.")
+        raise PerfilInvalido("PROVIDER exige superadmin vinculado a uma provedora.")
+    if perfil == Perfil.ADMINISTRADOR and not (
+        not alvo.is_superuser
+        and alvo.instituicao_id
+        and alvo.instituicao.codigo == CODIGO_PRISMA
+        and alvo.instituicao.tipo == TipoInstituicao.PRISMA
+    ):
+        raise PerfilInvalido("ADMINISTRADOR exige conta não-superadmin na instituição Prisma.")
+    if (
+        perfil not in (Perfil.PROVIDER, Perfil.ADMINISTRADOR)
+        and alvo.instituicao_id
+        and alvo.instituicao.tipo in TIPOS_INTERNOS
+    ):
+        raise PerfilInvalido("Contas acadêmicas não podem pertencer à equipe interna.")
     motivo_limpo = motivo.strip()
     if not motivo_limpo:
         raise MotivoObrigatorio("Informe o motivo da troca de perfil.")

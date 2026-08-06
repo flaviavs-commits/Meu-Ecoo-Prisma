@@ -1,12 +1,18 @@
 from django import forms
 
-from contas.models import Instituicao, Perfil, TipoInstituicao
+from contas.models import (
+    CODIGO_PROVEDORA,
+    CODIGO_PRISMA,
+    Instituicao,
+    Perfil,
+    TipoInstituicao,
+)
 
 from .conta_teste import PERFIS_ACADEMICOS
 
 
 class UsuarioEdicaoForm(forms.Form):
-    """Valida a edição cross-tenant de uma conta pelo mantenedor."""
+    """Valida a edição cross-tenant de uma conta pelo provider."""
 
     email = forms.EmailField(label="E-mail")
     first_name = forms.CharField(label="Nome", max_length=150)
@@ -21,15 +27,18 @@ class UsuarioEdicaoForm(forms.Form):
     def __init__(self, *, alvo, **kwargs):
         super().__init__(**kwargs)
         self.alvo = alvo
+        # Conta da equipe nao troca de tier por este formulario: o campo fica
+        # travado na propria instituicao interna e no proprio perfil.
         if alvo.is_superuser:
-            self.fields["instituicao"].queryset = Instituicao.objects.filter(
-                ativa=True,
-                codigo="VITIS_SOULS",
-                tipo=TipoInstituicao.MANTENEDORA,
-            ).order_by("nome")
-            self.fields["perfil"].choices = (
-                (Perfil.MANTENEDOR, Perfil.MANTENEDOR.label),
-            )
+            self._travar_na_equipe(CODIGO_PROVEDORA, TipoInstituicao.PROVEDORA, Perfil.PROVIDER)
+        elif alvo.perfil == Perfil.ADMINISTRADOR:
+            self._travar_na_equipe(CODIGO_PRISMA, TipoInstituicao.PRISMA, Perfil.ADMINISTRADOR)
+
+    def _travar_na_equipe(self, codigo, tipo, perfil):
+        self.fields["instituicao"].queryset = Instituicao.objects.filter(
+            ativa=True, codigo=codigo, tipo=tipo
+        ).order_by("nome")
+        self.fields["perfil"].choices = ((perfil, perfil.label),)
 
     def clean_email(self):
         return self.cleaned_data["email"].strip().lower()

@@ -5,7 +5,7 @@ from contas.models import Instituicao, Perfil, TipoInstituicao, Usuario
 
 
 PERFIS_ACADEMICOS = tuple(
-    escolha for escolha in Perfil.choices if escolha[0] != Perfil.MANTENEDOR
+    escolha for escolha in Perfil.choices if escolha[0] != Perfil.PROVIDER
 )
 
 

@@ -18,8 +18,14 @@ def _pode_desativar(ator, alvo) -> bool:
     usuario de QUALQUER instituicao. O superadmin e o unico papel cross-tenant
     do produto; diretor manda so na propria instituicao.
     """
-    if ator.eh_mantenedor:
+    if ator.eh_provider:
         return True
+    # O ADMINISTRADOR desativa conta de instituicao-cliente, nunca conta da
+    # equipe - senao um administrador derrubaria o superadmin do produto.
+    if ator.eh_administrador:
+        from .models import PERFIS_INTERNOS
+
+        return alvo.perfil not in PERFIS_INTERNOS
     return (
         ator.perfil == "DIRETOR"
         # `instituicao_id` e anulavel: sem esta guarda, dois usuarios sem

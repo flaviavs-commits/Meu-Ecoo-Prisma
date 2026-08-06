@@ -67,10 +67,10 @@ def test_superadmin_e_vinculado_a_vitis_souls_sem_documento():
     superadmin, _ = criar_contas()
 
     superadmin.refresh_from_db()
-    assert superadmin.eh_mantenedor is True
-    assert superadmin.perfil == Perfil.MANTENEDOR
+    assert superadmin.eh_provider is True
+    assert superadmin.perfil == Perfil.PROVIDER
     assert superadmin.instituicao.codigo == "VITIS_SOULS"
-    assert superadmin.instituicao.tipo == TipoInstituicao.MANTENEDORA
+    assert superadmin.instituicao.tipo == TipoInstituicao.PROVEDORA
     assert superadmin.instituicao.documento is None
 
 
@@ -161,7 +161,7 @@ def test_conta_de_teste_com_senha_fraca_faz_rollback():
     assert get_user_model().objects.filter(email="aluno.teste@escola.test").exists() is False
 
 
-def test_conta_de_teste_nao_pode_usar_tier_mantenedor():
+def test_conta_de_teste_nao_pode_usar_tier_provider():
     superadmin, aluno = criar_contas()
     cliente = Client()
     cliente.force_login(superadmin)
@@ -169,18 +169,18 @@ def test_conta_de_teste_nao_pode_usar_tier_mantenedor():
     resposta = cliente.post(
         reverse("painel-contas-teste"),
         {
-            "email": "mantenedor.teste@escola.test",
-            "first_name": "Mantenedor",
+            "email": "provider.teste@escola.test",
+            "first_name": "Provider",
             "last_name": "Invalido",
             "instituicao": aluno.instituicao.pk,
-            "perfil": Perfil.MANTENEDOR,
+            "perfil": Perfil.PROVIDER,
             "password1": "Senha-de-teste-12345",
             "password2": "Senha-de-teste-12345",
         },
     )
 
     assert resposta.status_code == 200
-    assert get_user_model().objects.filter(email="mantenedor.teste@escola.test").exists() is False
+    assert get_user_model().objects.filter(email="provider.teste@escola.test").exists() is False
 
 
 def test_conta_de_teste_nao_pode_ser_criada_na_vitis_souls():
@@ -206,7 +206,7 @@ def test_conta_de_teste_nao_pode_ser_criada_na_vitis_souls():
     assert get_user_model().objects.filter(email="academico@vitis.test").exists() is False
 
 
-def test_mantenedor_inativo_nao_acessa_painel():
+def test_provider_inativo_nao_acessa_painel():
     superadmin, _ = criar_contas()
     superadmin.ativo = False
     superadmin.save(update_fields=["ativo", "atualizado_em"])
@@ -321,7 +321,13 @@ def test_staff_nao_superadmin_nao_acessa_painel():
     assert resposta.status_code == 403
 
 
-def test_diretor_nao_acessa_painel():
+def test_diretor_entra_no_painel_mas_nao_nas_rotas_de_plataforma():
+    """Regra nova (2026-08-06): o painel e o mesmo site para todos os tiers.
+
+    Antes o diretor levava 403 na porta. Agora ele entra e enxerga a propria
+    escola; o que continua fechado sao as rotas de plataforma. O isolamento
+    entre escolas esta coberto em `test_painel_por_hierarquia.py`.
+    """
     escola = Instituicao.objects.create(nome="Escola diretor", documento="00.000.000/0001-72")
     diretor = get_user_model().objects.create_user(
         email="diretor-painel@escola.test", password="senha-segura-123",
@@ -330,7 +336,9 @@ def test_diretor_nao_acessa_painel():
     cliente = Client()
     cliente.force_login(diretor)
 
-    assert cliente.get(reverse("painel-dashboard")).status_code == 403
+    assert cliente.get(reverse("painel-dashboard")).status_code == 200
+    assert cliente.get(reverse("painel-instituicoes")).status_code == 403
+    assert cliente.get(reverse("painel-registros")).status_code == 403
 
 
 def test_superadmin_ve_usuario():

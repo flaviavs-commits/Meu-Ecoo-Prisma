@@ -15,7 +15,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from contas.auditoria import RegistroDeAuditoria
-from contas.models import Instituicao, TipoInstituicao, Usuario
+from contas.models import TIPOS_INTERNOS, Instituicao, TipoInstituicao, Usuario
 
 
 class ArquivamentoInstituicaoNegado(ValueError):
@@ -88,10 +88,10 @@ def desarquivar_instituicao(*, alvo: Instituicao, ator: Usuario, confirmado: boo
 
 
 def _validar(*, alvo, ator, confirmado, motivo):
-    if not ator.eh_mantenedor:
-        raise PermissionError("Somente um mantenedor Vitis Souls pode arquivar instituições.")
-    if alvo.tipo == TipoInstituicao.MANTENEDORA:
-        raise ArquivamentoInstituicaoNegado("A instituição Vitis Souls não pode ser arquivada.")
+    if not ator.eh_provider:
+        raise PermissionError("Somente um provider Vitis Souls pode arquivar instituições.")
+    if alvo.tipo in TIPOS_INTERNOS:
+        raise ArquivamentoInstituicaoNegado("Instituição interna da equipe não pode ser arquivada.")
     if not confirmado:
         raise ArquivamentoInstituicaoNegado("Confirme a ação para continuar.")
     motivo = str(motivo or "").strip()

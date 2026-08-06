@@ -39,13 +39,13 @@ def plano_prisma(db):
 
 
 @pytest.fixture
-def mantenedora(db):
+def provedora(db):
     instituicao, _ = Instituicao.objects.get_or_create(
         codigo="VITIS_SOULS",
-        defaults={"nome": "Vitis Souls", "tipo": TipoInstituicao.MANTENEDORA},
+        defaults={"nome": "Vitis Souls", "tipo": TipoInstituicao.PROVEDORA},
     )
     return get_user_model().objects.create_superuser(
-        email="mantenedor-limites@teste.com",
+        email="provider-limites@teste.com",
         password="senha-segura-123",
         instituicao=instituicao,
     )
@@ -214,9 +214,9 @@ def test_catalogo_expoe_limites_e_precos_por_conta(aluno):
     ]
 
 
-def test_mantenedor_pode_trocar_plano_com_motivo(aluno, mantenedora):
+def test_provider_pode_trocar_plano_com_motivo(aluno, provedora):
     plano = PlanoInstitucional.objects.get(codigo="PRISMA_PRO")
-    resposta = cliente(mantenedora).patch(
+    resposta = cliente(provedora).patch(
         f"/api/v1/limites/instituicoes/{aluno.instituicao_id}/plano/",
         {"plano": plano.codigo, "motivo": "Upgrade para homologação"},
         format="json",
@@ -226,9 +226,9 @@ def test_mantenedor_pode_trocar_plano_com_motivo(aluno, mantenedora):
     assert estado_cota(aluno).limite_percentual == Decimal("171")
 
 
-def test_mantenedor_exige_motivo_para_alterar_limite(aluno, mantenedora):
+def test_provider_exige_motivo_para_alterar_limite(aluno, provedora):
     plano = PlanoInstitucional.objects.get(codigo="PRISMA_PRO")
-    resposta = cliente(mantenedora).patch(
+    resposta = cliente(provedora).patch(
         f"/api/v1/limites/instituicoes/{aluno.instituicao_id}/plano/",
         {"plano": plano.codigo, "motivo": "  "},
         format="json",
@@ -248,9 +248,9 @@ def test_usuario_academico_nao_altera_limite(aluno):
     assert resposta.status_code == 403
 
 
-def test_mantenedor_nao_recebe_plano_comercial(mantenedora):
-    resposta = cliente(mantenedora).patch(
-        f"/api/v1/limites/instituicoes/{mantenedora.instituicao_id}/plano/",
+def test_provider_nao_recebe_plano_comercial(provedora):
+    resposta = cliente(provedora).patch(
+        f"/api/v1/limites/instituicoes/{provedora.instituicao_id}/plano/",
         {"plano": "PRISMA_PRO", "motivo": "tentativa indevida"},
         format="json",
     )

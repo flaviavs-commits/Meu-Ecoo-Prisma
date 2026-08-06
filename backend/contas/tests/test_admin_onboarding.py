@@ -85,14 +85,14 @@ def test_diretor_nao_tem_senha_utilizavel_nem_acesso_ao_admin():
     assert admin.site.has_permission(type("Request", (), {"user": diretor})()) is False
 
 
-def test_superuser_manager_vincula_tier_mantenedor_a_vitis_souls():
+def test_superuser_manager_vincula_tier_provider_a_vitis_souls():
     equipe = get_user_model().objects.create_superuser(
         email="equipe-vitis@interno.test", password="senha-segura-123"
     )
 
-    assert equipe.perfil == Perfil.MANTENEDOR
+    assert equipe.perfil == Perfil.PROVIDER
     assert equipe.instituicao.codigo == "VITIS_SOULS"
-    assert equipe.instituicao.tipo == TipoInstituicao.MANTENEDORA
+    assert equipe.instituicao.tipo == TipoInstituicao.PROVEDORA
     assert equipe.instituicao.documento is None
 
 
