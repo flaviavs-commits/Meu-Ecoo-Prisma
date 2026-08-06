@@ -6,7 +6,7 @@ from django.db import IntegrityError, transaction
 from django.db.models import Sum
 
 from contas.auditoria import RegistroDeAuditoria
-from contas.models import TipoInstituicao
+from contas.models import TIPOS_INTERNOS, TipoInstituicao
 
 from .ciclo import ciclo_atual
 from .excecoes import (
@@ -16,6 +16,7 @@ from .excecoes import (
 )
 from .models import (
     AssinaturaInstituicao,
+    Periodicidade,
     CotaUsuario,
     ConsumoIA,
     PERCENTUAL_MAXIMO,
@@ -46,6 +47,9 @@ def estado_cota(usuario, *, ciclo=None):
     """
     ciclo = ciclo or ciclo_atual()
     obter_cota(usuario)
+    # O limite e o mesmo para todas as contas da instituicao: quem contrata e a
+    # escola, e o plano vale igual para aluno, professor e diretor. Nao existe
+    # cota nominal, para mais nem para menos.
     limite = limite_da_instituicao(usuario.instituicao_id)
     consumido = (
         ConsumoIA.objects.filter(usuario=usuario, ciclo=ciclo).aggregate(
@@ -138,31 +142,37 @@ def registrar_uso(
         return ConsumoIA.objects.get(referencia=referencia)
 
 
-def atualizar_plano(*, instituicao, ator, codigo, motivo):
+def atualizar_plano(*, instituicao, ator, codigo, motivo, periodicidade=None):
     motivo = str(motivo or "").strip()
     if not motivo:
         raise MotivoObrigatorioError()
-    if getattr(instituicao, "tipo", None) == TipoInstituicao.MANTENEDORA:
-        raise ValueError("A instituição mantenedora não possui plano comercial.")
+    if getattr(instituicao, "tipo", None) in TIPOS_INTERNOS:
+        raise ValueError("Instituição interna da equipe não possui plano comercial.")
     try:
         plano = PlanoInstitucional.objects.get(codigo=codigo, ativo=True)
     except PlanoInstitucional.DoesNotExist as erro:
         raise ValueError("Plano inexistente ou inativo.") from erro
+    if periodicidade is not None and periodicidade not in Periodicidade.values:
+        raise ValueError("Periodicidade inexistente: use MENSAL ou ANUAL.")
     with transaction.atomic():
         assinatura, criada = AssinaturaInstituicao.objects.select_for_update().get_or_create(
             instituicao=instituicao,
             defaults={"plano": plano},
         )
-        anterior = "nenhum" if criada else assinatura.plano.codigo
+        anterior = "nenhum" if criada else f"{assinatura.plano.codigo}/{assinatura.periodicidade}"
         assinatura.plano = plano
+        # Omitir a periodicidade mantem a vigente: trocar de plano no meio do
+        # contrato nao deve, sozinho, rebaixar uma assinatura anual para mensal.
+        if periodicidade is not None:
+            assinatura.periodicidade = periodicidade
         assinatura.ativa = True
-        assinatura.save(update_fields=["plano", "ativa", "atualizada_em"])
+        assinatura.save(update_fields=["plano", "periodicidade", "ativa", "atualizada_em"])
         RegistroDeAuditoria.objects.create(
             ator=ator,
             acao="alterar_plano_instituicao",
             objeto_tipo="Instituicao",
             objeto_id=str(instituicao.id),
-            motivo=f"{motivo} (de {anterior} para {plano.codigo})",
+            motivo=f"{motivo} (de {anterior} para {plano.codigo}/{assinatura.periodicidade})",
         )
     return assinatura
 
@@ -191,13 +201,22 @@ def calcular_cobranca(instituicao):
         for perfil in ("ALUNO", "PROFESSOR", "DIRETOR")
     }
     total_contas = sum(contagem.values())
+    total_mensal = assinatura.plano.preco_por_conta * total_contas
     return {
         "plano": assinatura.plano.codigo,
+        "periodicidade": assinatura.periodicidade,
         "preco_por_conta": assinatura.plano.preco_por_conta,
         "limite_percentual_por_conta": assinatura.plano.limite_percentual_por_conta,
         "contas": contagem,
         "total_contas": total_contas,
-        "total_mensal": assinatura.plano.preco_por_conta * total_contas,
+        "total_mensal": total_mensal,
+        # Valor da fatura no intervalo contratado: o anual cobre doze meses de
+        # uso, mesmo que a apuracao do consumo continue mes a mes.
+        "total_por_cobranca": (
+            total_mensal * 12
+            if assinatura.periodicidade == Periodicidade.ANUAL
+            else total_mensal
+        ),
     }
 
 

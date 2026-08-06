@@ -16,6 +16,18 @@ class CodigoPlano(models.TextChoices):
     PRISMA_ULTRA = "PRISMA_ULTRA", "Prisma Ultra"
 
 
+class Periodicidade(models.TextChoices):
+    """Intervalo de cobranca da assinatura, contratado pela instituicao.
+
+    Nao confundir com o ciclo de `limites/ciclo.py`, que e sempre mensal: aquele
+    e a janela de apuracao do consumo, este e o intervalo em que a escola paga.
+    Uma assinatura anual continua tendo doze janelas mensais de uso.
+    """
+
+    MENSAL = "MENSAL", "Mensal"
+    ANUAL = "ANUAL", "Anual"
+
+
 class CotaImutavelError(Exception):
     """Levantada quando um consumo registrado seria alterado ou apagado."""
 
@@ -57,6 +69,11 @@ class AssinaturaInstituicao(models.Model):
         PlanoInstitucional,
         on_delete=models.PROTECT,
         related_name="assinaturas",
+    )
+    periodicidade = models.CharField(
+        max_length=6,
+        choices=Periodicidade.choices,
+        default=Periodicidade.MENSAL,
     )
     ativa = models.BooleanField(default=True)
     criada_em = models.DateTimeField(auto_now_add=True)

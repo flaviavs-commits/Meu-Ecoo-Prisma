@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from conteudo.models import Material, Simulado, StatusConteudo, StatusSimulado
+from limites.normalizacao import cota_da_conta
 from limites.servico import estado_cota
 from memoria.models import Conversa
 
@@ -36,7 +37,7 @@ class DashboardAlunoView(APIView):
                 "simulados": simulados.count(),
                 "materiais": materiais.distinct().count(),
             },
-            "cota": estado_cota(request.user),
+            "cota": cota_da_conta(estado_cota(request.user)),
             "progresso_por_materia": [
                 {
                     "disciplina": item["disciplina"],
