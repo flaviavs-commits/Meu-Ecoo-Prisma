@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     "arquivos",
     "conteudo",
     "aluno",
+    "avisos",
+    "custos",
     "painel_admin",
 ]
 

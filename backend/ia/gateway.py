@@ -5,6 +5,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 
+from custos.rateio import custo_da_chamada
 from limites.excecoes import LimiteDeUsoExcedidoError
 from limites.servico import autorizar_uso, registrar_uso, trava_cota
 
@@ -71,8 +72,20 @@ class GatewayIA:
 
             # 2. Provedor, sem transacao aberta.
             resultado = self._gerar_com_retry(prompt, modelo)
+            fornecedor = getattr(resultado, "fornecedor", "desconhecido")
+            # O custo passa pelo contrato do fornecedor antes de virar
+            # percentual: e o que coloca uma chamada cobrada por token e a fatia
+            # de uma assinatura na mesma unidade. Sem isto, chamada atendida por
+            # assinatura chega com custo zero e nao consome nada da conta.
+            custo = custo_da_chamada(
+                fornecedor=fornecedor,
+                modelo=resultado.modelo,
+                tokens_entrada=resultado.tokens_entrada,
+                tokens_saida=resultado.tokens_saida,
+                custo_reportado=resultado.custo_bruto,
+            )
             percentual = custo_para_percentual(
-                resultado.custo_bruto,
+                custo,
                 custo_dolar_por_percentual=settings.IA_CUSTO_DOLAR_POR_PERCENTUAL,
                 margem=settings.IA_MARGEM_USO,
             )
@@ -86,17 +99,17 @@ class GatewayIA:
                 registrar_uso(
                     usuario=usuario,
                     percentual=percentual,
-                    fornecedor=getattr(resultado, "fornecedor", "desconhecido"),
+                    fornecedor=fornecedor,
                     modelo=resultado.modelo,
                     classe_tarefa=classe_tarefa,
                     referencia=chamada,
-                    custo_bruto=resultado.custo_bruto,
+                    custo_bruto=custo,
                 )
                 chamada.modelo = resultado.modelo
                 chamada.tokens_entrada = resultado.tokens_entrada
                 chamada.tokens_saida = resultado.tokens_saida
-                chamada.custo_bruto = resultado.custo_bruto
-                chamada.fornecedor = getattr(resultado, "fornecedor", "desconhecido")
+                chamada.custo_bruto = custo
+                chamada.fornecedor = fornecedor
                 chamada.percentual_debitado = percentual
                 chamada.status = StatusChamada.SUCESSO
                 chamada.concluida_em = timezone.now()
