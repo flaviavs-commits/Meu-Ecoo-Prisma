@@ -21,25 +21,40 @@ Excecoes (nao pertencem a instituicao nenhuma):
 
 - `Instituicao` - e a raiz
 - Tabelas de configuracao global (ex.: tabela de conversao custo -> credito)
-- Usuario da equipe interna (superusuario), que nao e de escola alguma
+- Usuario da equipe interna (`PROVIDER` na Vitis Souls, `ADMINISTRADOR` na
+  Prisma), que nao e de escola alguma - ver
+  [`../../HIERARQUIA-DE-ENTIDADES.md`](../../HIERARQUIA-DE-ENTIDADES.md)
 
 ## 2. Mapa das entidades por app
 
 ```text
 contas/
-  Instituicao ──1:N── Usuario ──┬── perfil: ALUNO | PROFESSOR | DIRETOR
+  Instituicao ── tipo: ESCOLA | PRISMA | PROVEDORA
+  Instituicao ──1:N── Usuario ──┬── perfil (cliente): ALUNO | PROFESSOR | DIRETOR
+                                ├── perfil (equipe):  ADMINISTRADOR | PROVIDER
                                 └── dados de menor (ver LGPD)
 
 academico/
-  Turma ──N:M── Usuario (via Matricula)
+  Turma ──N:M── Usuario (via Matricula)          alunos
+  Turma ──N:M── Usuario (via Turma.professores)  corpo docente
+  Turma ──N:1── Usuario (professor_responsavel)  titular
   Disciplina ──1:N── Turma
   Nota      ── aluno, disciplina, turma, valor, origem (MANUAL | IA)
   Falta     ── aluno, turma, data
 
 conteudo/
-  Material ── autor, turma?, arquivo (E08), status
+  Material ── autor, turma?, arquivo (E08), status, prazo_entrega?
   Prova ──1:N── Questao
-  Prova ── status: RASCUNHO | OFICIAL, origem: MANUAL | IA
+  Prova ── status: RASCUNHO | OFICIAL, origem: MANUAL | IA, prazo_entrega?
+
+avisos/
+  Aviso ── instituicao, turma, autor, titulo, mensagem, prazo_entrega?
+  (destinatario e a turma; le quem esta matriculado nela)
+
+limites/
+  AssinaturaInstituicao ── plano, periodicidade: MENSAL | ANUAL, ativa
+  AjusteCotaUsuario     ── usuario, ciclo, percentual (+/-), motivo
+  ConsumoIA (append-only) ── usuario, ciclo, percentual
 
 creditos/
   Lancamento (append-only) ── instituicao, usuario?, turma?, quantidade, tipo, motivo, referencia

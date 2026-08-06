@@ -5,6 +5,97 @@ diretório (`Meu-Ecoo-Prisma`). Antes de mexer em Railway (deploy, variáveis,
 start command) ou em arquivos que outro agente possa estar editando, confira
 aqui e deixe um registro do que você está fazendo.
 
+## 2026-08-06 · Planejamento da hierarquia · Custo multi-provedor e painel por hierarquia
+
+Sequência do trabalho abaixo, a pedido da usuária. Quatro entregas:
+
+1. **App novo `custos`** — `ContratoProvedor` declara como o custo de cada
+   fornecedor é apurado: `POR_TOKEN`, `ASSINATURA_RELATIVA` (fator sobre a
+   chamada equivalente no fornecedor por token — modo recomendado) ou
+   `ASSINATURA_RATEIO`. O gateway (`ia/gateway.py`) passou a converter o custo
+   por aí antes de virar percentual: antes, chamada atendida por assinatura
+   chegava com `custo_bruto = 0` e **não consumia nada** da conta.
+2. **`custos/recalibracao.py`** — ajusta a estimativa de uma assinatura
+   (ex.: passou de 200 para 400 contas), auditado, só equipe interna.
+3. **Garantia de que recalibrar vale só para frente** — `ConsumoIA` continua
+   append-only e o percentual nunca é recalculado.
+4. **⚠️ O painel Django agora aceita login de DIRETOR**, recortado por
+   `painel_admin/escopo.py`. Provider e administrador veem tudo e o custo em
+   dólar; diretor vê só a própria escola, só percentual. Conta fora do escopo
+   responde **404, não 403**.
+
+**Arquivos que toquei nesta rodada:** app novo `custos/`; `ia/gateway.py`;
+`painel_admin/` (escopo.py e monitoramento.py novos, permissoes, views, urls,
+templates base/dashboard/usuario + uso.html novo); `config/settings/base.py`.
+
+**Aviso para quem mexe em teste do painel:** reescrevi
+`test_painel_superadmin.py::test_diretor_nao_acessa_painel` — ele fixava a
+regra antiga (diretor levava 403 na porta), que a usuária mudou. Agora é
+`test_diretor_entra_no_painel_mas_nao_nas_rotas_de_plataforma`, e o isolamento
+entre escolas está em `test_painel_por_hierarquia.py`.
+
+Validação: `299 passed, 3 skipped` (era `264`), `manage.py check`,
+`makemigrations --check --dry-run` e `git diff --check` limpos. Nada commitado.
+Identidade: **Planejamento da hierarquia**.
+
+## 2026-08-06 · Planejamento da hierarquia · Auditoria contra o canvas
+
+A usuária definiu o canvas "Sistema Prisma" (`Untitled-2026-06-19-1523.png`)
+como fonte de verdade e pediu para auditar o backend inteiro contra ele e
+corrigir todos os pontos indicados. As seis divergências que o canvas marca
+com ⚠️ foram confirmadas no código e **corrigidas**:
+
+1. nasceu o tier `ADMINISTRADOR` (staff interno da instituição Prisma), com
+   alcance cross-tenant limitado a usuário e monitoramento;
+2. `academico.Turma` ganhou `professores` (M2M) + `leciona()`; o
+   `professor_responsavel` vira o titular;
+3. `AssinaturaInstituicao` ganhou `periodicidade` (MENSAL/ANUAL);
+4. nasceu o app `avisos` (aviso endereçado à turma, não ao aluno);
+5. `Material`, `Prova` e `Aviso` ganharam `prazo_entrega`;
+6. **corrigido pela usuária durante o trabalho:** eu tinha entendido
+   "ajustado conforme a demanda" como cota nominal por aluno e implementei um
+   `AjusteCotaUsuario` — **revertido por inteiro**. O limite é do plano e vale
+   igual para todas as contas; o que se ajusta é a conversão custo→percentual
+   do lado da plataforma. No lugar entrou `limites/normalizacao.py`: a conta lê
+   **sempre 0–100%** qualquer que seja o plano, e o histórico dela não expõe
+   mais `fornecedor` nem `modelo`.
+
+⚠️ **RENOMEAÇÃO QUE AFETA TODO MUNDO:** por decisão da usuária, o tier
+`MANTENEDOR` virou **`PROVIDER`** e o tipo de instituição `MANTENEDORA` virou
+**`PROVEDORA`** — nos identificadores, nos valores gravados no banco e em
+`Usuario.eh_mantenedor`, que agora é **`Usuario.eh_provider`**. Se você tem
+código ou teste em aberto usando os nomes antigos, atualize antes de rebasear.
+
+A instituição "Prisma" que existia em produção como `ESCOLA` (documento
+`Dono`) foi promovida ao tipo interno `PRISMA`. As três contas ALUNO que
+moravam nela — que a usuária confirmou serem demonstrativas — vão para uma
+"Escola de Testes Prisma" criada pela própria migração.
+
+**Arquivos que toquei:** `contas/` (models, permissoes/, desativacao,
+admin, migração 0008), `painel_admin/` (permissoes, views, forms, services),
+`academico/` (models, notas, views, serializers, migração 0004), `limites/`
+(models, servico, serializers, views, urls, normalizacao, migração 0004),
+`conteudo/models.py` + migração 0004, e o app novo `avisos/`. Também
+`config/settings/base.py` e `config/urls.py` (registro do app).
+**Não toquei** em `frontend/`, `authenticacao/`, `ia/`, `memoria/`,
+`arquivos/`, `creditos/` nem em Railway/Vercel.
+
+**⚠️ Para quem for publicar:** vão junto **sete migrações** (duas delas do app `custos`), duas delas de
+dados — `contas.0008` (renomeia valores gravados, promove a Prisma e move
+contas) e `academico.0004` (matricula o titular como professor de cada turma).
+Testei a `contas.0008` num SQLite que reproduz o estado exato de produção
+(Vitis Souls + Prisma/ESCOLA + 3 alunos + 1 superadmin): o resultado foi Vitis
+Souls `PROVEDORA`, Prisma `PRISMA`, os 3 alunos na escola de testes e o
+superadmin como `PROVIDER`.
+
+Validação: `264 passed, 3 skipped` com SQLite (era `231 passed, 3 skipped`;
+33 testes novos), `manage.py check`, `makemigrations --check --dry-run` e
+`git diff --check` limpos. O desenho completo virou
+[`docs/HIERARQUIA-DE-ENTIDADES.md`](HIERARQUIA-DE-ENTIDADES.md).
+
+Estado final: **CONCLUÍDO localmente; nada commitado nem publicado**.
+Identidade: **Planejamento da hierarquia**.
+
 ## 2026-08-05 · Painel do prisma
 
 **Concluído:** ajuste visual do `painel_admin` (Django, `/painel/`)
