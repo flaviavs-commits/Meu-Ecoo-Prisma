@@ -34,9 +34,22 @@ regra antiga (diretor levava 403 na porta), que a usuária mudou. Agora é
 `test_diretor_entra_no_painel_mas_nao_nas_rotas_de_plataforma`, e o isolamento
 entre escolas está em `test_painel_por_hierarquia.py`.
 
-Validação: `299 passed, 3 skipped` (era `264`), `manage.py check`,
-`makemigrations --check --dry-run` e `git diff --check` limpos. Nada commitado.
-Identidade: **Planejamento da hierarquia**.
+Validação local: `299 passed, 3 skipped` (era `264`), `manage.py check`,
+`makemigrations --check --dry-run` e `git diff --check` limpos.
+
+**PUBLICADO.** `origin/main` está em `428d3e6` (8 commits). O Railway
+publicou o deployment `70d822b2-bf0c-45d1-b09a-528ac574ef24` com status
+**SUCCESS**, e o predeploy aplicou as sete migrações. Estado conferido no
+banco de produção: Vitis Souls `PROVEDORA`, Prisma `PRISMA`, os 3 alunos
+demonstrativos na `Escola de Testes Prisma` (id 3), `felipe@vitissouls.com`
+como `PROVIDER`, e o catálogo com Deepseek como referência (1x), Claude
+0,40x e GPT 0,50x. Validação pública: API health `200`; `/painel/`,
+`/painel/uso/` e `/painel/usuarios/` em `302` sem sessão; `/backoffice/login/`
+`200`; `/api/v1/avisos/` e `/api/v1/limites/uso/` em `401` sem token; pela
+Vercel, health `200` e `/painel/` `200`.
+
+Estado final: **CONCLUÍDO E PUBLICADO EM PRODUÇÃO; falta apenas o teste
+manual autenticado.** Identidade: **Planejamento da hierarquia**.
 
 ## 2026-08-06 · Planejamento da hierarquia · Auditoria contra o canvas
 
