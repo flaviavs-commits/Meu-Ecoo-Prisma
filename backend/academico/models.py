@@ -16,6 +16,10 @@ class Turma(models.Model):
         null=True,
         blank=True,
     )
+    # Duas relacoes com professor, de proposito: `professor_responsavel` e o
+    # titular da turma (quem responde por ela para a diretoria) e `professores`
+    # e o corpo docente que leciona nela. Uma turma tem N professores e um
+    # professor leciona em N turmas; o titular e sempre um deles.
     professor_responsavel = models.ForeignKey(
         "contas.Usuario",
         on_delete=models.PROTECT,
@@ -23,6 +27,20 @@ class Turma(models.Model):
         null=True,
         blank=True,
     )
+    professores = models.ManyToManyField(
+        "contas.Usuario",
+        related_name="turmas_lecionadas",
+        blank=True,
+    )
+
+    def leciona(self, usuario) -> bool:
+        """O usuario da aula nesta turma, como titular ou como corpo docente."""
+        if usuario is None or not usuario.pk:
+            return False
+        return (
+            self.professor_responsavel_id == usuario.pk
+            or self.professores.filter(pk=usuario.pk).exists()
+        )
 
 
 class Disciplina(models.Model):

@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -35,7 +36,9 @@ class TurmasView(APIView):
         if request.user.perfil == "ALUNO":
             qs = qs.filter(matriculas__aluno=request.user, matriculas__saiu_em__isnull=True)
         elif request.user.perfil == "PROFESSOR":
-            qs = qs.filter(professor_responsavel=request.user)
+            qs = qs.filter(
+                Q(professor_responsavel=request.user) | Q(professores=request.user)
+            ).distinct()
         elif request.user.perfil != "DIRETOR":
             # Sem este ramo, perfil desconhecido (ex.: superadmin, que tem
             # `perfil=None`) caia fora dos dois `if` acima e recebia a listagem

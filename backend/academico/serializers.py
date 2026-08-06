@@ -6,7 +6,10 @@ from .models import Falta, Nota, Turma
 class TurmaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Turma
-        fields = ["id", "nome", "instituicao", "disciplina", "professor_responsavel"]
+        fields = [
+            "id", "nome", "instituicao", "disciplina",
+            "professor_responsavel", "professores",
+        ]
         read_only_fields = fields
 
 

@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.db import transaction
+from django.db.models import Q
 
 from contas.auditoria import RegistroDeAuditoria
 
@@ -90,8 +91,8 @@ def aprovar_nota(*, nota, ator, confirmacao, motivo):
             raise AcademicoPermissaoError(
                 "Recurso fora da instituicao.", codigo="fora_da_instituicao"
             )
-        if ator.perfil != "PROFESSOR" or nota.turma.professor_responsavel_id != ator.id:
-            raise AcademicoPermissaoError("Professor nao responsavel pela turma.")
+        if ator.perfil != "PROFESSOR" or not nota.turma.leciona(ator):
+            raise AcademicoPermissaoError("Professor nao leciona nesta turma.")
         if nota.oficial:
             raise NotaJaOficialError()
         if confirmacao is not True:
@@ -140,7 +141,10 @@ def consultar_notas(*, usuario, aluno_alvo=None):
             raise AcademicoPermissaoError("Aluno so pode ver as proprias notas.")
         return Nota.objects.filter(aluno_id=usuario.id).select_related("disciplina", "turma")
     if usuario.perfil == "PROFESSOR":
-        notas = Nota.objects.filter(turma__professor_responsavel_id=usuario.id)
+        # Titular ou corpo docente: uma turma tem N professores.
+        notas = Nota.objects.filter(
+            Q(turma__professor_responsavel_id=usuario.id) | Q(turma__professores=usuario.id)
+        ).distinct()
         if aluno_alvo:
             notas = notas.filter(aluno=aluno_alvo)
         return notas.select_related("disciplina", "turma")
@@ -170,8 +174,8 @@ def _validar_lancamento(turma, disciplina, aluno, ator):
     # Nota fica entre aluno e professor: o diretor nao lanca, so le o que ja foi
     # aprovado (regra de produto, 2026-08-05). Antes havia um `return` aqui para
     # DIRETOR, que alem de deixa-lo lancar ainda pulava a checagem de matricula.
-    if ator.perfil != "PROFESSOR" or turma.professor_responsavel_id != ator.id:
-        raise AcademicoPermissaoError("Professor nao responsavel pela turma.")
+    if ator.perfil != "PROFESSOR" or not turma.leciona(ator):
+        raise AcademicoPermissaoError("Professor nao leciona nesta turma.")
     if not Matricula.objects.filter(turma=turma, aluno=aluno, saiu_em__isnull=True).exists():
         raise AcademicoPermissaoError("Aluno nao esta matriculado na turma.")
 
