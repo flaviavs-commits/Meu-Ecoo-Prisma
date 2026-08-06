@@ -9,6 +9,7 @@ from .views import (
     instituicao_editar,
     instituicoes,
     registros,
+    uso,
     usuario,
     usuario_editar,
     usuario_desativar,
@@ -40,5 +41,6 @@ urlpatterns = [
         usuario_zerar_creditos,
         name="painel-usuario-zerar-creditos",
     ),
+    path("uso/", uso, name="painel-uso"),
     path("registros/", registros, name="painel-registros"),
 ]

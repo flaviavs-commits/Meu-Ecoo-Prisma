@@ -9,12 +9,24 @@ from django.views.decorators.http import require_POST
 
 from contas.auditoria import RegistroDeAuditoria
 from contas.desativacao import DesativacaoNegada, desativar_usuario
-from contas.models import Instituicao, Perfil, TipoInstituicao
+from contas.models import TIPOS_INTERNOS, Instituicao, Perfil, TipoInstituicao
 from creditos.excecoes import AlocacaoSemConfirmacaoError
 from limites.models import AssinaturaInstituicao
+from limites.ciclo import ciclo_atual
+from limites.normalizacao import cota_da_conta
 from limites.servico import calcular_cobranca, estado_cota
 
-from .permissoes import exige_superadmin
+from .escopo import escopo_do_painel
+from .monitoramento import (
+    consumo_por_conta,
+    consumo_por_fornecedor,
+    contratos_para_o_painel,
+)
+from .permissoes import (
+    exige_acesso_ao_painel,
+    exige_staff_interno,
+    exige_superadmin,
+)
 from .forms.conta_teste import ContaTesteForm
 from .forms.editar_instituicao import InstituicaoEdicaoForm
 from .forms.editar_usuario import UsuarioEdicaoForm
@@ -64,25 +76,51 @@ ACOES_AUDITADAS = (
 
 
 def superadmin_required(view):
+    """Acesso irrestrito: financeiro, entidade de dominio e auditoria."""
     return login_required(exige_superadmin(view))
+
+
+def staff_interno_required(view):
+    """Gestao de usuario e monitoramento cross-tenant: provider ou administrador."""
+    return login_required(exige_staff_interno(view))
+
+
+def painel_required(view):
+    """Leitura no painel, recortada pela hierarquia da conta logada.
+
+    Admite tambem o DIRETOR - que enxerga somente a propria escola, pelo
+    recorte de `escopo.py`. Toda view com este decorator PRECISA consultar o
+    escopo em vez de ler o modelo direto.
+    """
+    return login_required(exige_acesso_ao_painel(view))
 
 
 def _paginar(request, queryset):
     return Paginator(queryset, POR_PAGINA).get_page(request.GET.get("pagina"))
 
 
-@superadmin_required
+@painel_required
 def dashboard(request):
+    escopo = escopo_do_painel(request.user)
+    # A auditoria e global por natureza (registra acao de plataforma), entao so
+    # a equipe interna a le. O diretor ve o recorte da propria escola.
+    if escopo.cross_tenant:
+        recentes = RegistroDeAuditoria.objects.select_related("ator").order_by("-criado_em")[:12]
+        auditorias = RegistroDeAuditoria.objects.count()
+    else:
+        recentes = []
+        auditorias = None
     contexto = {
-        "usuarios": Usuario.objects.count(),
-        "instituicoes": Instituicao.objects.count(),
-        "auditorias": RegistroDeAuditoria.objects.count(),
-        "recentes": RegistroDeAuditoria.objects.select_related("ator").order_by("-criado_em")[:12],
+        "escopo": escopo,
+        "usuarios": escopo.usuarios().count(),
+        "instituicoes": escopo.instituicoes().count(),
+        "auditorias": auditorias,
+        "recentes": recentes,
     }
     return render(request, "painel_admin/dashboard.html", contexto)
 
 
-@superadmin_required
+@staff_interno_required
 def instituicoes(request):
     formulario = InstituicaoForm(request.POST or None)
     if request.method == "POST" and formulario.is_valid():
@@ -103,9 +141,10 @@ def instituicoes(request):
     return render(request, "painel_admin/instituicoes.html", contexto)
 
 
-@superadmin_required
+@painel_required
 def instituicao(request, pk):
-    alvo = get_object_or_404(Instituicao, pk=pk)
+    escopo = escopo_do_painel(request.user)
+    alvo = get_object_or_404(escopo.instituicoes(), pk=pk)
     formulario = InstituicaoEdicaoForm(
         initial={"nome": alvo.nome, "documento": alvo.documento or ""}
     )
@@ -116,7 +155,7 @@ def instituicao(request, pk):
     return render(
         request,
         "painel_admin/instituicao.html",
-        {"alvo": alvo, "formulario": formulario, "cobranca": cobranca},
+        {"escopo": escopo, "alvo": alvo, "formulario": formulario, "cobranca": cobranca},
     )
 
 
@@ -124,8 +163,8 @@ def instituicao(request, pk):
 @require_POST
 def instituicao_editar(request, pk):
     alvo = get_object_or_404(Instituicao, pk=pk)
-    if alvo.tipo == TipoInstituicao.MANTENEDORA:
-        return HttpResponseBadRequest("A instituição Vitis Souls não pode ser editada por este fluxo.")
+    if alvo.tipo in TIPOS_INTERNOS:
+        return HttpResponseBadRequest("Instituição interna da equipe não é editada por este fluxo.")
     formulario = InstituicaoEdicaoForm(request.POST)
     if not formulario.is_valid():
         return render(request, "painel_admin/instituicao.html", {"alvo": alvo, "formulario": formulario})
@@ -199,16 +238,18 @@ def contas_teste(request):
     return render(request, "painel_admin/contas_teste.html", contexto)
 
 
-@superadmin_required
+@painel_required
 def usuarios(request):
+    escopo = escopo_do_painel(request.user)
     consulta = request.GET.get("q", "").strip()
     perfil = request.GET.get("perfil", "").strip()
-    queryset = Usuario.objects.select_related("instituicao").order_by("email")
+    queryset = escopo.usuarios().order_by("email")
     if consulta:
         queryset = queryset.filter(Q(email__icontains=consulta) | Q(first_name__icontains=consulta))
     if perfil in Perfil.values:
         queryset = queryset.filter(perfil=perfil)
     contexto = {
+        "escopo": escopo,
         "pagina": _paginar(request, queryset),
         "consulta": consulta,
         "perfil": perfil,
@@ -217,9 +258,12 @@ def usuarios(request):
     return render(request, "painel_admin/usuarios.html", contexto)
 
 
-@superadmin_required
+@painel_required
 def usuario(request, pk):
-    alvo = get_object_or_404(Usuario.objects.select_related("instituicao"), pk=pk)
+    escopo = escopo_do_painel(request.user)
+    # `get_object_or_404` sobre a queryset do escopo, e nao sobre `Usuario`:
+    # conta de outra escola precisa ser indistinguivel de conta inexistente.
+    alvo = get_object_or_404(escopo.usuarios(), pk=pk)
     formulario_edicao = UsuarioEdicaoForm(
         alvo=alvo,
         initial={
@@ -232,15 +276,16 @@ def usuario(request, pk):
         },
     )
     contexto = {
+        "escopo": escopo,
         "alvo": alvo,
         "perfis": Perfil.choices,
-        "cota": estado_cota(alvo),
+        "cota": cota_da_conta(estado_cota(alvo)),
         "formulario_edicao": formulario_edicao,
     }
     return render(request, "painel_admin/usuario.html", contexto)
 
 
-@superadmin_required
+@staff_interno_required
 @require_POST
 def usuario_editar(request, pk):
     alvo = get_object_or_404(Usuario.objects.select_related("instituicao"), pk=pk)
@@ -312,10 +357,14 @@ def usuario_perfil(request, pk):
     return redirect("painel-usuario", pk=alvo.pk)
 
 
-@superadmin_required
+@painel_required
 @require_POST
 def usuario_desativar(request, pk):
-    alvo = get_object_or_404(Usuario, pk=pk)
+    # Pelo escopo, e nao por `Usuario`: buscar global fazia a conta de outra
+    # escola responder 400 ("nao pode") em vez de 404 ("nao existe") - a regra
+    # de dominio ja barrava a acao, mas a diferenca de status confirmava a
+    # existencia da conta a quem nao devia enxerga-la.
+    alvo = get_object_or_404(escopo_do_painel(request.user).usuarios(), pk=pk)
     try:
         desativar_usuario(
             alvo=alvo,
@@ -342,3 +391,22 @@ def usuario_zerar_creditos(request, pk):
     except (AlocacaoSemConfirmacaoError, SaldoJaZeradoError) as erro:
         return HttpResponseBadRequest(str(erro))
     return redirect("painel-usuario", pk=alvo.pk)
+
+
+@painel_required
+def uso(request):
+    """Monitoramento de consumo, no recorte de quem esta olhando.
+
+    Diretor ve as contas da propria escola em percentual; equipe interna ve
+    todas as escolas e o custo em dolar por tras de cada fornecedor.
+    """
+    escopo = escopo_do_painel(request.user)
+    ciclo = request.GET.get("ciclo", "").strip() or None
+    contexto = {
+        "escopo": escopo,
+        "ciclo": ciclo or ciclo_atual(),
+        "contas": consumo_por_conta(escopo, ciclo=ciclo),
+        "fornecedores": consumo_por_fornecedor(escopo, ciclo=ciclo),
+        "contratos": contratos_para_o_painel(escopo),
+    }
+    return render(request, "painel_admin/uso.html", contexto)

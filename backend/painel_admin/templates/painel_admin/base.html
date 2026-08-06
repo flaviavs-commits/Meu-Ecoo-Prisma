@@ -10,7 +10,14 @@
 </head>
 <body>
   <header class="topo"><a href="{% url 'painel-dashboard' %}">Prisma Admin</a><span>{{ request.user.email }}</span><a href="{% url 'admin:logout' %}">Sair</a></header>
-  <nav class="nav"><a href="{% url 'painel-dashboard' %}">Visão geral</a><a href="{% url 'painel-instituicoes' %}">Instituições</a><a href="{% url 'painel-contas-teste' %}">Contas teste</a><a href="{% url 'painel-usuarios' %}">Usuários</a><a href="{% url 'painel-registros' %}">Registros</a><a href="{% url 'admin:index' %}">Admin completo</a></nav>
+  <nav class="nav">
+    <a href="{% url 'painel-dashboard' %}">Visão geral</a>
+    {% if request.user.eh_staff_interno %}<a href="{% url 'painel-instituicoes' %}">Instituições</a>{% endif %}
+    {% if request.user.eh_provider %}<a href="{% url 'painel-contas-teste' %}">Contas teste</a>{% endif %}
+    <a href="{% url 'painel-usuarios' %}">Usuários</a>
+    <a href="{% url 'painel-uso' %}">Uso de IA</a>
+    {% if request.user.eh_provider %}<a href="{% url 'painel-registros' %}">Registros</a><a href="{% url 'admin:index' %}">Admin completo</a>{% endif %}
+  </nav>
   {% if messages %}<section class="mensagens" aria-live="polite">{% for message in messages %}<p class="mensagem mensagem-{{ message.tags|default:'info' }}">{{ message }}</p>{% endfor %}</section>{% endif %}
   <main class="conteudo">{% block content %}{% endblock %}</main>
 </body>

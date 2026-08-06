@@ -1,0 +1,99 @@
+{% extends "painel_admin/base.html" %}
+{% block title %}Uso de IA — Painel Prisma{% endblock %}
+{% block content %}
+<h1>Uso de IA</h1>
+<p class="apoio">
+  Competência {{ ciclo }}.
+  {% if escopo.cross_tenant %}Todas as instituições.{% else %}Somente {{ escopo.usuario.instituicao.nome }}.{% endif %}
+</p>
+
+<section class="card">
+  <h2>Consumo por conta</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Conta</th><th>Perfil</th><th>Chamadas</th><th>Consumido</th>
+        {% if escopo.ve_custo_real %}<th>Custo (US$)</th>{% endif %}
+        <th>Situação</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for linha in contas %}
+      <tr>
+        <td><a href="{% url 'painel-usuario' linha.usuario_id %}">{{ linha.email }}</a></td>
+        <td>{{ linha.perfil }}</td>
+        <td>{{ linha.chamadas }}</td>
+        <td>{{ linha.consumido_percentual }}%</td>
+        {% if escopo.ve_custo_real %}<td>{{ linha.custo|floatformat:6 }}</td>{% endif %}
+        <td>{% if linha.bloqueado %}Sem saldo{% else %}Ativa{% endif %}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">Nenhum consumo nesta competência.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>Consumo por fornecedor</h2>
+  <p class="apoio">
+    O usuário não sabe qual fornecedor atendeu a chamada dele — e a troca de
+    fornecedor não interrompe a contagem nem muda a escala que ele lê.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Fornecedor</th><th>Chamadas</th>
+        {% if escopo.ve_custo_real %}<th>Custo (US$)</th><th>Custo médio</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for linha in fornecedores %}
+      <tr>
+        <td>{{ linha.fornecedor }}</td>
+        <td>{{ linha.chamadas }}</td>
+        {% if escopo.ve_custo_real %}
+        <td>{{ linha.custo|floatformat:6 }}</td>
+        <td>{{ linha.custo_medio|floatformat:8 }}</td>
+        {% endif %}
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">Nenhuma chamada nesta competência.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% if escopo.ve_custo_real %}
+<section class="card">
+  <h2>Contratos de fornecedor</h2>
+  <p class="apoio">
+    Numa assinatura, o custo de uma chamada é a fatia da mensalidade: quanto
+    mais contas ela atende, mais barata fica cada chamada. Recalibrar vale para
+    as chamadas seguintes — nunca reescreve consumo já registrado.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Fornecedor</th><th>Cobrança</th><th>Mensalidade</th>
+        <th>Contas atendidas</th><th>Chamadas estimadas/mês</th><th>Custo por chamada</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for linha in contratos %}
+      <tr>
+        <td>{{ linha.objeto.fornecedor }}</td>
+        <td>{{ linha.objeto.get_modalidade_display }}</td>
+        <td>{% if linha.objeto.mensalidade %}US$ {{ linha.objeto.mensalidade|floatformat:2 }}{% else %}—{% endif %}</td>
+        <td>{{ linha.objeto.contas_atendidas }}</td>
+        <td>{{ linha.chamadas_estimadas }}</td>
+        <td>{{ linha.custo_por_chamada|floatformat:8 }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">Nenhum contrato cadastrado.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+{% endblock %}
