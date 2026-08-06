@@ -47,6 +47,9 @@ class Material(models.Model):
         blank=True,
     )
     status = models.CharField(max_length=10, choices=StatusConteudo.choices, default=StatusConteudo.RASCUNHO)
+    # Prazo da atividade proposta (trabalho, plano de aula, leitura). Nulo para
+    # material de consulta, que nao se entrega.
+    prazo_entrega = models.DateTimeField(null=True, blank=True)
     revisado_por = models.ForeignKey("contas.Usuario", on_delete=models.PROTECT, related_name="materiais_revisados", null=True, blank=True)
     revisado_em = models.DateTimeField(null=True, blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
@@ -66,6 +69,8 @@ class Prova(models.Model):
     titulo = models.CharField(max_length=200)
     origem = models.CharField(max_length=10, choices=OrigemConteudo.choices)
     status = models.CharField(max_length=10, choices=StatusConteudo.choices, default=StatusConteudo.RASCUNHO)
+    # Prazo de aplicacao da prova. Nulo enquanto o professor nao agenda.
+    prazo_entrega = models.DateTimeField(null=True, blank=True)
     revisado_por = models.ForeignKey("contas.Usuario", on_delete=models.PROTECT, related_name="provas_revisadas", null=True, blank=True)
     revisado_em = models.DateTimeField(null=True, blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
